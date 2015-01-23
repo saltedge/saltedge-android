@@ -14,8 +14,8 @@ Clone this repository
 
 ## Connecting logins using the sample app
 
-1. Replace the `clientId`, `appSecret` constants in [AndroidManifest.xml:16-17](link) with your Client ID and corresponding App secret.
-2. Add the `customerIdentifier` (that should be random set of chars, for each app install) to [StartActivity.java:35](link)
+1. Replace the `clientId`, `appSecret` constants in [AndroidManifest.xml:16-17](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/AndroidManifest.xml) with your Client ID and corresponding App secret.
+2. Add the `customerIdentifier` (that should be random set of chars, for each app install) to [StartActivity.java:35](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/StartActivity.java)
 3. Run the app
 
 *Note*: You can find your Client ID and App secret at your [profile](https://www.saltedge.com/clients/profile/settings) page.
