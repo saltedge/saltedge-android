@@ -1,0 +1,8 @@
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+SaltEdgeSDK.iml
+/app/app.iml
+/app/proguard-rules.pro

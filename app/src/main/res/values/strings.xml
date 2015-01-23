@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SaltEdgeSDKSample</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="warning">Warning</string>
+    <string name="request_error">Request error</string>
+    <string name="parse_error">Parse error</string>
+    <string name="connect_title">Connect</string>
+    <string name="logins_title">Logins</string>
+    <string name="providers_empty">Provider list is empty</string>
+    <string name="provider_list">Providers</string>
+    <string name="refresh_provider">Refresh</string>
+    <string name="reconnect_provider">Reconnect</string>
+    <string name="delete_provider">Delete</string>
+    <string name="creating_token">Creating token</string>
+    <string name="fetching_providers">Fetching Providers</string>
+    <string name="fetching_accounts">Fetching Accounts</string>
+
+</resources>
