@@ -244,7 +244,7 @@ public class SERequestManager {
                                                     int accountId,
                                                     FetchListener listener) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(SEConstants.KEY_ACCOUNT_ID, accountId);
+        params.put(SEConstants.KEY_ACCOUNT_ID, String.valueOf(accountId));
         listtingPendingTransactions(loginSecret, params, listener);
     }
 
