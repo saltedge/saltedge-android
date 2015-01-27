@@ -4,7 +4,7 @@ A handful of classes to help you interact with the Salt Edge API from your Andro
 
 ## Requirements
 
-Android 4.0+ (minimum 15 sdk version)
+Android 4.0.2+ (minimum 15 sdk version)
 
 ### Source
 
