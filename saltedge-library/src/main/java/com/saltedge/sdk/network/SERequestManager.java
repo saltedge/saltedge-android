@@ -21,8 +21,6 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.models.SEAccount;
