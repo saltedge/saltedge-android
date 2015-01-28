@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.models.SEAccount;
@@ -38,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -146,7 +149,7 @@ public class SERequestManager {
         if (date != null) {
             params.put(SEConstants.KEY_FROM_DATE, SEDateTools.parseDateToShortString(date));
         }
-        if (providerArray == null || providerArray.isEmpty() || nextPageId.isEmpty()) {
+        if (providerArray == null || nextPageId.isEmpty()) {
             providerArray = new ArrayList<>();
         }
         sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), params, "",
@@ -161,12 +164,10 @@ public class SERequestManager {
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
                 String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SEProvider entry : gson.fromJson(providerArrayString, SEProvider[].class)) {
-                    providerArray.add(entry);
-                }
+                providerArray.addAll(Arrays.asList(gson.fromJson(providerArrayString, SEProvider[].class)));
 
                 String pageId = getNextPageId(response);
-                nextPageId = !pageId.equals(nextPageId) ? pageId : "";
+                nextPageId = pageId.equals(nextPageId) ? "" : pageId;
                 if (nextPageId.isEmpty()) {
                     onSuccess(providerArray);
                 } else {
@@ -233,7 +234,7 @@ public class SERequestManager {
         if (loginId != 0) {
             params.put(SEConstants.KEY_FROM_DATE, String.valueOf(loginId));
         }
-        if (accountsArray == null || accountsArray.isEmpty() || nextPageId.isEmpty()) {
+        if (accountsArray == null || nextPageId.isEmpty()) {
             accountsArray = new ArrayList<>();
         }
         sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), params, loginSecret,
@@ -245,13 +246,11 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
-                    accountsArray.add(entry);
-                }
+                String accountsArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                accountsArray.addAll(Arrays.asList(gson.fromJson(accountsArrayString, SEAccount[].class)));
 
                 String pageId = getNextPageId(response);
-                nextPageId = !pageId.equals(nextPageId) ? pageId : "";
+                nextPageId = pageId.equals(nextPageId) ? "" : pageId;
                 if (nextPageId.isEmpty()) {
                     onSuccess(accountsArray);
                 } else {
@@ -297,7 +296,7 @@ public class SERequestManager {
                                   final String url,
                                   FetchListener listener) {
         fetchListener = listener;
-        if (transactionsArray == null || transactionsArray.isEmpty() || nextPageId.isEmpty()) {
+        if (transactionsArray == null || nextPageId.isEmpty()) {
             transactionsArray = new ArrayList<>();
         }
         sendGETRequest(url.concat(nextPageId), params, loginSecret,
@@ -310,13 +309,11 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SETransaction entry : gson.fromJson(providerArrayString, SETransaction[].class)) {
-                    transactionsArray.add(entry);
-                }
+                String transactionsArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                transactionsArray.addAll(Arrays.asList(gson.fromJson(transactionsArrayString, SETransaction[].class)));
 
                 String pageId = getNextPageId(response);
-                nextPageId = !pageId.equals(nextPageId) ? pageId : "";
+                nextPageId = pageId.equals(nextPageId) ? "" : pageId;
                 if (nextPageId.isEmpty()) {
                     onSuccess(transactionsArray);
                 } else {
