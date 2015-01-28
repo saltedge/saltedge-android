@@ -166,7 +166,7 @@ public class SERequestManager {
                 }
 
                 String pageId = getNextPageId(response);
-                nextPageId = pageId != nextPageId ? pageId : "";
+                nextPageId = !pageId.equals(nextPageId) ? pageId : "";
                 if (nextPageId.isEmpty()) {
                     onSuccess(providerArray);
                 } else {
@@ -251,7 +251,7 @@ public class SERequestManager {
                 }
 
                 String pageId = getNextPageId(response);
-                nextPageId = pageId != nextPageId ? pageId : "";
+                nextPageId = !pageId.equals(nextPageId) ? pageId : "";
                 if (nextPageId.isEmpty()) {
                     onSuccess(accountsArray);
                 } else {
@@ -316,7 +316,7 @@ public class SERequestManager {
                 }
 
                 String pageId = getNextPageId(response);
-                nextPageId = pageId != nextPageId ? pageId : "";
+                nextPageId = !pageId.equals(nextPageId) ? pageId : "";
                 if (nextPageId.isEmpty()) {
                     onSuccess(transactionsArray);
                 } else {
