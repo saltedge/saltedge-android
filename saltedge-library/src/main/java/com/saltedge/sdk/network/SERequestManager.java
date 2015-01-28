@@ -146,7 +146,7 @@ public class SERequestManager {
         if (date != null) {
             params.put(SEConstants.KEY_FROM_DATE, SEDateTools.parseDateToShortString(date));
         }
-        if (providerArray == null || providerArray.isEmpty()) {
+        if (providerArray == null || providerArray.isEmpty() || nextPageId.isEmpty()) {
             providerArray = new ArrayList<>();
         }
         sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), params, "",
@@ -168,7 +168,6 @@ public class SERequestManager {
                 String pageId = getNextPageId(response);
                 nextPageId = pageId != nextPageId ? pageId : "";
                 if (nextPageId.isEmpty()) {
-                    providerArray.clear();
                     onSuccess(providerArray);
                 } else {
                     providerList(date, fetchListener);
@@ -234,7 +233,7 @@ public class SERequestManager {
         if (loginId != 0) {
             params.put(SEConstants.KEY_FROM_DATE, String.valueOf(loginId));
         }
-        if (accountsArray == null || accountsArray.isEmpty()) {
+        if (accountsArray == null || accountsArray.isEmpty() || nextPageId.isEmpty()) {
             accountsArray = new ArrayList<>();
         }
         sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), params, loginSecret,
@@ -250,10 +249,10 @@ public class SERequestManager {
                 for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
                     accountsArray.add(entry);
                 }
+
                 String pageId = getNextPageId(response);
                 nextPageId = pageId != nextPageId ? pageId : "";
                 if (nextPageId.isEmpty()) {
-                    accountsArray.clear();
                     onSuccess(accountsArray);
                 } else {
                     accountsList(loginSecret, loginId, fetchListener);
@@ -298,7 +297,7 @@ public class SERequestManager {
                                   final String url,
                                   FetchListener listener) {
         fetchListener = listener;
-        if (transactionsArray == null || transactionsArray.isEmpty()) {
+        if (transactionsArray == null || transactionsArray.isEmpty() || nextPageId.isEmpty()) {
             transactionsArray = new ArrayList<>();
         }
         sendGETRequest(url.concat(nextPageId), params, loginSecret,
@@ -319,7 +318,6 @@ public class SERequestManager {
                 String pageId = getNextPageId(response);
                 nextPageId = pageId != nextPageId ? pageId : "";
                 if (nextPageId.isEmpty()) {
-                    transactionsArray.clear();
                     onSuccess(transactionsArray);
                 } else {
                     fetchTransactions(loginSecret, params, url, fetchListener);
