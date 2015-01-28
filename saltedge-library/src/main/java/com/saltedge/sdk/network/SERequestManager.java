@@ -164,7 +164,9 @@ public class SERequestManager {
                 for (SEProvider entry : gson.fromJson(providerArrayString, SEProvider[].class)) {
                     providerArray.add(entry);
                 }
-                nextPageId = paginationAvailable(response);
+
+                String pageId = getNextPageId(response);
+                nextPageId = pageId != nextPageId ? pageId : "";
                 if (nextPageId.isEmpty()) {
                     providerArray.clear();
                     onSuccess(providerArray);
@@ -248,7 +250,8 @@ public class SERequestManager {
                 for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
                     accountsArray.add(entry);
                 }
-                nextPageId = paginationAvailable(response);
+                String pageId = getNextPageId(response);
+                nextPageId = pageId != nextPageId ? pageId : "";
                 if (nextPageId.isEmpty()) {
                     accountsArray.clear();
                     onSuccess(accountsArray);
@@ -312,7 +315,9 @@ public class SERequestManager {
                 for (SETransaction entry : gson.fromJson(providerArrayString, SETransaction[].class)) {
                     transactionsArray.add(entry);
                 }
-                nextPageId = paginationAvailable(response);
+
+                String pageId = getNextPageId(response);
+                nextPageId = pageId != nextPageId ? pageId : "";
                 if (nextPageId.isEmpty()) {
                     transactionsArray.clear();
                     onSuccess(transactionsArray);
@@ -381,7 +386,7 @@ public class SERequestManager {
 /**
  * Pagination
  */
-    private String paginationAvailable(JSONObject response) {
+    private String getNextPageId(JSONObject response) {
         try {
             if (response.has(SEConstants.KEY_META)) {
                 String nextPage = response.getJSONObject(SEConstants.KEY_META).getString(SEConstants.KEY_NEXT_ID);
