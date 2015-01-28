@@ -188,7 +188,7 @@ public class AccountsFragment extends Fragment {
         }
         accounts = new ArrayList<>();
         UITools.showProgress(progressDialog);
-        SERequestManager.getInstance().listingAccounts(loginSecret, true, new SERequestManager.FetchListener() {
+        SERequestManager.getInstance().listingAccounts(loginSecret, new SERequestManager.FetchListener() {
             @Override
             public void onFailure(String errorResponse) {
                 UITools.destroyAlertDialog(progressDialog);

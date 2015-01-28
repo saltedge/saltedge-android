@@ -21,6 +21,8 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.models.SEAccount;
@@ -30,6 +32,7 @@ import com.saltedge.sdk.models.SETransaction;
 import com.saltedge.sdk.params.SEBaseParams;
 import com.saltedge.sdk.params.SECreateCustomerParams;
 import com.saltedge.sdk.utils.SEConstants;
+import com.saltedge.sdk.utils.SEDateTools;
 import com.saltedge.sdk.utils.SEJSONTools;
 import com.saltedge.sdk.utils.SETools;
 
@@ -37,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 public class SERequestManager {
@@ -129,12 +133,25 @@ public class SERequestManager {
 /**
  * Provider list
  * */
-    public void listingProviders(boolean clearArray, FetchListener listener) {
+
+    public void listingProviders(FetchListener listener) {
+        providerList(true, null, listener);
+    }
+
+    public void listingProvidersFromDate(Date date, FetchListener listener) {
+        providerList(true, date, listener);
+    }
+
+    private void providerList(boolean clearArray, final Date date, FetchListener listener) {
         fetchListener = listener;
+        HashMap<String, String> params = new HashMap<>();
+        if (date != null) {
+            params.put(SEConstants.KEY_FROM_DATE, SEDateTools.parseDateToShortString(date));
+        }
         if (providerArray == null || providerArray.isEmpty() || clearArray) {
             providerArray = new ArrayList<>();
         }
-        sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), null, "",
+        sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), params, "",
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
 
             @Override
@@ -153,7 +170,7 @@ public class SERequestManager {
                 if (nextPageId.isEmpty()) {
                     onSuccess(providerArray);
                 } else {
-                    listingProviders(false, fetchListener);
+                    providerList(false, date, fetchListener);
                 }
             }
         }));
@@ -201,12 +218,25 @@ public class SERequestManager {
 /**
  * Accounts
  * */
-    public void listingAccounts(final String loginSecret, boolean clearArray, FetchListener listener) {
+
+    public void listingAccountsWithParams(String loginSecret, int loginId, FetchListener listener) {
+        accountsList(loginSecret, loginId, true, listener);
+    }
+
+    public void listingAccounts(String loginSecret, FetchListener listener) {
+        accountsList(loginSecret, 0, true, listener);
+    }
+
+    public void accountsList(final String loginSecret, final int loginId, boolean clearArray, FetchListener listener) {
         fetchListener = listener;
+        HashMap<String, String> params = new HashMap<>();
+        if (loginId != 0) {
+            params.put(SEConstants.KEY_FROM_DATE, String.valueOf(loginId));
+        }
         if (accountsArray == null || accountsArray.isEmpty() || clearArray) {
             accountsArray = new ArrayList<>();
         }
-        sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), null, loginSecret,
+        sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), params, loginSecret,
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
             @Override
             public void onFailureResponse(int statusCode, JSONObject errorResponse) {
@@ -223,7 +253,7 @@ public class SERequestManager {
                 if (nextPageId.isEmpty()) {
                     onSuccess(accountsArray);
                 } else {
-                    listingAccounts(loginSecret, false, fetchListener);
+                    accountsList(loginSecret, loginId,false, fetchListener);
                 }
             }
         }));
@@ -319,6 +349,7 @@ public class SERequestManager {
         if (params != null) {
             url = url.concat(SETools.paramsToString(params));
         }
+        Log.v("tag", "url " + url);
         return SERestClient.get(url, handler, headers);
     }
 
