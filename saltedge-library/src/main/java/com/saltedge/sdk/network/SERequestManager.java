@@ -145,7 +145,7 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                 for (SEProvider entry : gson.fromJson(providerArrayString, SEProvider[].class)) {
                     providerArray.add(entry);
                 }
@@ -215,7 +215,7 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                 for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
                     accountsArray.add(entry);
                 }
@@ -279,7 +279,7 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                 for (SETransaction entry : gson.fromJson(providerArrayString, SETransaction[].class)) {
                     transactionsArray.add(entry);
                 }
