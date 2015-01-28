@@ -135,20 +135,20 @@ public class SERequestManager {
  * */
 
     public void listingProviders(FetchListener listener) {
-        providerList(true, null, listener);
+        providerList(null, listener);
     }
 
     public void listingProvidersFromDate(Date date, FetchListener listener) {
-        providerList(true, date, listener);
+        providerList(date, listener);
     }
 
-    private void providerList(boolean clearArray, final Date date, FetchListener listener) {
+    private void providerList(final Date date, FetchListener listener) {
         fetchListener = listener;
         HashMap<String, String> params = new HashMap<>();
         if (date != null) {
             params.put(SEConstants.KEY_FROM_DATE, SEDateTools.parseDateToShortString(date));
         }
-        if (providerArray == null || providerArray.isEmpty() || clearArray) {
+        if (providerArray == null || providerArray.isEmpty()) {
             providerArray = new ArrayList<>();
         }
         sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), params, "",
@@ -168,9 +168,10 @@ public class SERequestManager {
                 }
                 nextPageId = paginationAvailable(response);
                 if (nextPageId.isEmpty()) {
+                    providerArray.clear();
                     onSuccess(providerArray);
                 } else {
-                    providerList(false, date, fetchListener);
+                    providerList(date, fetchListener);
                 }
             }
         }));
@@ -220,20 +221,20 @@ public class SERequestManager {
  * */
 
     public void listingAccountsWithParams(String loginSecret, int loginId, FetchListener listener) {
-        accountsList(loginSecret, loginId, true, listener);
+        accountsList(loginSecret, loginId, listener);
     }
 
     public void listingAccounts(String loginSecret, FetchListener listener) {
-        accountsList(loginSecret, 0, true, listener);
+        accountsList(loginSecret, 0, listener);
     }
 
-    public void accountsList(final String loginSecret, final int loginId, boolean clearArray, FetchListener listener) {
+    public void accountsList(final String loginSecret, final int loginId, FetchListener listener) {
         fetchListener = listener;
         HashMap<String, String> params = new HashMap<>();
         if (loginId != 0) {
             params.put(SEConstants.KEY_FROM_DATE, String.valueOf(loginId));
         }
-        if (accountsArray == null || accountsArray.isEmpty() || clearArray) {
+        if (accountsArray == null || accountsArray.isEmpty()) {
             accountsArray = new ArrayList<>();
         }
         sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), params, loginSecret,
@@ -251,9 +252,10 @@ public class SERequestManager {
                 }
                 nextPageId = paginationAvailable(response);
                 if (nextPageId.isEmpty()) {
+                    accountsArray.clear();
                     onSuccess(accountsArray);
                 } else {
-                    accountsList(loginSecret, loginId,false, fetchListener);
+                    accountsList(loginSecret, loginId, fetchListener);
                 }
             }
         }));
@@ -281,22 +283,21 @@ public class SERequestManager {
     public void listtingTransactions(String loginSecret,
                                      final HashMap<String, String> params,
                                      FetchListener listener) {
-        fetchTransactions(loginSecret, params, SEConstants.TRANSACTIONS_URL, true, listener);
+        fetchTransactions(loginSecret, params, SEConstants.TRANSACTIONS_URL, listener);
     }
 
     public void listtingPendingTransactions(String loginSecret,
                                             final HashMap<String, String> params,
                                             FetchListener listener) {
-        fetchTransactions(loginSecret, params, SEConstants.PENDING_TRANSACTIONS_URL, true, listener);
+        fetchTransactions(loginSecret, params, SEConstants.PENDING_TRANSACTIONS_URL, listener);
     }
 
     public void fetchTransactions(final String loginSecret,
                                   final HashMap<String, String> params,
                                   final String url,
-                                  final boolean clearArray,
                                   FetchListener listener) {
         fetchListener = listener;
-        if (transactionsArray == null || transactionsArray.isEmpty() || clearArray) {
+        if (transactionsArray == null || transactionsArray.isEmpty()) {
             transactionsArray = new ArrayList<>();
         }
         sendGETRequest(url.concat(nextPageId), params, loginSecret,
@@ -315,9 +316,10 @@ public class SERequestManager {
                 }
                 nextPageId = paginationAvailable(response);
                 if (nextPageId.isEmpty()) {
+                    transactionsArray.clear();
                     onSuccess(transactionsArray);
                 } else {
-                    fetchTransactions(loginSecret, params, url, clearArray, fetchListener);
+                    fetchTransactions(loginSecret, params, url, fetchListener);
                 }
             }
         }));
