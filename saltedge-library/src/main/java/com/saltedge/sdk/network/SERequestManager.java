@@ -30,6 +30,7 @@ import com.saltedge.sdk.models.SETransaction;
 import com.saltedge.sdk.params.SEBaseParams;
 import com.saltedge.sdk.params.SECreateCustomerParams;
 import com.saltedge.sdk.utils.SEConstants;
+import com.saltedge.sdk.utils.SEDateTools;
 import com.saltedge.sdk.utils.SEJSONTools;
 import com.saltedge.sdk.utils.SETools;
 
@@ -37,6 +38,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 public class SERequestManager {
@@ -129,12 +132,25 @@ public class SERequestManager {
 /**
  * Provider list
  * */
-    public void listingProviders(boolean clearArray, FetchListener listener) {
+
+    public void listingProviders(FetchListener listener) {
+        providerList(null, listener);
+    }
+
+    public void listingProvidersFromDate(Date date, FetchListener listener) {
+        providerList(date, listener);
+    }
+
+    private void providerList(final Date date, FetchListener listener) {
         fetchListener = listener;
-        if (providerArray == null || providerArray.isEmpty() || clearArray) {
+        HashMap<String, String> params = new HashMap<>();
+        if (date != null) {
+            params.put(SEConstants.KEY_FROM_DATE, SEDateTools.parseDateToShortString(date));
+        }
+        if (providerArray == null || nextPageId.isEmpty()) {
             providerArray = new ArrayList<>();
         }
-        sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), null, "",
+        sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), params, "",
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
 
             @Override
@@ -146,14 +162,14 @@ public class SERequestManager {
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
                 String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SEProvider entry : gson.fromJson(providerArrayString, SEProvider[].class)) {
-                    providerArray.add(entry);
-                }
-                nextPageId = paginationAvailable(response);
+                providerArray.addAll(Arrays.asList(gson.fromJson(providerArrayString, SEProvider[].class)));
+
+                String pageId = getNextPageId(response);
+                nextPageId = pageId.equals(nextPageId) ? "" : pageId;
                 if (nextPageId.isEmpty()) {
                     onSuccess(providerArray);
                 } else {
-                    listingProviders(false, fetchListener);
+                    providerList(date, fetchListener);
                 }
             }
         }));
@@ -201,12 +217,25 @@ public class SERequestManager {
 /**
  * Accounts
  * */
-    public void listingAccounts(final String loginSecret, boolean clearArray, FetchListener listener) {
+
+    public void listingAccountsWithParams(String loginSecret, int loginId, FetchListener listener) {
+        accountsList(loginSecret, loginId, listener);
+    }
+
+    public void listingAccounts(String loginSecret, FetchListener listener) {
+        accountsList(loginSecret, 0, listener);
+    }
+
+    public void accountsList(final String loginSecret, final int loginId, FetchListener listener) {
         fetchListener = listener;
-        if (accountsArray == null || accountsArray.isEmpty() || clearArray) {
+        HashMap<String, String> params = new HashMap<>();
+        if (loginId != 0) {
+            params.put(SEConstants.KEY_FROM_DATE, String.valueOf(loginId));
+        }
+        if (accountsArray == null || nextPageId.isEmpty()) {
             accountsArray = new ArrayList<>();
         }
-        sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), null, loginSecret,
+        sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), params, loginSecret,
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
             @Override
             public void onFailureResponse(int statusCode, JSONObject errorResponse) {
@@ -215,15 +244,15 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
-                    accountsArray.add(entry);
-                }
-                nextPageId = paginationAvailable(response);
+                String accountsArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                accountsArray.addAll(Arrays.asList(gson.fromJson(accountsArrayString, SEAccount[].class)));
+
+                String pageId = getNextPageId(response);
+                nextPageId = pageId.equals(nextPageId) ? "" : pageId;
                 if (nextPageId.isEmpty()) {
                     onSuccess(accountsArray);
                 } else {
-                    listingAccounts(loginSecret, false, fetchListener);
+                    accountsList(loginSecret, loginId, fetchListener);
                 }
             }
         }));
@@ -251,22 +280,21 @@ public class SERequestManager {
     public void listtingTransactions(String loginSecret,
                                      final HashMap<String, String> params,
                                      FetchListener listener) {
-        fetchTransactions(loginSecret, params, SEConstants.TRANSACTIONS_URL, true, listener);
+        fetchTransactions(loginSecret, params, SEConstants.TRANSACTIONS_URL, listener);
     }
 
     public void listtingPendingTransactions(String loginSecret,
                                             final HashMap<String, String> params,
                                             FetchListener listener) {
-        fetchTransactions(loginSecret, params, SEConstants.PENDING_TRANSACTIONS_URL, true, listener);
+        fetchTransactions(loginSecret, params, SEConstants.PENDING_TRANSACTIONS_URL, listener);
     }
 
     public void fetchTransactions(final String loginSecret,
                                   final HashMap<String, String> params,
                                   final String url,
-                                  final boolean clearArray,
                                   FetchListener listener) {
         fetchListener = listener;
-        if (transactionsArray == null || transactionsArray.isEmpty() || clearArray) {
+        if (transactionsArray == null || nextPageId.isEmpty()) {
             transactionsArray = new ArrayList<>();
         }
         sendGETRequest(url.concat(nextPageId), params, loginSecret,
@@ -279,15 +307,15 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SETransaction entry : gson.fromJson(providerArrayString, SETransaction[].class)) {
-                    transactionsArray.add(entry);
-                }
-                nextPageId = paginationAvailable(response);
+                String transactionsArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                transactionsArray.addAll(Arrays.asList(gson.fromJson(transactionsArrayString, SETransaction[].class)));
+
+                String pageId = getNextPageId(response);
+                nextPageId = pageId.equals(nextPageId) ? "" : pageId;
                 if (nextPageId.isEmpty()) {
                     onSuccess(transactionsArray);
                 } else {
-                    fetchTransactions(loginSecret, params, url, clearArray, fetchListener);
+                    fetchTransactions(loginSecret, params, url, fetchListener);
                 }
             }
         }));
@@ -351,7 +379,7 @@ public class SERequestManager {
 /**
  * Pagination
  */
-    private String paginationAvailable(JSONObject response) {
+    private String getNextPageId(JSONObject response) {
         try {
             if (response.has(SEConstants.KEY_META)) {
                 String nextPage = response.getJSONObject(SEConstants.KEY_META).getString(SEConstants.KEY_NEXT_ID);

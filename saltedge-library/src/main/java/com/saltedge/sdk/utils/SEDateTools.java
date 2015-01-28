@@ -52,4 +52,8 @@ public class SEDateTools {
         return new Date(0L);
     }
 
+    public static String parseDateToShortString(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
+    }
+
 }

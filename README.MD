@@ -55,7 +55,7 @@ You need:
 ```java
     public static void fetchProviders(final Context context,
                                         final DialogInterface.OnClickListener listener) {
-            SERequestManager.getInstance().listingProviders(true, 
+            SERequestManager.getInstance().listingProviders(
             new SERequestManager.FetchListener() {
                 @Override
                 public void onFailure(String errorResponse) {...}
@@ -133,7 +133,7 @@ What you need:
     -login secret
     
 ```java    
-    SERequestManager.getInstance().listingAccounts(loginSecret, true, new SERequestManager.FetchListener() {
+    SERequestManager.getInstance().listingAccounts(loginSecret, new SERequestManager.FetchListener() {
             @Override
             public void onFailure(String errorResponse) {...}
 
