@@ -21,8 +21,6 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.models.SEAccount;
@@ -351,7 +349,6 @@ public class SERequestManager {
         if (params != null) {
             url = url.concat(SETools.paramsToString(params));
         }
-        Log.v("tag", "url " + url);
         return SERestClient.get(url, handler, headers);
     }
 
