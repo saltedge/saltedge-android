@@ -83,4 +83,5 @@ public class SEJSONToolsTest extends TestCase {
 
         assertEquals("error message", SEJSONTools.getErrorMessage(jsonObject));
     }
+
 }

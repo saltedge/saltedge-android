@@ -34,6 +34,7 @@ import com.saltedge.sdk.models.comparators.SEProviderComparator;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.ProviderAdapter;
+import com.saltedge.sdk.utils.SEDateTools;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,7 +98,7 @@ public class UITools {
         if (providers == null || providers.isEmpty()) {
             final ProgressDialog progressDialog = UITools.createProgressDialog(context, context.getString(R.string.fetching_providers));
             progressDialog.show();
-            SERequestManager.getInstance().listingProviders(true, new SERequestManager.FetchListener() {
+            SERequestManager.getInstance().listingProviders(new SERequestManager.FetchListener() {
                 @Override
                 public void onFailure(String errorResponse) {
                     UITools.destroyAlertDialog(progressDialog);

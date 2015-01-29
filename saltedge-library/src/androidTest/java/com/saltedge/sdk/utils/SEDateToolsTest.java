@@ -23,7 +23,13 @@ public class SEDateToolsTest extends TestCase {
 
     @SmallTest
     public void testParseShortStringToDate() throws Exception {
-        assertEquals(1421989200000L, SEDateTools.parseShortStringToDate("2015-01-23").getTime());
+        assertEquals("Fri Jan 23 00:00:00 GMT+00:00 2015", SEDateTools.parseShortStringToDate("2015-01-23").toString());
     }
 
+    @SmallTest
+    public void testParseDateToShortStrin() throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+        Date date = sdf.parse("2015-01-23T15:05:13Z");
+        assertEquals("2015-01-23", SEDateTools.parseDateToShortString(date));
+    }
 }
