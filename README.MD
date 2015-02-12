@@ -17,7 +17,7 @@ Clone this repository
 1. Replace the `clientId`, `appSecret` constants in [AndroidManifest.xml:16-17](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/AndroidManifest.xml) with your Client ID and corresponding App secret.
 2. Add the `customerIdentifier` (that should be random set of chars, for each app install) to [StartActivity.java:35](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/StartActivity.java)
 3. Run the app
-
+c
 *Note*: You can find your Client ID and App secret at your [profile](https://www.saltedge.com/clients/profile/settings) page.
 
 ### Usage
@@ -33,9 +33,6 @@ Warning! Without this settings SaltEdgeSDK won't work!
 It will identify each new installed app. Also this customerId will be used to create token, 
 for connect to bank provider.
 
-You need:
-- courage
-
 ```java
     private void createCustomer() {
         String customerIdentifier = "customerIdentifier"; // Random num, each installation - new
@@ -49,8 +46,8 @@ You need:
         });
     }
 ```    
-* To get bank providers list you need:
-    - courage
+* To get bank providers list:
+
 
 ```java
     public static void fetchProviders(final Context context,
@@ -72,7 +69,6 @@ you can obtain by getCode() and getCountryCode() method for each object).
 Also you need customerId and callbackUrl (url that you will be redirected after bank login fetch complete).
 Also we have `SECreateTokenParams`, for more comfortable and clear posting data container. 
 One more time, you need:
-    - courage
     - provider code
     - country code
     - customerId
