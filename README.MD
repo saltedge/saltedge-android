@@ -4,7 +4,7 @@ A handful of classes to help you interact with the Salt Edge API from your Andro
 
 ## Requirements
 
-Android 4.0+ (minimum 15 sdk version)
+Android 4.0+ (min. SDK version – 15)
 
 ### Source
 
@@ -15,23 +15,22 @@ Clone this repository
 ## Connecting logins using the sample app
 
 1. Replace the `clientId`, `appSecret` constants in [AndroidManifest.xml:16-17](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/AndroidManifest.xml) with your Client ID and corresponding App secret.
-2. Add the `customerIdentifier` (that should be random set of chars, for each app install) to [StartActivity.java:35](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/StartActivity.java)
+2. Add the `customerIdentifier` (that uniquely identifies a customer) to [StartActivity.java:35](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/StartActivity.java)
 3. Run the app
-c
-*Note*: You can find your Client ID and App secret at your [profile](https://www.saltedge.com/clients/profile/settings) page.
+
+*Note*: You can find your Client ID and App secret on your [profile](https://www.saltedge.com/clients/profile/settings) page.
 
 ### Usage
 
-* In Android Studio create an app
-* Android Studio -> File -> Import Module -> find module named "saltedge-library" -> import
-* In your Android Manijfest.xml file between tags <application> </application> add this:
+* Open Android Studio and create a new app
+* Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import
+* Add the following keys to the manifest:
         <meta-data android:name="App-secret" android:value="YOUR APP SECRET" />
         <meta-data android:name="Client-Id" android:value="YOUR CLIENT ID" />
-Warning! Without this settings SaltEdgeSDK won't work!
 
-* For using our sdk you should provide customerIdentifier, that will be used to get customerId, 
-It will identify each new installed app. Also this customerId will be used to create token, 
-for connect to bank provider.
+**Warning!** The SDK doesn't work without these settings!
+
+* The customerIdentifier is used to [create customers](https://docs.saltedge.com/guides/customers/#creating_customers). 
 
 ```java
     private void createCustomer() {
@@ -45,8 +44,9 @@ for connect to bank provider.
             }
         });
     }
-```    
-* To get bank providers list:
+```
+
+* You can also get the list of providers:
 
 
 ```java
@@ -64,15 +64,16 @@ for connect to bank provider.
             });
     }
 ```
-* To connect to the bank you need provider code and country code  (each of the items from list you got in example above, 
-you can obtain by getCode() and getCountryCode() method for each object). 
-Also you need customerId and callbackUrl (url that you will be redirected after bank login fetch complete).
-Also we have `SECreateTokenParams`, for more comfortable and clear posting data container. 
+* To connect to the bank you need a provider code and a country code.
+You can obtain these by calling `getCode()` and `getCountryCode()` on an `SEProvider` object. You will also need a `customerId` (obtain after creating the customer) and a `callbackUrl`.
+
+In order to encapsulate these params, you can use the `SECreateTokenParams` class.
 One more time, you need:
-    - provider code
-    - country code
+    - a bit of courage
+    - provider_code
+    - country_code
     - customerId
-    - callback url
+    - callbackUrl
     
 ```java
      private void obtainCreateToken(SEProvider selectedProvider, String customerId) { 
@@ -85,13 +86,14 @@ One more time, you need:
 
                     @Override
                     public void onSuccess(Object response) {
+                        // here is a URL you can use to redirect the user
                         String bankUrl = (String) response;
                     }
                 });
 
     }
 ```
-* Now you can go to your favorite bank. You will need webview and url, that you get in example above.
+* Using the returned URL, you can let the user import their data. After doing this, you will obtain a `loginSecret`.
 
 ```java   
     private void goToURL(String url, View view) {
@@ -106,11 +108,9 @@ One more time, you need:
             public void onLoadingFinishedWithError(String errorResponse) {...}
         });
     }
-```    
-* Congratulations, now you have your bank in our sistem and we happy to give you loginSecret, with this 
-few symbols you can make magic. 
-To get your login you need:
-    - login secret
+```
+
+* Congratulations, using just a couple of lines you have obtained a `loginSecret`. This can be used to get the status of the login, its accounts and transactions.
 
 ```java
     SERequestManager.getInstance().fetchLogin(loginSecret,
@@ -124,9 +124,8 @@ To get your login you need:
                     }
                 });
 ```                
-* Now you can get all accounts of this login. 
-What you need:
-    -login secret
+
+* You can now get all the accounts of the login using the `loginSecret`
     
 ```java    
     SERequestManager.getInstance().listingAccounts(loginSecret, new SERequestManager.FetchListener() {
@@ -139,10 +138,7 @@ What you need:
             }
         });
 ```
-* For each account you have possibility to get transactions. 
-What you need:
-    - login secret
-    - account id (Each `SEAccount` contains id, you can obtain in with method getId() )
+* For each accounts, you can obtain the list of transactions.
 
 ```java
         SERequestManager.getInstance().listingTransactionsOfAccount(loginSecret, accountId, 
@@ -156,13 +152,13 @@ What you need:
             }
         });
 ```        
-* Each login could be refreshed and reconnected.  Also we have `SETokenParams`, for more 
-comfortable and clear posting data container. You will recieve url, to refresh your login. 
-(Same logic as for connect flow). 
-You need:
-    - login id (`SELogin` object contains it, you can obtain in with method getId())
-    - callback url
-    - loginSecret
+
+* You can refresh the data for each login.
+To refresh, you can obtain a token.
+To create a `SERefreshToken`, you need:
+    - the ID of the Login (taken from an `SELogin`)
+    - callbackUrl
+    - loginSecret of the Login
 
 * Refresh :
 
@@ -200,8 +196,8 @@ You need:
                 });
 ```           
 
-* For login delete you need:                
-    - login secret
+* To delete a login you'll need a LoginSecret            
+    
 ```java    
         SERequestManager.getInstance().deleteLogin(loginSecret, new SERequestManager.FetchListener() {
             @Override
@@ -214,7 +210,7 @@ You need:
         });
 ```    
 
-#### To see how it works, you can run app included to this lib.
+#### Please conslut the Demo app to see how it works
 
 ## Models
 
