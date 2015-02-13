@@ -161,7 +161,8 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+
+                String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                 providerArray.addAll(Arrays.asList(gson.fromJson(providerArrayString, SEProvider[].class)));
 
                 String pageId = getNextPageId(response);
@@ -244,7 +245,8 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String accountsArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+
+                String accountsArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                 accountsArray.addAll(Arrays.asList(gson.fromJson(accountsArrayString, SEAccount[].class)));
 
                 String pageId = getNextPageId(response);
@@ -307,7 +309,8 @@ public class SERequestManager {
             @Override
             public void onSuccessResponse(int statusCode, JSONObject response) {
                 Gson gson = new Gson();
-                String transactionsArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+
+                String transactionsArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                 transactionsArray.addAll(Arrays.asList(gson.fromJson(transactionsArrayString, SETransaction[].class)));
 
                 String pageId = getNextPageId(response);
