@@ -73,7 +73,7 @@ One more time, you need:
     - provider_code
     - country_code
     - customerId
-    - callbackUrl
+    - callbackUrl (the URL the user will be redirected to)
     
 ```java
      private void obtainCreateToken(SEProvider selectedProvider, String customerId) { 
@@ -157,7 +157,7 @@ One more time, you need:
 To refresh, you can obtain a token.
 To create a `SERefreshToken`, you need:
     - the ID of the Login (taken from an `SELogin`)
-    - callbackUrl
+    - callbackUrl (the URL the user will be redirected to)
     - loginSecret of the Login
 
 * Refresh :
