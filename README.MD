@@ -76,7 +76,7 @@ One more time, you need:
     - provider code
     - country code
     - customerId
-    - callback url
+    - callback url (the URL the user will be redirected to)
     
 ```java
      private void obtainCreateToken(SEProvider selectedProvider, String customerId) { 
@@ -165,7 +165,7 @@ comfortable and clear posting data container. You will recieve url, to refresh y
 (Same logic as for connect flow). 
 You need:
     - login id (`SELogin` object contains it, you can obtain in with method getId())
-    - callback url
+    - callback url (the URL the user will be redirected to)
     - loginSecret
 
 * Refresh :
