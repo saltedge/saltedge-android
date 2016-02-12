@@ -53,8 +53,8 @@ public class StartActivity extends Activity {
     private void createCustomer() {
         String customerIdentifier = "testAndroidApp1"; // Random num, each installation - new num
         UITools.showProgress(progressDialog);
-        String customerId = Tools.getStringFromPreferences(this, SEConstants.KEY_CUSTOMER_ID);
-        if (customerId.isEmpty()) {
+        String customerSecret = Tools.getStringFromPreferences(this, SEConstants.KEY_CUSTOMER_SECRET);
+        if (customerSecret.isEmpty()) {
             SERequestManager.getInstance().createCustomer(customerIdentifier, new SERequestManager.FetchListener() {
                 @Override
                 public void onFailure(String errorResponse) {
@@ -78,8 +78,8 @@ public class StartActivity extends Activity {
         startActivity(intent);
     }
 
-    private void dataObtained(Object customerId) {
-        Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_ID, (String) customerId);
+    private void dataObtained(Object secret) {
+        Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_SECRET, (String) secret);
         intentToTabs();
     }
 

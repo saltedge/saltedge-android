@@ -29,9 +29,9 @@ public class SECreateCustomerParams extends SEBaseParams {
     @SerializedName(SEConstants.KEY_DATA)
     private SECreateCustomerData data;
 
-    public SECreateCustomerParams(String customerId) {
+    public SECreateCustomerParams(String secret) {
         super();
-        data = new SECreateCustomerData(customerId);
+        data = new SECreateCustomerData(secret);
     }
 
     private static class SECreateCustomerData {

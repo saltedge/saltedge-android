@@ -124,6 +124,7 @@ public class UITools {
         if (providers != null && !providers.isEmpty()) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             final EditText input = new EditText(context);
+            input.setHint("Find a bank");
             input.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {

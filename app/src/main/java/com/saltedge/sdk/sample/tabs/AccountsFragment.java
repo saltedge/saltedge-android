@@ -137,9 +137,10 @@ public class AccountsFragment extends Fragment {
 
     private void fetchReconnectToken() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
         UITools.showProgress(progressDialog);
         SETokenParams params = new SETokenParams(loginId, "", Constants.CALLBACK_URL, false, null);
-        SERequestManager.getInstance().reconnectToken(params, loginSecret,
+        SERequestManager.getInstance().reconnectToken(params, loginSecret, customerSecret,
                 new SERequestManager.FetchListener() {
                     @Override
                     public void onFailure(String errorResponse) {

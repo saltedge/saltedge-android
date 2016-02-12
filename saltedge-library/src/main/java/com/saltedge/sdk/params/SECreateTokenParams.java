@@ -29,9 +29,9 @@ public class SECreateTokenParams extends SEBaseParams {
     @SerializedName(SEConstants.KEY_DATA)
     private SECreateTokenData data;
 
-    public SECreateTokenParams(String countryCode, String providerCode, String returnTo, String customerId) {
+    public SECreateTokenParams(String countryCode, String providerCode, String returnTo, String secret) {
         super();
-        data = new SECreateTokenData(countryCode, providerCode, returnTo, customerId);
+        data = new SECreateTokenData(countryCode, providerCode, returnTo, secret);
     }
 
     private static class SECreateTokenData {
@@ -42,16 +42,16 @@ public class SECreateTokenParams extends SEBaseParams {
         @SerializedName(SEConstants.KEY_PROVIDER_CODE)
         private String providerCode;
 
-        @SerializedName(SEConstants.KEY_CUSTOMER_ID)
-        private String customerId;
+        @SerializedName(SEConstants.KEY_SECRET)
+        private String secret;
 
         @SerializedName(SEConstants.KEY_RETURN_TO)
         private String returnTo;
 
-        private SECreateTokenData(String countryCode, String providerCode, String returnTo, String customerId) {
+        private SECreateTokenData(String countryCode, String providerCode, String returnTo, String secret) {
             this.countryCode = countryCode;
             this.providerCode = providerCode;
-            this.customerId = customerId;
+            this.secret = secret;
             this.returnTo = returnTo;
         }
     }

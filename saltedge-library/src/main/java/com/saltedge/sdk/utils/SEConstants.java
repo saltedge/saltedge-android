@@ -27,6 +27,8 @@ public class SEConstants {
     public static final int HTTP_PORT = 80;
     public static final String KEY_HEADER_APP_SECRET = "App-secret";
     public static final String KEY_HEADER_CLIENT_ID = "Client-Id";
+    public static final String KEY_HEADER_CUSTOMER_SECRET = "Customer-Secret";
+    public static final String KEY_CUSTOMER_SECRET = "secret";
     public static final String KEY_HEADER_LOGIN_SECRET = "Login-secret";
     public static final String MIME_TYPE_JSON = "application/json";
 
@@ -42,7 +44,6 @@ public class SEConstants {
     public static final String KEY_META = "meta";
     public static final String KEY_NEXT_ID = "next_id";
     public static final String KEY_MESSAGE = "message";
-    public static final String KEY_CUSTOMER_ID = "customer_id";
     public static final String KEY_IDENTIFIER = "identifier";
     public static final String KEY_OAUTH = "oauth";
     public static final String KEY_CONNECT_URL = "connect_url";
@@ -52,18 +53,15 @@ public class SEConstants {
     public static final String PREFIX_FROM = "?from_id=";
 
     //API urls
-    public static final String ROOT_URL = "https://www.saltedge.com/api/v2";
+    public static final String ROOT_URL = "https://saltedge.com/api/v3";
     public static final String CUSTOMERS_URL = "/customers";
     public static final String PROVIDERS_URL = "/providers";
+    public static final String PER_PAGE = "/per";
     public static final String TOKENS_URL = "/tokens";
     public static final String LOGIN_URL = "/login";
     public static final String ACCOUNTS_URL = "/accounts";
     public static final String TRANSACTIONS_URL = "/transactions";
     public static final String PENDING_TRANSACTIONS_URL = "/pending";
-
-//    static NSString* const kOAuthProvidersPath      = @"api/v2/oauth_providers";
-//    static NSString* const kLearnPath               = @"api/v2/categories/learn";
-//    static NSString* const kLoginInteractive        = @"interactive";
 
     //Login tails
     public static final String TAIL_RECONNECT = "/reconnect";
