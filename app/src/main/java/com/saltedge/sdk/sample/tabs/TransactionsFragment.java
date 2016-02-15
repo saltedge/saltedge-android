@@ -24,6 +24,7 @@ package com.saltedge.sdk.sample.tabs;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -92,12 +93,13 @@ public class TransactionsFragment extends Fragment {
 
     private void getTransactions() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        if (loginSecret.isEmpty()) {
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         transactions = new ArrayList<>();
         UITools.showProgress(progressDialog);
-        SERequestManager.getInstance().listingTransactionsOfAccount(loginSecret, accountId, new SERequestManager.FetchListener() {
+        SERequestManager.getInstance().listingTransactionsOfAccount(loginSecret, customerSecret, accountId, new SERequestManager.FetchListener() {
             @Override
             public void onFailure(String errorResponse) {
                 UITools.destroyAlertDialog(progressDialog);

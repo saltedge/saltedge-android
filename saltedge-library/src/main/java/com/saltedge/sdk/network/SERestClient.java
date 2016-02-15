@@ -24,13 +24,16 @@ package com.saltedge.sdk.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestHandle;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.utils.SEConstants;
 
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 
 import java.io.UnsupportedEncodingException;
@@ -66,9 +69,13 @@ public class SERestClient {
         AsyncHttpClient client = createHttpClient(headers);
         RequestHandle handler = null;
         try {
+            Log.v("tag", "path " + getAbsoluteUrl(servicePath));
+            Log.v("tag", "jsonRequest.toString() " + jsonRequest.toString());
+            Log.v("tag", "SEConstants.MIME_TYPE_JSON " + SEConstants.MIME_TYPE_JSON);
+
             handler = client.post(SaltEdgeSDK.getInstance().getContext(),
                     getAbsoluteUrl(servicePath),
-                    new StringEntity(jsonRequest, HTTP.UTF_8),
+                    new StringEntity(jsonRequest.toString(), "UTF-8"),
                     SEConstants.MIME_TYPE_JSON,
                     responseHandler);
         } catch (UnsupportedEncodingException e) {

@@ -25,6 +25,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.network.SERequestManager;
@@ -51,10 +53,10 @@ public class StartActivity extends Activity {
     }
 
     private void createCustomer() {
-        String customerIdentifier = "testAndroidApp1"; // Random num, each installation - new num
+        String customerIdentifier = "testAndroidApp2"; // Random num, each installation - new num
         UITools.showProgress(progressDialog);
         String customerSecret = Tools.getStringFromPreferences(this, SEConstants.KEY_CUSTOMER_SECRET);
-        if (customerSecret.isEmpty()) {
+        if (!TextUtils.isEmpty(customerSecret)) { // ! rm
             SERequestManager.getInstance().createCustomer(customerIdentifier, new SERequestManager.FetchListener() {
                 @Override
                 public void onFailure(String errorResponse) {
@@ -74,11 +76,14 @@ public class StartActivity extends Activity {
     }
 
     private void intentToTabs() {
+        Log.v("tag", "intentToTabs");
+        Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_SECRET, "xC5MpR04sQMJFll4bGSg7AtdHI_0W7CJqt-hIwrOFRM");
         Intent intent = new Intent(this, TabHostFragmentActivity.class);
         startActivity(intent);
     }
 
     private void dataObtained(Object secret) {
+        Log.v("tag", "secret " + secret);
         Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_SECRET, (String) secret);
         intentToTabs();
     }

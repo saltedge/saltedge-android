@@ -24,6 +24,7 @@ package com.saltedge.sdk.sample.tabs;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -115,9 +116,10 @@ public class AccountsFragment extends Fragment {
 
     private void fetchRefreshToken() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
         UITools.showProgress(progressDialog);
         SETokenParams params = new SETokenParams(loginId, "", Constants.CALLBACK_URL, false, null);
-        SERequestManager.getInstance().refreshToken(params, loginSecret,
+        SERequestManager.getInstance().refreshToken(params, loginSecret, customerSecret,
                 new SERequestManager.FetchListener() {
 
                     @Override
@@ -159,8 +161,9 @@ public class AccountsFragment extends Fragment {
 
     private void deleteLogin() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
         UITools.showProgress(progressDialog);
-        SERequestManager.getInstance().deleteLogin(loginSecret, new SERequestManager.FetchListener() {
+        SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret, new SERequestManager.FetchListener() {
             @Override
             public void onFailure(String errorResponse) {
                 UITools.destroyAlertDialog(progressDialog);
@@ -184,12 +187,13 @@ public class AccountsFragment extends Fragment {
 
     private void getAccounts() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        if (loginSecret.isEmpty()) {
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         accounts = new ArrayList<>();
         UITools.showProgress(progressDialog);
-        SERequestManager.getInstance().listingAccounts(loginSecret, true, new SERequestManager.FetchListener() {
+        SERequestManager.getInstance().listingAccounts(loginSecret, customerSecret, true, new SERequestManager.FetchListener() {
             @Override
             public void onFailure(String errorResponse) {
                 UITools.destroyAlertDialog(progressDialog);

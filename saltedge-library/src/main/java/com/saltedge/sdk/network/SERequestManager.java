@@ -22,6 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.network;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.saltedge.sdk.SaltEdgeSDK;
@@ -69,16 +70,17 @@ public class SERequestManager {
 /**
  *  Customers
  * */
-    public void createCustomer(String secret, final FetchListener listener) {
-        if (secret == null || secret.isEmpty()) {
+    public void createCustomer(String customerIdentifier, final FetchListener listener) {
+        if (customerIdentifier == null || TextUtils.isEmpty(customerIdentifier)) {
             throw new RuntimeException(SEConstants.KEY_SECRET.concat(" " + SEConstants.CANNOT_BE_NULL));
         }
         fetchListener = listener;
-        SECreateCustomerParams params = new SECreateCustomerParams(secret);
+        SECreateCustomerParams params = new SECreateCustomerParams(customerIdentifier);
         sendPOSTRequest(SEConstants.CUSTOMERS_URL, params, "", "",
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
                     @Override
                     public void onFailureResponse(int statusCode, JSONObject errorResponse) {
+                        Log.v("tag", "errorResponse " + errorResponse);
                         onFail(errorResponse);
                     }
 
@@ -94,8 +96,8 @@ public class SERequestManager {
 /**
  * Tokens
  * */
-    public void createToken(SEBaseParams params, FetchListener listener) {
-        requestToken(SEConstants.TAIL_CREATE, params, "", "", listener);
+    public void createToken(SEBaseParams params, String customerSecret, FetchListener listener) {
+        requestToken(SEConstants.TAIL_CREATE, params, "", customerSecret, listener);
     }
 
     public void reconnectToken(SEBaseParams params, String loginSecret, String customerSecret, FetchListener listener) {
@@ -378,6 +380,14 @@ public class SERequestManager {
         }
         if (!TextUtils.isEmpty(loginSecret)) {
             headers.put(SEConstants.KEY_HEADER_LOGIN_SECRET, loginSecret);
+        }
+        for (String name: headers.keySet()){
+
+            String key =name.toString();
+            String value = headers.get(name).toString();
+            Log.v("tag", "key - " + key + "| value - " + value);
+
+
         }
         return headers;
     }
