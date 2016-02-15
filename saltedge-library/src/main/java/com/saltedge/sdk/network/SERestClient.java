@@ -31,10 +31,7 @@ import com.loopj.android.http.RequestHandle;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.utils.SEConstants;
 
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -71,11 +68,9 @@ public class SERestClient {
         try {
             Log.v("tag", "path " + getAbsoluteUrl(servicePath));
             Log.v("tag", "jsonRequest.toString() " + jsonRequest.toString());
-            Log.v("tag", "SEConstants.MIME_TYPE_JSON " + SEConstants.MIME_TYPE_JSON);
-
             handler = client.post(SaltEdgeSDK.getInstance().getContext(),
                     getAbsoluteUrl(servicePath),
-                    new StringEntity(jsonRequest.toString(), "UTF-8"),
+                    new StringEntity(jsonRequest, "UTF-8"),
                     SEConstants.MIME_TYPE_JSON,
                     responseHandler);
         } catch (UnsupportedEncodingException e) {

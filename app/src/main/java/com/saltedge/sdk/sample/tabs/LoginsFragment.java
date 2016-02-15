@@ -115,11 +115,9 @@ public class LoginsFragment extends Fragment {
                 goToAccounts(login.getProviderCode(), login.getId());
             }
         });
-
     }
 
     public void goToAccounts(String providerCode, int loginId ) {
-
         AccountsFragment accountsFragment = new AccountsFragment();
         Bundle bundle = new Bundle();
         bundle.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);

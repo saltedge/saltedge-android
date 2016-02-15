@@ -35,6 +35,8 @@ import com.saltedge.sdk.sample.utils.Tools;
 import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
 
+import java.util.Objects;
+
 public class StartActivity extends Activity {
 
     ProgressDialog progressDialog;
@@ -53,10 +55,10 @@ public class StartActivity extends Activity {
     }
 
     private void createCustomer() {
-        String customerIdentifier = "testAndroidApp2"; // Random num, each installation - new num
+        String customerIdentifier = "testAndroidApp3"; // Random name, each installation - new name
         UITools.showProgress(progressDialog);
         String customerSecret = Tools.getStringFromPreferences(this, SEConstants.KEY_CUSTOMER_SECRET);
-        if (!TextUtils.isEmpty(customerSecret)) { // ! rm
+        if (TextUtils.isEmpty(customerSecret)) {
             SERequestManager.getInstance().createCustomer(customerIdentifier, new SERequestManager.FetchListener() {
                 @Override
                 public void onFailure(String errorResponse) {
@@ -67,7 +69,7 @@ public class StartActivity extends Activity {
                 @Override
                 public void onSuccess(Object response) {
                     UITools.destroyAlertDialog(progressDialog);
-                    dataObtained(response);
+                    dataObtained((String) response);
                 }
             });
         } else {
@@ -77,14 +79,13 @@ public class StartActivity extends Activity {
 
     private void intentToTabs() {
         Log.v("tag", "intentToTabs");
-        Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_SECRET, "xC5MpR04sQMJFll4bGSg7AtdHI_0W7CJqt-hIwrOFRM");
         Intent intent = new Intent(this, TabHostFragmentActivity.class);
         startActivity(intent);
     }
 
-    private void dataObtained(Object secret) {
-        Log.v("tag", "secret " + secret);
-        Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_SECRET, (String) secret);
+    private void dataObtained(String secret) {
+        Log.v("tag", "secret " + secret.length());
+        Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_SECRET, secret);
         intentToTabs();
     }
 

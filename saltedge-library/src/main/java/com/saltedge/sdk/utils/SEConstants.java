@@ -33,7 +33,7 @@ public class SEConstants {
     public static final String MIME_TYPE_JSON = "application/json";
 
     //WebView statuses
-    public static final String KEY_STATE = "state";
+    public static final String KEY_STAGE = "stage";
     public static final String STATUS_FETCHING = "fetching";
     public static final String STATUS_SYNC = "sync";
     public static final String STATUS_ERROR = "error";
@@ -53,7 +53,7 @@ public class SEConstants {
     public static final String PREFIX_FROM = "?from_id=";
 
     //API urls
-    public static final String ROOT_URL = "https://saltedge.com/api/v3";
+    public static final String ROOT_URL = "https://www.saltedge.com/api/v3";
     public static final String CUSTOMERS_URL = "/customers";
     public static final String PROVIDERS_URL = "/providers";
     public static final String PER_PAGE = "/per";
@@ -109,7 +109,6 @@ public class SEConstants {
     public static final String KEY_LAST_SUCCESS_AT = "last_success_at";
     public static final String KEY_INTERACTIVE_HTML = "interactive_html";
     public static final String KEY_INTERACTIVE_FIELDS_NAMES = "interactive_fields_names";
-    public static final String KEY_STAGE = "stage";
 
     //Account keys
     public static final String KEY_NATURE = "nature";

@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.util.Log;
 import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -122,12 +123,14 @@ public class SEWebViewTools {
         if (url.contains(SEConstants.PREFIX_SALTBRIDGE)) {
             String redirectURL = url.substring(SEConstants.PREFIX_SALTBRIDGE.length(), url.length());
             JSONObject dataJsonObject = SEJSONTools.getObject(SEJSONTools.stringToJSON(redirectURL), SEConstants.KEY_DATA);
-            String status = SEJSONTools.getString(dataJsonObject, SEConstants.KEY_STATE);
+            String stage = SEJSONTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
             String loginSecret = SEJSONTools.getString(dataJsonObject, SEConstants.KEY_SECRET);
-            if (status.equals(SEConstants.STATUS_SUCCESS)) {
-                webViewRedirectListener.onLoadingFinished(status, loginSecret);
-            } else if (status.equals(SEConstants.STATUS_ERROR)) {
-                webViewRedirectListener.onLoadingFinishedWithError(status);
+            Log.v("Tag", "dataJsonObject " + dataJsonObject);
+            Log.v("Tag", "stage " + stage);
+            if (stage.equals(SEConstants.STATUS_SUCCESS)) {
+                webViewRedirectListener.onLoadingFinished(stage, loginSecret);
+            } else if (stage.equals(SEConstants.STATUS_ERROR)) {
+                webViewRedirectListener.onLoadingFinishedWithError(stage);
             }
             return false;
         }
