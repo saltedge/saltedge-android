@@ -1,16 +1,13 @@
 /*
 Copyright © 2015 Salt Edge. https://saltedge.com
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -57,18 +54,18 @@ public class SERequestManager {
         return instance;
     }
 
-/**
- * Parse JSON Interface
- * */
+    /**
+     * Parse JSON Interface
+     * */
     public interface FetchListener {
         void onFailure(String errorResponse);
 
         void onSuccess(Object response);
     }
 
-/**
- *  Customers
- * */
+    /**
+     *  Customers
+     * */
     public void createCustomer(String customerIdentifier, final FetchListener listener) {
         if (customerIdentifier == null || TextUtils.isEmpty(customerIdentifier)) {
             throw new RuntimeException(SEConstants.KEY_SECRET.concat(" " + SEConstants.CANNOT_BE_NULL));
@@ -91,9 +88,9 @@ public class SERequestManager {
                 }));
     }
 
-/**
- * Tokens
- * */
+    /**
+     * Tokens
+     * */
     public void createToken(SEBaseParams params, String customerSecret, FetchListener listener) {
         requestToken(SEConstants.TAIL_CREATE, params, "", customerSecret, listener);
     }
@@ -128,9 +125,9 @@ public class SERequestManager {
                 }));
     }
 
-/**
- * Provider list
- * */
+    /**
+     * Provider list
+     * */
     public void listingProviders(boolean clearArray, FetchListener listener) {
         fetchListener = listener;
         if (providerArray == null || providerArray.isEmpty() || clearArray) {
@@ -147,7 +144,7 @@ public class SERequestManager {
                     @Override
                     public void onSuccessResponse(int statusCode, JSONObject response) {
                         Gson gson = new Gson();
-                        String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                        String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                         for (SEProvider entry : gson.fromJson(providerArrayString, SEProvider[].class)) {
                             providerArray.add(entry);
                         }
@@ -161,9 +158,9 @@ public class SERequestManager {
                 }));
     }
 
-/**
- * Logins
- * */
+    /**
+     * Logins
+     * */
     public void fetchLogin(String loginSecret, String customerSecret, FetchListener listener) {
         fetchListener = listener;
         sendGETRequest(SEConstants.LOGIN_URL, null, loginSecret, customerSecret,
@@ -200,9 +197,9 @@ public class SERequestManager {
                 }));
     }
 
-/**
- * Accounts
- * */
+    /**
+     * Accounts
+     * */
     public void listingAccounts(final String loginSecret, final String customerSecret, boolean clearArray, FetchListener listener) {
         fetchListener = listener;
         if (accountsArray == null || accountsArray.isEmpty() || clearArray) {
@@ -218,7 +215,7 @@ public class SERequestManager {
                     @Override
                     public void onSuccessResponse(int statusCode, JSONObject response) {
                         Gson gson = new Gson();
-                        String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                        String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                         for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
                             accountsArray.add(entry);
                         }
@@ -232,9 +229,9 @@ public class SERequestManager {
                 }));
     }
 
-/**
- * Transactions
- * */
+    /**
+     * Transactions
+     * */
     public void listingTransactionsOfAccount(String loginSecret,
                                              String customerSecret,
                                              int accountId,
@@ -287,7 +284,7 @@ public class SERequestManager {
                     @Override
                     public void onSuccessResponse(int statusCode, JSONObject response) {
                         Gson gson = new Gson();
-                        String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
+                        String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
                         for (SETransaction entry : gson.fromJson(providerArrayString, SETransaction[].class)) {
                             transactionsArray.add(entry);
                         }
@@ -301,9 +298,9 @@ public class SERequestManager {
                 }));
     }
 
-/**
- * GET, POST, DELETE
- * */
+    /**
+     * GET, POST, DELETE
+     * */
     private boolean sendPOSTRequest(String servicePath,
                                     SEBaseParams params,
                                     String loginSecret,
@@ -334,9 +331,9 @@ public class SERequestManager {
         return SERestClient.delete(servicePath, handler, headers);
     }
 
-/**
- * Listener null pointer handle
- * */
+    /**
+     * Listener null pointer handle
+     * */
     private void onFail(JSONObject errorResponse) {
         if (fetchListener != null) {
             String message = SEJSONTools.getErrorMessage(errorResponse);
@@ -350,9 +347,9 @@ public class SERequestManager {
         }
     }
 
-/**
- * Pagination
- */
+    /**
+     * Pagination
+     */
     private String paginationAvailable(JSONObject response) {
         try {
             if (response.has(SEConstants.KEY_META)) {

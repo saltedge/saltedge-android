@@ -24,6 +24,7 @@ package com.saltedge.sdk.sample.tabs;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,12 +51,14 @@ public class LoginsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        progressDialog = UITools.createProgressDialog(getActivity(), getString(R.string.loading));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mainView = inflater.inflate(R.layout.fragment_list_view, null);
-        progressDialog = UITools.createProgressDialog(getActivity(), getString(R.string.loading));
+        Log.v("Tag", "LoginsFragment start");
+        getLogins();
         return mainView;
     }
 
@@ -65,16 +68,10 @@ public class LoginsFragment extends Fragment {
         UITools.destroyProgressDialog(progressDialog);
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        getLogins();
-    }
 
     private void getLogins() {
         String[] loginSecretArray = Tools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
         logins = new ArrayList<>();
-
         getAllLogins(loginSecretArray, 0);
     }
 
