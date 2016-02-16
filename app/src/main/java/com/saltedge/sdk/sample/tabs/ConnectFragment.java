@@ -25,7 +25,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -104,7 +103,6 @@ public class ConnectFragment extends Fragment {
         UITools.showProgress(progressDialog);
         providerCode = selectedProvider.getCode();
         String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
-        Log.v("tag", "customer secret " + customerSecret);
         SECreateTokenParams params = new SECreateTokenParams(selectedProvider.getCountryCode(), providerCode, Constants.CALLBACK_URL);
         SERequestManager.getInstance().createToken(params, customerSecret,
                 new SERequestManager.FetchListener() {

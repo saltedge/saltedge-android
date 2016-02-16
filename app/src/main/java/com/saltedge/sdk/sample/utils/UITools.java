@@ -133,7 +133,7 @@ public class UITools {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchedProviders = findText(s);
+                    searchedProviders = findProvider(s);
                     adapter.setListItems(searchedProviders);
                     adapter.notifyDataSetChanged();
                 }
@@ -162,7 +162,7 @@ public class UITools {
 
     }
 
-    private static ArrayList<SEProvider> findText(CharSequence chars) {
+    private static ArrayList<SEProvider> findProvider(CharSequence chars) {
         ArrayList<SEProvider> resultProviders = new ArrayList<>();
         for(SEProvider provider : providers) {
             if (provider.getName().toLowerCase().contains(chars.toString().toLowerCase())) {

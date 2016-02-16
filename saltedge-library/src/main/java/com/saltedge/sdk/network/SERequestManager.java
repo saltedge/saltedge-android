@@ -22,7 +22,6 @@ THE SOFTWARE.
 package com.saltedge.sdk.network;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.saltedge.sdk.SaltEdgeSDK;
@@ -80,16 +79,13 @@ public class SERequestManager {
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
                     @Override
                     public void onFailureResponse(int statusCode, JSONObject errorResponse) {
-                        Log.v("tag", "errorResponse " + errorResponse);
                         onFail(errorResponse);
                     }
 
                     @Override
                     public void onSuccessResponse(int statusCode, JSONObject response) {
-                        Log.v("tag", "response " + response);
                         JSONObject dataObject = SEJSONTools.getObject(response, SEConstants.KEY_DATA);
                         String secret = SEJSONTools.getString(dataObject, SEConstants.KEY_SECRET);
-                        Log.v("tag", "secret " + secret);
                         onSuccess(secret);
                     }
                 }));
@@ -342,7 +338,6 @@ public class SERequestManager {
  * Listener null pointer handle
  * */
     private void onFail(JSONObject errorResponse) {
-        Log.v("tag", "errorResponse " + errorResponse);
         if (fetchListener != null) {
             String message = SEJSONTools.getErrorMessage(errorResponse);
             fetchListener.onFailure(message);
@@ -383,14 +378,6 @@ public class SERequestManager {
         }
         if (!TextUtils.isEmpty(loginSecret)) {
             headers.put(SEConstants.KEY_HEADER_LOGIN_SECRET, loginSecret);
-        }
-        for (String name: headers.keySet()){
-
-            String key =name.toString();
-            String value = headers.get(name).toString();
-            Log.v("tag", "key - " + key + "| value - " + value);
-
-
         }
         return headers;
     }

@@ -24,7 +24,6 @@ package com.saltedge.sdk.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestHandle;
@@ -66,8 +65,6 @@ public class SERestClient {
         AsyncHttpClient client = createHttpClient(headers);
         RequestHandle handler = null;
         try {
-            Log.v("tag", "path " + getAbsoluteUrl(servicePath));
-            Log.v("tag", "jsonRequest.toString() " + jsonRequest.toString());
             handler = client.post(SaltEdgeSDK.getInstance().getContext(),
                     getAbsoluteUrl(servicePath),
                     new StringEntity(jsonRequest, "UTF-8"),
