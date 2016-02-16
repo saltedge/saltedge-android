@@ -34,7 +34,6 @@ import com.saltedge.sdk.models.comparators.SEProviderComparator;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.ProviderAdapter;
-import com.saltedge.sdk.utils.SEDateTools;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,7 +133,7 @@ public class UITools {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchedProviders = findProvider(s);
+                    searchedProviders = findProviders(s);
                     adapter.setListItems(searchedProviders);
                     adapter.notifyDataSetChanged();
                 }
@@ -163,7 +162,7 @@ public class UITools {
 
     }
 
-    private static ArrayList<SEProvider> findProvider(CharSequence chars) {
+    private static ArrayList<SEProvider> findProviders(CharSequence chars) {
         ArrayList<SEProvider> resultProviders = new ArrayList<>();
         for(SEProvider provider : providers) {
             if (provider.getName().toLowerCase().contains(chars.toString().toLowerCase())) {
