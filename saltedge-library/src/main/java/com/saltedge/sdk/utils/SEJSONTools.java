@@ -79,8 +79,8 @@ public class SEJSONTools {
 
     public static String getErrorMessage(JSONObject error) {
         String result = SEConstants.REQUEST_ERROR;
-        if (!SEJSONTools.getString(error, SEConstants.KEY_MESSAGE).isEmpty()) {
-            result = SEJSONTools.getString(error, SEConstants.KEY_MESSAGE);
+        if (!SEJSONTools.getString(error, SEConstants.KEY_ERROR_MESSAGE).isEmpty()) {
+            result = SEJSONTools.getString(error, SEConstants.KEY_ERROR_MESSAGE);
         }
         return result;
     }
