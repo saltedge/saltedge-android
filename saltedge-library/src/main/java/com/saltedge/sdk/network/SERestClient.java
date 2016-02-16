@@ -31,6 +31,7 @@ import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.utils.SEConstants;
 
 import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -67,7 +68,7 @@ public class SERestClient {
         try {
             handler = client.post(SaltEdgeSDK.getInstance().getContext(),
                     getAbsoluteUrl(servicePath),
-                    new StringEntity(jsonRequest, "UTF-8"),
+                    new StringEntity(jsonRequest, HTTP.UTF_8),
                     SEConstants.MIME_TYPE_JSON,
                     responseHandler);
         } catch (UnsupportedEncodingException e) {
