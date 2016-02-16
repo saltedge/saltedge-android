@@ -7,9 +7,6 @@ import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * Created by AGalkin
  * On 1/28/15.

@@ -50,12 +50,13 @@ public class LoginsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        progressDialog = UITools.createProgressDialog(getActivity(), getString(R.string.loading));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View mainView = inflater.inflate(R.layout.fragment_list_view, null);
-        progressDialog = UITools.createProgressDialog(getActivity(), getString(R.string.loading));
+        getLogins();
         return mainView;
     }
 
@@ -65,16 +66,10 @@ public class LoginsFragment extends Fragment {
         UITools.destroyProgressDialog(progressDialog);
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        getLogins();
-    }
 
     private void getLogins() {
         String[] loginSecretArray = Tools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
         logins = new ArrayList<>();
-
         getAllLogins(loginSecretArray, 0);
     }
 
@@ -86,7 +81,8 @@ public class LoginsFragment extends Fragment {
         }
         UITools.showProgress(progressDialog);
         String loginSecret = loginSecretArray[position];
-        SERequestManager.getInstance().fetchLogin(loginSecret,
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        SERequestManager.getInstance().fetchLogin(loginSecret, customerSecret,
                 new SERequestManager.FetchListener() {
 
                     @Override
@@ -114,11 +110,9 @@ public class LoginsFragment extends Fragment {
                 goToAccounts(login.getProviderCode(), login.getId());
             }
         });
-
     }
 
     public void goToAccounts(String providerCode, int loginId ) {
-
         AccountsFragment accountsFragment = new AccountsFragment();
         Bundle bundle = new Bundle();
         bundle.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);

@@ -98,7 +98,7 @@ public class UITools {
         if (providers == null || providers.isEmpty()) {
             final ProgressDialog progressDialog = UITools.createProgressDialog(context, context.getString(R.string.fetching_providers));
             progressDialog.show();
-            SERequestManager.getInstance().listingProviders(new SERequestManager.FetchListener() {
+            SERequestManager.getInstance().listingProviders(true, new SERequestManager.FetchListener() {
                 @Override
                 public void onFailure(String errorResponse) {
                     UITools.destroyAlertDialog(progressDialog);
@@ -125,6 +125,7 @@ public class UITools {
         if (providers != null && !providers.isEmpty()) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             final EditText input = new EditText(context);
+            input.setHint("Find a bank");
             input.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -133,7 +134,7 @@ public class UITools {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    searchedProviders = findText(s);
+                    searchedProviders = findProvider(s);
                     adapter.setListItems(searchedProviders);
                     adapter.notifyDataSetChanged();
                 }
@@ -162,7 +163,7 @@ public class UITools {
 
     }
 
-    private static ArrayList<SEProvider> findText(CharSequence chars) {
+    private static ArrayList<SEProvider> findProvider(CharSequence chars) {
         ArrayList<SEProvider> resultProviders = new ArrayList<>();
         for(SEProvider provider : providers) {
             if (provider.getName().toLowerCase().contains(chars.toString().toLowerCase())) {

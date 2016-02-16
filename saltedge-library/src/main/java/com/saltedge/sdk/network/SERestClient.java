@@ -100,7 +100,6 @@ public class SERestClient {
             client.addHeader(entry.getKey(), entry.getValue());
         }
         return client;
-
     }
 
     /**
