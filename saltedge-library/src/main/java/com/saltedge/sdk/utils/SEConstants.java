@@ -134,8 +134,8 @@ public class SEConstants {
     public static final String KEY_RETURN_LOGIN_ID = "return_login_id";
     public static final String KEY_PROVIDER_MODES = "provider_modes";
     public static final String KEY_FROM_ID = "from_id";
-    public static final String KEY_FROM_DATE = "from_id";
-    public static final String KEY_TO_DATE = "from_id";
+    public static final String KEY_FROM_DATE = "from_date";
+    public static final String KEY_TO_DATE = "to_date";
     public static final String URL_EMPTY = "URL is empty";
     public static final String JAVASCRIPT_CALLBACK = "javascript_callback_type";
     public static final String IFRAME = "iframe";
