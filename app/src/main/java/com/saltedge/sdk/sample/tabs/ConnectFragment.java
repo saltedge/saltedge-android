@@ -103,7 +103,8 @@ public class ConnectFragment extends Fragment {
         UITools.showProgress(progressDialog);
         providerCode = selectedProvider.getCode();
         String customerId = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_ID);
-        SECreateTokenParams params = new SECreateTokenParams(selectedProvider.getCountryCode(), providerCode, Constants.CALLBACK_URL, customerId);
+        SECreateTokenParams params = new SECreateTokenParams(selectedProvider.getCountryCode(),
+                providerCode, Constants.CALLBACK_URL, customerId);
         SERequestManager.getInstance().createToken(params,
                 new SERequestManager.FetchListener() {
                     @Override
