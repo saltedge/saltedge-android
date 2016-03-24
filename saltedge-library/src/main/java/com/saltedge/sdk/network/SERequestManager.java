@@ -1,16 +1,13 @@
 /*
 Copyright © 2015 Salt Edge. https://saltedge.com
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,6 +17,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
+
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.saltedge.sdk.SaltEdgeSDK;
@@ -55,116 +54,116 @@ public class SERequestManager {
         return instance;
     }
 
-/**
- * Parse JSON Interface
- * */
+    /**
+     * Parse JSON Interface
+     * */
     public interface FetchListener {
         void onFailure(String errorResponse);
 
         void onSuccess(Object response);
     }
 
-/**
- *  Customers
- * */
-    public void createCustomer(String customerId, final FetchListener listener) {
-        if (customerId == null || customerId.isEmpty()) {
-            throw new RuntimeException(SEConstants.KEY_CUSTOMER_ID.concat(" " + SEConstants.CANNOT_BE_NULL));
+    /**
+     *  Customers
+     * */
+    public void createCustomer(String customerIdentifier, final FetchListener listener) {
+        if (customerIdentifier == null || TextUtils.isEmpty(customerIdentifier)) {
+            throw new RuntimeException(SEConstants.KEY_SECRET.concat(" " + SEConstants.CANNOT_BE_NULL));
         }
         fetchListener = listener;
-        SECreateCustomerParams params = new SECreateCustomerParams(customerId);
-        sendPOSTRequest(SEConstants.CUSTOMERS_URL, params, "",
+        SECreateCustomerParams params = new SECreateCustomerParams(customerIdentifier);
+        sendPOSTRequest(SEConstants.CUSTOMERS_URL, params, "", "",
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
-            @Override
-            public void onFailureResponse(int statusCode, JSONObject errorResponse) {
-                onFail(errorResponse);
-            }
+                    @Override
+                    public void onFailureResponse(int statusCode, JSONObject errorResponse) {
+                        onFail(errorResponse);
+                    }
 
-            @Override
-            public void onSuccessResponse(int statusCode, JSONObject response) {
-                JSONObject dataObject = SEJSONTools.getObject(response, SEConstants.KEY_DATA);
-                String customerId = SEJSONTools.getString(dataObject, SEConstants.KEY_CUSTOMER_ID);
-                onSuccess(customerId);
-            }
-        }));
+                    @Override
+                    public void onSuccessResponse(int statusCode, JSONObject response) {
+                        JSONObject dataObject = SEJSONTools.getObject(response, SEConstants.KEY_DATA);
+                        String secret = SEJSONTools.getString(dataObject, SEConstants.KEY_SECRET);
+                        onSuccess(secret);
+                    }
+                }));
     }
 
-/**
- * Tokens
- * */
-    public void createToken(SEBaseParams params, FetchListener listener) {
-        requestToken(SEConstants.TAIL_CREATE, params, "", listener);
+    /**
+     * Tokens
+     * */
+    public void createToken(SEBaseParams params, String customerSecret, FetchListener listener) {
+        requestToken(SEConstants.TAIL_CREATE, params, "", customerSecret, listener);
     }
 
-    public void reconnectToken(SEBaseParams params, String loginSecret, FetchListener listener) {
-        requestToken(SEConstants.TAIL_RECONNECT, params, loginSecret, listener);
+    public void reconnectToken(SEBaseParams params, String loginSecret, String customerSecret, FetchListener listener) {
+        requestToken(SEConstants.TAIL_RECONNECT, params, loginSecret, customerSecret, listener);
     }
 
-    public void refreshToken(SEBaseParams params, String loginSecret, FetchListener listener) {
-        requestToken(SEConstants.TAIL_REFRESH, params, loginSecret, listener);
+    public void refreshToken(SEBaseParams params, String loginSecret, String customerSecret, FetchListener listener) {
+        requestToken(SEConstants.TAIL_REFRESH, params, loginSecret, customerSecret, listener);
     }
 
-    private void requestToken(String tailUrl, SEBaseParams params, String loginSecret, FetchListener listener) {
+    private void requestToken(String tailUrl, SEBaseParams params, String loginSecret, String customerSecret, FetchListener listener) {
         fetchListener = listener;
-        sendPOSTRequest(SEConstants.TOKENS_URL.concat(tailUrl), params, loginSecret,
+        sendPOSTRequest(SEConstants.TOKENS_URL.concat(tailUrl), params, loginSecret, customerSecret,
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
-            @Override
-            public void onFailureResponse(int statusCode, JSONObject errorResponse) {
-                onFail(errorResponse);
-            }
+                    @Override
+                    public void onFailureResponse(int statusCode, JSONObject errorResponse) {
+                        onFail(errorResponse);
+                    }
 
-            @Override
-            public void onSuccessResponse(int statusCode, JSONObject response) {
-                try {
-                    String connect_url = response.getJSONObject(SEConstants.KEY_DATA)
-                            .getString(SEConstants.KEY_CONNECT_URL);
-                    onSuccess(connect_url);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }));
+                    @Override
+                    public void onSuccessResponse(int statusCode, JSONObject response) {
+                        try {
+                            String connect_url = response.getJSONObject(SEConstants.KEY_DATA)
+                                    .getString(SEConstants.KEY_CONNECT_URL);
+                            onSuccess(connect_url);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }));
     }
 
-/**
- * Provider list
- * */
+    /**
+     * Provider list
+     * */
     public void listingProviders(boolean clearArray, FetchListener listener) {
         fetchListener = listener;
         if (providerArray == null || providerArray.isEmpty() || clearArray) {
             providerArray = new ArrayList<>();
         }
-        sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), null, "",
+        sendGETRequest(SEConstants.PROVIDERS_URL.concat(nextPageId), null, "", "",
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
 
-            @Override
-            public void onFailureResponse(int statusCode, JSONObject errorResponse) {
-                onFail(errorResponse);
-            }
+                    @Override
+                    public void onFailureResponse(int statusCode, JSONObject errorResponse) {
+                        onFail(errorResponse);
+                    }
 
-            @Override
-            public void onSuccessResponse(int statusCode, JSONObject response) {
-                Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SEProvider entry : gson.fromJson(providerArrayString, SEProvider[].class)) {
-                    providerArray.add(entry);
-                }
-                nextPageId = paginationAvailable(response);
-                if (nextPageId.isEmpty()) {
-                    onSuccess(providerArray);
-                } else {
-                    listingProviders(false, fetchListener);
-                }
-            }
-        }));
+                    @Override
+                    public void onSuccessResponse(int statusCode, JSONObject response) {
+                        Gson gson = new Gson();
+                        String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
+                        for (SEProvider entry : gson.fromJson(providerArrayString, SEProvider[].class)) {
+                            providerArray.add(entry);
+                        }
+                        nextPageId = paginationAvailable(response);
+                        if (nextPageId.isEmpty()) {
+                            onSuccess(providerArray);
+                        } else {
+                            listingProviders(false, fetchListener);
+                        }
+                    }
+                }));
     }
 
-/**
- * Logins
- * */
-    public void fetchLogin(String loginSecret, FetchListener listener) {
+    /**
+     * Logins
+     * */
+    public void fetchLogin(String loginSecret, String customerSecret, FetchListener listener) {
         fetchListener = listener;
-        sendGETRequest(SEConstants.LOGIN_URL, null, loginSecret,
+        sendGETRequest(SEConstants.LOGIN_URL, null, loginSecret, customerSecret,
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
                     @Override
                     public void onFailureResponse(int statusCode, JSONObject errorResponse) {
@@ -181,86 +180,92 @@ public class SERequestManager {
                 }));
     }
 
-    public void deleteLogin(String loginSecret, FetchListener listener) {
+    public void deleteLogin(String loginSecret, String customerSecret, FetchListener listener) {
         fetchListener = listener;
-        sendDELETERequest(SEConstants.LOGIN_URL, loginSecret,
+        sendDELETERequest(SEConstants.LOGIN_URL, loginSecret, customerSecret,
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
-            @Override
-            public void onFailureResponse(int statusCode, JSONObject errorResponse) {
-                onFail(errorResponse);
-            }
+                    @Override
+                    public void onFailureResponse(int statusCode, JSONObject errorResponse) {
+                        onFail(errorResponse);
+                    }
 
-            @Override
-            public void onSuccessResponse(int statusCode, JSONObject response) {
-                Gson gson = new Gson();
-                onSuccess(SEJSONTools.getObject(response, SEConstants.KEY_DATA));
-            }
-        }));
+                    @Override
+                    public void onSuccessResponse(int statusCode, JSONObject response) {
+                        Gson gson = new Gson();
+                        onSuccess(SEJSONTools.getObject(response, SEConstants.KEY_DATA));
+                    }
+                }));
     }
 
-/**
- * Accounts
- * */
-    public void listingAccounts(final String loginSecret, boolean clearArray, FetchListener listener) {
+    /**
+     * Accounts
+     * */
+    public void listingAccounts(final String loginSecret, final String customerSecret, boolean clearArray, FetchListener listener) {
         fetchListener = listener;
         if (accountsArray == null || accountsArray.isEmpty() || clearArray) {
             accountsArray = new ArrayList<>();
         }
-        sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), null, loginSecret,
+        sendGETRequest(SEConstants.ACCOUNTS_URL.concat(nextPageId), null, loginSecret, customerSecret,
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
-            @Override
-            public void onFailureResponse(int statusCode, JSONObject errorResponse) {
-                onFail(errorResponse);
-            }
-            @Override
-            public void onSuccessResponse(int statusCode, JSONObject response) {
-                Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
-                    accountsArray.add(entry);
-                }
-                nextPageId = paginationAvailable(response);
-                if (nextPageId.isEmpty()) {
-                    onSuccess(accountsArray);
-                } else {
-                    listingAccounts(loginSecret, false, fetchListener);
-                }
-            }
-        }));
+                    @Override
+                    public void onFailureResponse(int statusCode, JSONObject errorResponse) {
+                        onFail(errorResponse);
+                    }
+
+                    @Override
+                    public void onSuccessResponse(int statusCode, JSONObject response) {
+                        Gson gson = new Gson();
+                        String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
+                        for (SEAccount entry : gson.fromJson(providerArrayString, SEAccount[].class)) {
+                            accountsArray.add(entry);
+                        }
+                        nextPageId = paginationAvailable(response);
+                        if (nextPageId.isEmpty()) {
+                            onSuccess(accountsArray);
+                        } else {
+                            listingAccounts(loginSecret, customerSecret, false, fetchListener);
+                        }
+                    }
+                }));
     }
 
-/**
- * Transactions
- * */
+    /**
+     * Transactions
+     * */
     public void listingTransactionsOfAccount(String loginSecret,
+                                             String customerSecret,
                                              int accountId,
                                              FetchListener listener) {
         HashMap<String, String> params = new HashMap<>();
         params.put(SEConstants.KEY_ACCOUNT_ID, String.valueOf(accountId));
-        listtingTransactions(loginSecret, params, listener);
+        listtingTransactions(loginSecret, customerSecret, params, listener);
     }
 
     public void listingPendingTransactionsOfAccount(String loginSecret,
+                                                    String customerSecret,
                                                     int accountId,
                                                     FetchListener listener) {
         HashMap<String, String> params = new HashMap<>();
         params.put(SEConstants.KEY_ACCOUNT_ID, String.valueOf(accountId));
-        listtingPendingTransactions(loginSecret, params, listener);
+        listtingPendingTransactions(loginSecret, customerSecret, params, listener);
     }
 
     public void listtingTransactions(String loginSecret,
+                                     String customerSecret,
                                      final HashMap<String, String> params,
                                      FetchListener listener) {
-        fetchTransactions(loginSecret, params, SEConstants.TRANSACTIONS_URL, true, listener);
+        fetchTransactions(loginSecret, customerSecret, params, SEConstants.TRANSACTIONS_URL, true, listener);
     }
 
     public void listtingPendingTransactions(String loginSecret,
+                                            String customerSecret,
                                             final HashMap<String, String> params,
                                             FetchListener listener) {
-        fetchTransactions(loginSecret, params, SEConstants.PENDING_TRANSACTIONS_URL, true, listener);
+        fetchTransactions(loginSecret, customerSecret, params, SEConstants.PENDING_TRANSACTIONS_URL, true, listener);
     }
 
     public void fetchTransactions(final String loginSecret,
+                                  final String customerSecret,
                                   final HashMap<String, String> params,
                                   final String url,
                                   final boolean clearArray,
@@ -269,53 +274,49 @@ public class SERequestManager {
         if (transactionsArray == null || transactionsArray.isEmpty() || clearArray) {
             transactionsArray = new ArrayList<>();
         }
-        sendGETRequest(url.concat(nextPageId), params, loginSecret,
+        sendGETRequest(url.concat(nextPageId), params, loginSecret, customerSecret,
                 new SEHTTPResponseHandler(new SEHTTPResponseHandler.RestAPIListener() {
-            @Override
-            public void onFailureResponse(int statusCode, JSONObject errorResponse) {
-                onFail(errorResponse);
-            }
+                    @Override
+                    public void onFailureResponse(int statusCode, JSONObject errorResponse) {
+                        onFail(errorResponse);
+                    }
 
-            @Override
-            public void onSuccessResponse(int statusCode, JSONObject response) {
-                Gson gson = new Gson();
-                String providerArrayString = SEJSONTools.getArray(response, SEConstants.KEY_DATA).toString();
-                for (SETransaction entry : gson.fromJson(providerArrayString, SETransaction[].class)) {
-                    transactionsArray.add(entry);
-                }
-                nextPageId = paginationAvailable(response);
-                if (nextPageId.isEmpty()) {
-                    onSuccess(transactionsArray);
-                } else {
-                    fetchTransactions(loginSecret, params, url, clearArray, fetchListener);
-                }
-            }
-        }));
+                    @Override
+                    public void onSuccessResponse(int statusCode, JSONObject response) {
+                        Gson gson = new Gson();
+                        String providerArrayString = SEJSONTools.getJSONArray(response, SEConstants.KEY_DATA).toString();
+                        for (SETransaction entry : gson.fromJson(providerArrayString, SETransaction[].class)) {
+                            transactionsArray.add(entry);
+                        }
+                        nextPageId = paginationAvailable(response);
+                        if (nextPageId.isEmpty()) {
+                            onSuccess(transactionsArray);
+                        } else {
+                            fetchTransactions(loginSecret, customerSecret, params, url, clearArray, fetchListener);
+                        }
+                    }
+                }));
     }
 
-/**
- * GET, POST, DELETE
- * */
+    /**
+     * GET, POST, DELETE
+     * */
     private boolean sendPOSTRequest(String servicePath,
                                     SEBaseParams params,
                                     String loginSecret,
+                                    String customerSecret,
                                     SEHTTPResponseHandler handler) {
-        HashMap<String, String> headers = headers();
-        if (!loginSecret.isEmpty()){
-            headers = loginSecretHeaders(loginSecret);
-        }
+        HashMap<String, String> headers = headers(loginSecret, customerSecret);
         return SERestClient.post(servicePath, params.toJson(), handler, headers);
     }
 
     private boolean sendGETRequest(String servicePath,
                                    HashMap<String, String> params,
                                    String loginSecret,
+                                   String customerSecret,
                                    SEHTTPResponseHandler handler) {
-        HashMap<String, String> headers = headers();
+        HashMap<String, String> headers = headers(loginSecret, customerSecret);
         String url = servicePath;
-        if (!loginSecret.isEmpty()){
-            headers = loginSecretHeaders(loginSecret);
-        }
         if (params != null) {
             url = url.concat(SETools.paramsToString(params));
         }
@@ -324,17 +325,15 @@ public class SERequestManager {
 
     private boolean sendDELETERequest(String servicePath,
                                       String loginSecret,
+                                      String customerSecret,
                                       SEHTTPResponseHandler handler) {
-        HashMap<String, String> headers = headers();
-        if (!loginSecret.isEmpty()){
-            headers = loginSecretHeaders(loginSecret);
-        }
+        HashMap<String, String> headers = headers(loginSecret, customerSecret);
         return SERestClient.delete(servicePath, handler, headers);
     }
 
-/**
- * Listener null pointer handle
- * */
+    /**
+     * Listener null pointer handle
+     * */
     private void onFail(JSONObject errorResponse) {
         if (fetchListener != null) {
             String message = SEJSONTools.getErrorMessage(errorResponse);
@@ -348,9 +347,9 @@ public class SERequestManager {
         }
     }
 
-/**
- * Pagination
- */
+    /**
+     * Pagination
+     */
     private String paginationAvailable(JSONObject response) {
         try {
             if (response.has(SEConstants.KEY_META)) {
@@ -367,17 +366,17 @@ public class SERequestManager {
         return "";
     }
 
-    private HashMap<String, String> headers() {
+    private HashMap<String, String> headers(String loginSecret, String customerSecret) {
         HashMap<String, String> headers = new HashMap<>();
         headers.put(SEConstants.KEY_HEADER_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
         headers.put(SEConstants.KEY_HEADER_CLIENT_ID, SaltEdgeSDK.getInstance().getClientId());
+        if (!TextUtils.isEmpty(customerSecret)) {
+            headers.put(SEConstants.KEY_HEADER_CUSTOMER_SECRET, customerSecret);
+        }
+        if (!TextUtils.isEmpty(loginSecret)) {
+            headers.put(SEConstants.KEY_HEADER_LOGIN_SECRET, loginSecret);
+        }
         return headers;
-    }
-
-    private HashMap<String, String> loginSecretHeaders(String loginSecret) {
-        HashMap<String, String> loginSecretHeaders = headers();
-        loginSecretHeaders.put(SEConstants.KEY_HEADER_LOGIN_SECRET, loginSecret);
-        return loginSecretHeaders;
     }
 
 }

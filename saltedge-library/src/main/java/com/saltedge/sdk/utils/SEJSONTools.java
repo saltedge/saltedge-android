@@ -28,7 +28,7 @@ import org.json.JSONObject;
 public class SEJSONTools {
 
     /**
-     * Extract string, int, boolean, double, array, object, stringToJSON value from JSONObject by key.
+     * Extract string, int, boolean, double, array, object, stringToJSON or errorMessage value from JSONObject by key.
      *
      * @param jsonObject
      * @param key
@@ -45,7 +45,7 @@ public class SEJSONTools {
     }
 
     public static Boolean getBoolean(JSONObject jsonObject, String key) {
-        Boolean result = null;
+        Boolean result = false;
         return (Boolean) parse(jsonObject, key, result);
     }
 
@@ -54,7 +54,7 @@ public class SEJSONTools {
         return (Double) parse(jsonObject, key, result);
     }
 
-    public static JSONArray getArray(JSONObject jsonObject, String key) {
+    public static JSONArray getJSONArray(JSONObject jsonObject, String key) {
         JSONArray result = new JSONArray();
         return (JSONArray) parse(jsonObject, key, result);
     }
@@ -79,8 +79,8 @@ public class SEJSONTools {
 
     public static String getErrorMessage(JSONObject error) {
         String result = SEConstants.REQUEST_ERROR;
-        if (!SEJSONTools.getString(error, SEConstants.KEY_MESSAGE).isEmpty()) {
-            result = SEJSONTools.getString(error, SEConstants.KEY_MESSAGE);
+        if (!SEJSONTools.getString(error, SEConstants.KEY_ERROR_MESSAGE).isEmpty()) {
+            result = SEJSONTools.getString(error, SEConstants.KEY_ERROR_MESSAGE);
         }
         return result;
     }
