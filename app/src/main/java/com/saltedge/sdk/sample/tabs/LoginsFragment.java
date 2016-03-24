@@ -101,15 +101,17 @@ public class LoginsFragment extends Fragment {
     }
 
     public void showLogin() {
-        ListView listView = (ListView) getView().findViewById(R.id.listView);
-        listView.setAdapter(new LoginsAdapter(getActivity(), logins));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SELogin login = logins.get(position);
-                goToAccounts(login.getProviderCode(), login.getId());
-            }
-        });
+        if (getView() != null) {
+            ListView listView = (ListView) getView().findViewById(R.id.listView);
+            listView.setAdapter(new LoginsAdapter(getActivity(), logins));
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    SELogin login = logins.get(position);
+                    goToAccounts(login.getProviderCode(), login.getId());
+                }
+            });
+        }
     }
 
     public void goToAccounts(String providerCode, int loginId ) {
