@@ -6,3 +6,5 @@
 SaltEdgeSDK.iml
 /app/app.iml
 /app/proguard-rules.pro
+saltedge-android.iml
+saltedge-library/saltedge-library.iml
