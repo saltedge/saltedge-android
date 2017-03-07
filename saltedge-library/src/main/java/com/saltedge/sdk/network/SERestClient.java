@@ -93,7 +93,7 @@ public class SERestClient {
 
     private static AsyncHttpClient createHttpClient(HashMap<String, String> headers) {
         AsyncHttpClient client = isHttpsPrefixInRootUrl()
-                ? new AsyncHttpClient(true, DEFAULT_HTTP_PORT, DEFAULT_HTTPS_PORT)
+                ? new AsyncHttpClient(false, DEFAULT_HTTP_PORT, DEFAULT_HTTPS_PORT)
                 : new AsyncHttpClient(SEConstants.HTTP_PORT);
         client.setMaxRetriesAndTimeout(DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT);
         for (HashMap.Entry<String, String> entry : headers.entrySet()) {
