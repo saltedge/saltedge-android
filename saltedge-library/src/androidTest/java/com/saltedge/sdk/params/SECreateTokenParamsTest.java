@@ -12,8 +12,9 @@ public class SECreateTokenParamsTest extends TestCase {
 
     @SmallTest
     public void testCreateTokenToJson() throws Exception {
-        SECreateTokenParams params = new SECreateTokenParams("US", "USD", "http://back", "customerId");
-        String stringParams = "{\"data\":{\"country_code\":\"US\",\"customer_id\":\"customerId\",\"provider_code\":\"USD\",\"return_to\":\"http://back\"}}";
+        String[] allowedCountries = {"US", "GE", "RU"};
+        SECreateTokenParams params = new SECreateTokenParams(allowedCountries, "fakebank_simple_xf", "http://back");
+        String stringParams = "{\"data\":{\"allowed_countries\":[\"US\",\"GE\",\"RU\"]],\"provider_code\":\"fakebank_simple_xf\",\"return_to\":\"http://back\"}}";
         assertEquals(stringParams, params.toJson().toString());
     }
 
