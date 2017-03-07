@@ -92,7 +92,6 @@ public class UITools {
         UITools.showAlertDialog(context, message);
     }
 
-
     public static void fetchProviders(final Context context, final DialogInterface.OnClickListener listener) {
         if (providers == null || providers.isEmpty()) {
             final ProgressDialog progressDialog = UITools.createProgressDialog(context, context.getString(R.string.fetching_providers));

@@ -90,6 +90,7 @@ public class SEConstants {
     public static final String KEY_LOGIN_URL = "login_url";
     public static final String KEY_FORUM_URL = "forum_url";
     public static final String KEY_COUNTRY_CODE = "country_code";
+    public static final String KEY_ALLOWED_COUNTRIES = "allowed_countries";
     public static final String KEY_REFRESH_TIMEOUT = "refresh_timeout";
     public static final String KEY_CREATED_AT = "created_at";
     public static final String KEY_UPDATED_AT = "updated_at";
