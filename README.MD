@@ -210,11 +210,11 @@ To create a `SERefreshToken`, you need:
         });
 ```    
 
-#### Please conslut the Demo app to see how it works
+#### Please consult the Demo app to see how it works
 
 ## Models
 
-There are some provided models for serializing the objects received in the API responses. These represent the providers, logins, accounts, transactions, provider fields and their options. Whenever you request a resource that returns one of these types, they will always get serialized into Java classes. (For instance, the `listingTransactionsOfAccount(...)` method has a `ArrayList<>` containing `SETransaction` instances in it's success callback.)
+There are some provided models for serializing the objects received in the API responses. These represent the providers, logins, accounts, transactions, provider fields and their options. Whenever you request a resource that returns one of these types, they will always get serialized into Java classes. (For instance, the `listingTransactionsOfAccount(...)` method has a `ArrayList<>` containing `SETransaction` instances in its success callback.)
 
 Models contained within the components:
 
