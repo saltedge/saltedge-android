@@ -24,11 +24,10 @@ package com.saltedge.sdk.network;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.saltedge.sdk.utils.SEConstants;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
+import cz.msebera.android.httpclient.Header;
 
 public class SEHTTPResponseHandler extends JsonHttpResponseHandler {
 
@@ -65,21 +64,15 @@ public class SEHTTPResponseHandler extends JsonHttpResponseHandler {
     }
 
     @Override
-    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-        super.onSuccess(statusCode, headers, responseBody);
-        if (responseBody == null || responseBody.length == 0) {
-            return;
-        }
+    public void onSuccess(int statusCode, Header[] headers, String responseString) {
+        super.onSuccess(statusCode, headers, responseString);
         try {
-            String resultString = new String(responseBody, "UTF-8");
-            if (resultString.startsWith("{")) {
+            if (responseString.isEmpty() || responseString.startsWith("{")) {
                 return;
             }
             JSONObject resultJson = new JSONObject();
-            resultJson.put(SEConstants.KEY_DATA, resultString);
+            resultJson.put(SEConstants.KEY_DATA, responseString);
             onSuccess(statusCode, headers, resultJson);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -98,5 +91,4 @@ public class SEHTTPResponseHandler extends JsonHttpResponseHandler {
             responseListener.onFailureResponse(statusCode, response);
         }
     }
-
 }

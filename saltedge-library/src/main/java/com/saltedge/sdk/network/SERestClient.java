@@ -30,11 +30,14 @@ import com.loopj.android.http.RequestHandle;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.utils.SEConstants;
 
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HTTP;
+//import org.apache.http.entity.StringEntity;
+//import org.apache.http.protocol.HTTP;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 public class SERestClient {
 
@@ -65,16 +68,11 @@ public class SERestClient {
         }
         AsyncHttpClient client = createHttpClient(headers);
         RequestHandle handler = null;
-        try {
-            handler = client.post(SaltEdgeSDK.getInstance().getContext(),
-                    getAbsoluteUrl(servicePath),
-                    new StringEntity(jsonRequest, HTTP.UTF_8),
-                    SEConstants.MIME_TYPE_JSON,
-                    responseHandler);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-
-        }
+        handler = client.post(SaltEdgeSDK.getInstance().getContext(),
+                getAbsoluteUrl(servicePath),
+                new StringEntity(jsonRequest, HTTP.UTF_8),
+                SEConstants.MIME_TYPE_JSON,
+                responseHandler);
         return (handler != null);
     }
 
@@ -127,7 +125,10 @@ public class SERestClient {
     private static boolean isNetworkUnavailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) SaltEdgeSDK.getInstance().getContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetworkInfo = null;
+        if (connectivityManager != null) {
+            activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        }
         return (activeNetworkInfo == null || !activeNetworkInfo.isConnected());
     }
 
