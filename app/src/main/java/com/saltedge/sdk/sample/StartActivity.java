@@ -49,7 +49,9 @@ public class StartActivity extends Activity {
     }
 
     private void setupSaltEdgeSDK() {
-        SaltEdgeSDK.getInstance().setContext(this);
+        String appSecret = "Su9rqnXxtB5dC38Tb7PHTQhLhLjecadvT6xxDYZLx08";
+        String clientId = "FFRs9xmO0GCUUG6FFZfQtg";
+        SaltEdgeSDK.getInstance().init(this.getApplicationContext(), appSecret, clientId);
     }
 
     private void createCustomer() {

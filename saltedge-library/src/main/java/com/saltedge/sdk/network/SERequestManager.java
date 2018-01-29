@@ -231,33 +231,33 @@ public class SERequestManager {
      * */
     public void listingTransactionsOfAccount(String loginSecret,
                                              String customerSecret,
-                                             int accountId,
+                                             String accountId,
                                              FetchListener listener) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(SEConstants.KEY_ACCOUNT_ID, String.valueOf(accountId));
-        listtingTransactions(loginSecret, customerSecret, params, listener);
+        params.put(SEConstants.KEY_ACCOUNT_ID, accountId);
+        listingTransactions(loginSecret, customerSecret, params, listener);
     }
 
     public void listingPendingTransactionsOfAccount(String loginSecret,
                                                     String customerSecret,
-                                                    int accountId,
+                                                    String accountId,
                                                     FetchListener listener) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(SEConstants.KEY_ACCOUNT_ID, String.valueOf(accountId));
-        listtingPendingTransactions(loginSecret, customerSecret, params, listener);
+        params.put(SEConstants.KEY_ACCOUNT_ID, accountId);
+        listingPendingTransactions(loginSecret, customerSecret, params, listener);
     }
 
-    public void listtingTransactions(String loginSecret,
-                                     String customerSecret,
-                                     final HashMap<String, String> params,
-                                     FetchListener listener) {
+    public void listingTransactions(String loginSecret,
+                                    String customerSecret,
+                                    final HashMap<String, String> params,
+                                    FetchListener listener) {
         fetchTransactions(loginSecret, customerSecret, params, ApiConstants.TRANSACTIONS_URL, true, listener);
     }
 
-    public void listtingPendingTransactions(String loginSecret,
-                                            String customerSecret,
-                                            final HashMap<String, String> params,
-                                            FetchListener listener) {
+    public void listingPendingTransactions(String loginSecret,
+                                           String customerSecret,
+                                           final HashMap<String, String> params,
+                                           FetchListener listener) {
         fetchTransactions(loginSecret, customerSecret, params, ApiConstants.PENDING_TRANSACTIONS_URL, true, listener);
     }
 
@@ -363,8 +363,8 @@ public class SERequestManager {
 
     private HashMap<String, String> headers(String loginSecret, String customerSecret) {
         HashMap<String, String> headers = new HashMap<>();
-        headers.put(ApiConstants.KEY_HEADER_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
-        headers.put(ApiConstants.KEY_HEADER_CLIENT_ID, SaltEdgeSDK.getInstance().getClientId());
+        headers.put(ApiConstants.KEY_HEADER_CLIENT_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
+        headers.put(ApiConstants.KEY_HEADER_CLIENT_APP_ID, SaltEdgeSDK.getInstance().getClientId());
         if (!TextUtils.isEmpty(customerSecret)) {
             headers.put(ApiConstants.KEY_HEADER_CUSTOMER_SECRET, customerSecret);
         }

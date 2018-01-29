@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">SaltEdge-library</string>
-    <string name="choise_provider_title">Choise provider</string>
+    <string name="choose_provider_title">Choose provider</string>
     <string name="loading">Loading</string>
 </resources>

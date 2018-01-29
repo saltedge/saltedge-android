@@ -50,16 +50,30 @@ public class TransactionsFragment extends Fragment {
 
     private ProgressDialog progressDialog;
     private ArrayList<SETransaction> transactions;
-    private int accountId;
+    private String accountId;
     private String providerCode;
+
+    public static TransactionsFragment newInstance(String accountId, String providerCode) {
+        Bundle args = new Bundle();
+        args.putString(SEConstants.KEY_ACCOUNT_ID, accountId);
+        args.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        TransactionsFragment fragment = new TransactionsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         progressDialog = UITools.createProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
+        setInitialData();
+    }
+
+    private void setInitialData() {
         Bundle bundle = this.getArguments();
-        accountId = bundle.getInt(SEConstants.KEY_ACCOUNT_ID, 0);
+        if (bundle == null) return;
+        accountId = bundle.getString(SEConstants.KEY_ACCOUNT_ID, "");
         providerCode = bundle.getString(SEConstants.KEY_PROVIDER_CODE, "");
     }
 
@@ -113,7 +127,7 @@ public class TransactionsFragment extends Fragment {
     }
 
     private void populateTransactions() {
-        ListView listView = (ListView) getView().findViewById(R.id.listView);
+        ListView listView = getView().findViewById(R.id.listView);
         listView.setAdapter(new TransactionAdapter(getActivity(), transactions));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

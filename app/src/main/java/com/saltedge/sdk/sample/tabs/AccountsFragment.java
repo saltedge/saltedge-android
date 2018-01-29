@@ -54,7 +54,16 @@ public class AccountsFragment extends Fragment {
     private ProgressDialog progressDialog;
     private ArrayList<SEAccount> accounts;
     private String providerCode;
-    private int loginId;
+    private String loginId;
+
+    public static AccountsFragment newInstance(String loginId, String providerCode) {
+        Bundle args = new Bundle();
+        args.putString(SEConstants.KEY_LOGIN_ID, loginId);
+        args.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        AccountsFragment fragment = new AccountsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,9 +71,14 @@ public class AccountsFragment extends Fragment {
         setHasOptionsMenu(true);
         progressDialog = UITools.createProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        setInitialValues();
+    }
+
+    private void setInitialValues() {
         Bundle bundle = this.getArguments();
+        if (bundle == null) return;
         providerCode = bundle.getString(SEConstants.KEY_PROVIDER_CODE, "");
-        loginId = bundle.getInt(SEConstants.KEY_LOGIN_ID, 0);
+        loginId = bundle.getString(SEConstants.KEY_LOGIN_ID, "");
     }
 
     @Override
@@ -176,7 +190,7 @@ public class AccountsFragment extends Fragment {
     private void urlObtained(Object urlToGo) {
         getFragmentManager().popBackStack();
         Tools.addStringToPreferences(getActivity(), Constants.KEY_REFRESH_URL, (String) urlToGo);
-        TabHost host = (TabHost) getActivity().findViewById(android.R.id.tabhost);
+        TabHost host = getActivity().findViewById(android.R.id.tabhost);
         host.setCurrentTab(0);
     }
 
@@ -211,7 +225,10 @@ public class AccountsFragment extends Fragment {
     }
 
     private void populateAccounts() {
-        ListView listView = (ListView) getView().findViewById(R.id.listView);
+        View fragmentView = getView();
+        if (fragmentView == null) return;
+        ListView listView = fragmentView.findViewById(R.id.listView);
+        if (listView == null) return;
         listView.setAdapter(new AccountAdapter(getActivity(), accounts));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -222,13 +239,13 @@ public class AccountsFragment extends Fragment {
         });
     }
 
-    private void goToTransactions(int accountId) {
-        TransactionsFragment transactionsFragment = new TransactionsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(SEConstants.KEY_ACCOUNT_ID, accountId);
-        bundle.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);
-        transactionsFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, transactionsFragment).addToBackStack(null).commit();
+    private void goToTransactions(String accountId) {
+        TransactionsFragment fragment = TransactionsFragment.newInstance(accountId, providerCode);
+        try {
+            getFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    fragment).addToBackStack(null).commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -28,10 +28,7 @@ import com.saltedge.sdk.utils.SEDateTools;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class SELogin {
-
-    @SerializedName(SEConstants.KEY_ID)
-    private int id;
+public class SELogin extends BaseModel {
 
     @SerializedName(SEConstants.KEY_SECRET)
     private String secret;
@@ -66,12 +63,6 @@ public class SELogin {
     @SerializedName(SEConstants.KEY_CUSTOMER_EMAIL)
     private String customerEmail;
 
-    @SerializedName(SEConstants.KEY_CREATED_AT)
-    private String createdAt;
-
-    @SerializedName(SEConstants.KEY_UPDATED_AT)
-    private String updatedAt;
-
     @SerializedName(SEConstants.KEY_LAST_FAIL_AT)
     private String lastFailAt;
 
@@ -92,14 +83,6 @@ public class SELogin {
 
     @SerializedName(SEConstants.KEY_COUNTRY_CODE)
     private String countryCode;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getSecret() {
         return secret;
@@ -189,22 +172,6 @@ public class SELogin {
         this.customerEmail = customerEmail;
     }
 
-    public Date getCreatedAt() {
-        return SEDateTools.parseStringToDate(createdAt);
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return SEDateTools.parseStringToDate(updatedAt);
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public Date getLastFailAt() {
         return SEDateTools.parseStringToDate(lastFailAt);
     }
@@ -259,10 +226,6 @@ public class SELogin {
 
     public void setCountryCode(String countryCode) {
         this.countryCode = countryCode;
-    }
-
-    public boolean equals(SELogin object) {
-        return object instanceof SELogin && id == ((object).getId());
     }
 
 }

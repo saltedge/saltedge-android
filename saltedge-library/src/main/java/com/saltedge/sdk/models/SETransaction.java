@@ -29,10 +29,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-public class SETransaction {
-
-    @SerializedName(SEConstants.KEY_ID)
-    private int id;
+public class SETransaction extends BaseModel {
 
     @SerializedName(SEConstants.KEY_DUPLICATED)
     private boolean duplicated;
@@ -57,20 +54,6 @@ public class SETransaction {
 
     @SerializedName(SEConstants.KEY_EXTRA)
     private JSONObject extra;
-
-    @SerializedName(SEConstants.KEY_CREATED_AT)
-    private String createdAt;
-
-    @SerializedName(SEConstants.KEY_UPDATED_AT)
-    private String updatedAt;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public boolean isDuplicated() {
         return duplicated;
@@ -134,26 +117,6 @@ public class SETransaction {
 
     public void setExtra(JSONObject extra) {
         this.extra = extra;
-    }
-
-    public Date getCreatedAt() {
-        return SEDateTools.parseStringToDate(createdAt);
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return SEDateTools.parseStringToDate(updatedAt);
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public boolean equals(SETransaction object) {
-        return object instanceof SETransaction && id == ((object).getId());
     }
 
 }

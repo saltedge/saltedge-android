@@ -1,5 +1,5 @@
 /*
-Copyright © 2015 Salt Edge. https://saltedge.com
+Copyright © 2018 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,64 +25,44 @@ import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEDateTools;
 
-import org.json.JSONObject;
-
 import java.util.Date;
 
-public class SEAccount extends BaseModel {
+public abstract class BaseModel {
 
-    @SerializedName(SEConstants.KEY_NAME)
-    private String name;
+    @SerializedName(SEConstants.KEY_ID)
+    private String id;
 
-    @SerializedName(SEConstants.KEY_NATURE)
-    private String nature;
+    @SerializedName(SEConstants.KEY_CREATED_AT)
+    private String createdAt;
 
-    @SerializedName(SEConstants.KEY_BALANCE)
-    private double balance;
+    @SerializedName(SEConstants.KEY_UPDATED_AT)
+    private String updatedAt;
 
-    @SerializedName(SEConstants.KEY_CURRENCY_CODE)
-    private String currencyCode;
-
-    @SerializedName(SEConstants.KEY_EXTRA)
-    private JSONObject extra;
-
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getNature() {
-        return nature;
+    public Date getCreatedAt() {
+        return SEDateTools.parseStringToDate(createdAt);
     }
 
-    public void setNature(String nature) {
-        this.nature = nature;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public double getBalance() {
-        return balance;
+    public Date getUpdatedAt() {
+        return SEDateTools.parseStringToDate(updatedAt);
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
-    }
-
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-    }
-
-    public JSONObject getExtra() {
-        return extra;
-    }
-
-    public void setExtra(JSONObject extra) {
-        this.extra = extra;
+    public boolean equals(BaseModel object) {
+        return object != null && id == (object.getId());
     }
 }

@@ -142,7 +142,7 @@ public class UITools {
 
                 }
             });
-            builder.setTitle(R.string.choise_provider_title)
+            builder.setTitle(R.string.choose_provider_title)
                     .setAdapter(adapter, listener)
                     .setView(input)
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

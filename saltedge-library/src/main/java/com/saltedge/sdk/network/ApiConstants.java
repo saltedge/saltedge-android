@@ -26,10 +26,9 @@ public class ApiConstants {
     public static final int HTTP_PORT = 80;
 
     //Headers
-    public static final String KEY_HEADER_APP_SECRET = "App-secret";
-    public static final String KEY_HEADER_CLIENT_ID = "Client-Id";
+    public static final String KEY_HEADER_CLIENT_APP_SECRET = "Secret";
+    public static final String KEY_HEADER_CLIENT_APP_ID = "App-id";
     public static final String KEY_HEADER_CUSTOMER_SECRET = "Customer-Secret";
-    public static final String KEY_CUSTOMER_SECRET = "secret";
     public static final String KEY_HEADER_LOGIN_SECRET = "Login-secret";
     public static final String MIME_TYPE_JSON = "application/json";
 
@@ -38,7 +37,7 @@ public class ApiConstants {
     public static final String PREFIX_FROM = "?from_id=";
 
     //API urls
-    public static final String ROOT_URL = "https://www.saltedge.com/api/v3";
+    public static final String ROOT_URL = "https://www.saltedge.com/api/v4";
     public static final String CUSTOMERS_URL = "/customers";
     public static final String PROVIDERS_URL = "/providers";
     public static final String PER_PAGE = "/per";

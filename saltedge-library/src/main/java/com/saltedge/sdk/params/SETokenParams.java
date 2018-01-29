@@ -31,7 +31,7 @@ public class SETokenParams extends SEBaseParams {
     @SerializedName(SEConstants.KEY_DATA)
     private SECreateTokenData data;
 
-    public SETokenParams(int login_id, String locale, String returnTo, boolean returnLoginId, ArrayList<String> providerModes) {
+    public SETokenParams(String login_id, String locale, String returnTo, boolean returnLoginId, ArrayList<String> providerModes) {
         super();
         data = new SECreateTokenData(login_id, locale, returnTo, returnLoginId, providerModes);
     }
@@ -39,7 +39,7 @@ public class SETokenParams extends SEBaseParams {
     private static class SECreateTokenData {
 
         @SerializedName(SEConstants.KEY_LOGIN_ID)
-        private int login_id;
+        private String login_id;
 
         @SerializedName(SEConstants.KEY_LOCALE)
         private String locale;
@@ -54,7 +54,7 @@ public class SETokenParams extends SEBaseParams {
         private ArrayList<String> providerModes;
 
 
-        private SECreateTokenData(int login_id, String locale, String returnTo, boolean returnLoginId, ArrayList<String> providerModes) {
+        private SECreateTokenData(String login_id, String locale, String returnTo, boolean returnLoginId, ArrayList<String> providerModes) {
             this.login_id = login_id;
             this.locale = locale;
             this.returnTo = returnTo;

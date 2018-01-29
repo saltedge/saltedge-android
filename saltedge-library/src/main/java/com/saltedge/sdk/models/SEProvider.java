@@ -27,7 +27,7 @@ import com.saltedge.sdk.utils.SEDateTools;
 
 import java.util.Date;
 
-public class SEProvider {
+public class SEProvider extends BaseModel {
 
     @SerializedName(SEConstants.KEY_AUTOMATIC_FETCH)
     private boolean automaticFetch;
@@ -61,12 +61,6 @@ public class SEProvider {
 
     @SerializedName(SEConstants.KEY_STATUS)
     private String status;
-
-    @SerializedName(SEConstants.KEY_CREATED_AT)
-    private String createdAt;
-
-    @SerializedName(SEConstants.KEY_UPDATED_AT)
-    private String updatedAt;
 
     @SerializedName(SEConstants.KEY_REFRESH_TIMEOUT)
     private int refreshTimeout;
@@ -159,32 +153,12 @@ public class SEProvider {
         this.status = status;
     }
 
-    public Date getCreatedAt() {
-        return SEDateTools.parseStringToDate(createdAt);
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return SEDateTools.parseStringToDate(updatedAt);
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public int getRefreshTimeout() {
         return refreshTimeout;
     }
 
     public void setRefreshTimeout(int refreshTimeout) {
         this.refreshTimeout = refreshTimeout;
-    }
-
-    public boolean equals(SEProvider object) {
-        return object instanceof SEProvider && code.equals((object).getCode());
     }
 
 }

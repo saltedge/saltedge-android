@@ -37,7 +37,6 @@ import com.saltedge.sdk.sample.adapters.LoginsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.Tools;
 import com.saltedge.sdk.sample.utils.UITools;
-import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
@@ -65,7 +64,6 @@ public class LoginsFragment extends Fragment {
         super.onDestroy();
         UITools.destroyProgressDialog(progressDialog);
     }
-
 
     private void getLogins() {
         String[] loginSecretArray = Tools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
@@ -102,7 +100,7 @@ public class LoginsFragment extends Fragment {
 
     public void showLogin() {
         if (getView() != null) {
-            ListView listView = (ListView) getView().findViewById(R.id.listView);
+            ListView listView = getView().findViewById(R.id.listView);
             listView.setAdapter(new LoginsAdapter(getActivity(), logins));
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -114,14 +112,13 @@ public class LoginsFragment extends Fragment {
         }
     }
 
-    public void goToAccounts(String providerCode, int loginId ) {
-        AccountsFragment accountsFragment = new AccountsFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);
-        bundle.putInt(SEConstants.KEY_LOGIN_ID, loginId);
-        accountsFragment.setArguments(bundle);
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, accountsFragment).addToBackStack(null).commit();
-        getFragmentManager().beginTransaction();
+    public void goToAccounts(String providerCode, String loginId) {
+        AccountsFragment accountsFragment = AccountsFragment.newInstance(loginId, providerCode);
+        try {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, accountsFragment).addToBackStack(null).commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
