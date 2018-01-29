@@ -31,6 +31,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.saltedge.sdk.network.ApiConstants;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEJSONTools;
 import com.saltedge.sdk.utils.SETools;
@@ -112,8 +113,8 @@ public class SEWebViewTools {
     }
 
     private boolean urlIsFenturyRedirection(String url) {
-        if (url.contains(SEConstants.PREFIX_SALTBRIDGE)) {
-            String redirectURL = url.substring(SEConstants.PREFIX_SALTBRIDGE.length(), url.length());
+        if (url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
+            String redirectURL = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
             JSONObject dataJsonObject = SEJSONTools.getObject(SEJSONTools.stringToJSON(redirectURL), SEConstants.KEY_DATA);
             String stage = SEJSONTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
             String loginSecret = SEJSONTools.getString(dataJsonObject, SEConstants.KEY_SECRET);

@@ -81,7 +81,7 @@ public class LoginsFragment extends Fragment {
         }
         UITools.showProgress(progressDialog);
         String loginSecret = loginSecretArray[position];
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().fetchLogin(loginSecret, customerSecret,
                 new SERequestManager.FetchListener() {
 

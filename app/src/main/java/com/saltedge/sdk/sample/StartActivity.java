@@ -30,6 +30,7 @@ import android.text.TextUtils;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.tabs.TabHostFragmentActivity;
+import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.Tools;
 import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
@@ -54,7 +55,7 @@ public class StartActivity extends Activity {
     private void createCustomer() {
         String customerIdentifier = "EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
         UITools.showProgress(progressDialog);
-        String customerSecret = Tools.getStringFromPreferences(this, SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         if (TextUtils.isEmpty(customerSecret)) {
             SERequestManager.getInstance().createCustomer(customerIdentifier, new SERequestManager.FetchListener() {
                 @Override
@@ -80,7 +81,7 @@ public class StartActivity extends Activity {
     }
 
     private void dataObtained(String secret) {
-        Tools.addStringToPreferences(this, SEConstants.KEY_CUSTOMER_SECRET, secret);
+        Tools.addStringToPreferences(this, Constants.KEY_CUSTOMER_SECRET, secret);
         intentToTabs();
     }
 

@@ -38,6 +38,7 @@ import com.saltedge.sdk.models.comparators.SETransactionComparator;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.TransactionAdapter;
+import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.Tools;
 import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
@@ -88,7 +89,7 @@ public class TransactionsFragment extends Fragment {
 
     private void getTransactions() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
             return;
         }

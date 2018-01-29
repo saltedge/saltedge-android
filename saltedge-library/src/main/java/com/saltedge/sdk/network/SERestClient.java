@@ -71,7 +71,7 @@ public class SERestClient {
         handler = client.post(SaltEdgeSDK.getInstance().getContext(),
                 getAbsoluteUrl(servicePath),
                 new StringEntity(jsonRequest, HTTP.UTF_8),
-                SEConstants.MIME_TYPE_JSON,
+                ApiConstants.MIME_TYPE_JSON,
                 responseHandler);
         return (handler != null);
     }
@@ -92,7 +92,7 @@ public class SERestClient {
     private static AsyncHttpClient createHttpClient(HashMap<String, String> headers) {
         AsyncHttpClient client = isHttpsPrefixInRootUrl()
                 ? new AsyncHttpClient(false, DEFAULT_HTTP_PORT, DEFAULT_HTTPS_PORT)
-                : new AsyncHttpClient(SEConstants.HTTP_PORT);
+                : new AsyncHttpClient(ApiConstants.HTTP_PORT);
         client.setMaxRetriesAndTimeout(DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT);
         for (HashMap.Entry<String, String> entry : headers.entrySet()) {
             client.addHeader(entry.getKey(), entry.getValue());
@@ -110,11 +110,11 @@ public class SERestClient {
         if (relativeUrl == null) {
             relativeUrl = "";
         }
-        return SEConstants.ROOT_URL + relativeUrl;
+        return ApiConstants.ROOT_URL + relativeUrl;
     }
 
     private static boolean isHttpsPrefixInRootUrl() {
-        return SEConstants.ROOT_URL.startsWith("https://");
+        return ApiConstants.ROOT_URL.startsWith("https://");
     }
 
     /**

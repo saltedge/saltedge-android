@@ -26,6 +26,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
+import com.saltedge.sdk.network.ApiConstants;
 import com.saltedge.sdk.utils.SEConstants;
 
 public class SaltEdgeSDK {
@@ -47,11 +48,11 @@ public class SaltEdgeSDK {
     }
 
     private void setAppSecret(String appSecret) {
-        this.appSecret = appSecret;
+        SaltEdgeSDK.appSecret = appSecret;
     }
 
     private void setClientId(String cliendId) {
-        this.clientId = cliendId;
+        SaltEdgeSDK.clientId = cliendId;
     }
 
     public String getClientId() {
@@ -59,16 +60,18 @@ public class SaltEdgeSDK {
     }
 
     public void setContext(Context context) {
-        this.context = context;
+        SaltEdgeSDK.context = context;
         ApplicationInfo appInfo = null;
         try {
             appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        Bundle bundle = appInfo.metaData;
-        setAppSecret(bundle.getString(SEConstants.KEY_HEADER_APP_SECRET));
-        setClientId(bundle.getString(SEConstants.KEY_HEADER_CLIENT_ID));
+        if (appInfo != null) {
+            Bundle bundle = appInfo.metaData;
+            setAppSecret(bundle.getString(ApiConstants.KEY_HEADER_APP_SECRET));
+            setClientId(bundle.getString(ApiConstants.KEY_HEADER_CLIENT_ID));
+        }
         if (getClientId() == null) {
             throw new RuntimeException(SEConstants.CLIENT_ID_IS_NULL);
         }

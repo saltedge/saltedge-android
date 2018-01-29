@@ -102,7 +102,7 @@ public class ConnectFragment extends Fragment {
     private void obtainCreateToken(SEProvider selectedProvider) {
         UITools.showProgress(progressDialog);
         providerCode = selectedProvider.getCode();
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         SECreateTokenParams params = new SECreateTokenParams(new String[0], providerCode, Constants.CALLBACK_URL);
         SERequestManager.getInstance().createToken(params, customerSecret,
                 new SERequestManager.FetchListener() {

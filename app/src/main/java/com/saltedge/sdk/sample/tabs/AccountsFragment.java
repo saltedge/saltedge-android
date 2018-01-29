@@ -111,7 +111,7 @@ public class AccountsFragment extends Fragment {
 
     private void fetchRefreshToken() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         UITools.showProgress(progressDialog);
         SETokenParams params = new SETokenParams(loginId, "", Constants.CALLBACK_URL, false, null);
         SERequestManager.getInstance().refreshToken(params, loginSecret, customerSecret,
@@ -134,7 +134,7 @@ public class AccountsFragment extends Fragment {
 
     private void fetchReconnectToken() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         UITools.showProgress(progressDialog);
         SETokenParams params = new SETokenParams(loginId, "", Constants.CALLBACK_URL, false, null);
         SERequestManager.getInstance().reconnectToken(params, loginSecret, customerSecret,
@@ -156,7 +156,7 @@ public class AccountsFragment extends Fragment {
 
     private void deleteLogin() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         UITools.showProgress(progressDialog);
         SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret, new SERequestManager.FetchListener() {
             @Override
@@ -182,7 +182,7 @@ public class AccountsFragment extends Fragment {
 
     private void getAccounts() {
         String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), SEConstants.KEY_CUSTOMER_SECRET);
+        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
