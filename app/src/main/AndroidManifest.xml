@@ -13,8 +13,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="App-secret" android:value="" />
-        <meta-data android:name="Client-Id" android:value="" />
+        <meta-data android:name="App-secret" android:value="Su9rqnXxtB5dC38Tb7PHTQhLhLjecadvT6xxDYZLx08" />
+        <meta-data android:name="Client-Id" android:value="FFRs9xmO0GCUUG6FFZfQtg" />
 
         <activity
             android:name="com.saltedge.sdk.sample.StartActivity"
