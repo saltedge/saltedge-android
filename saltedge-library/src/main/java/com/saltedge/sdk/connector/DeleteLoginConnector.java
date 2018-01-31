@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
+import com.saltedge.sdk.interfaces.DeleteLoginResult;
 import com.saltedge.sdk.model.response.DeleteLoginResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEJsonTools;
@@ -31,9 +32,9 @@ import retrofit2.Response;
 
 public class DeleteLoginConnector implements Callback<DeleteLoginResponse> {
 
-    private final Result callback;
+    private final DeleteLoginResult callback;
 
-    public DeleteLoginConnector(Result callback) {
+    public DeleteLoginConnector(DeleteLoginResult callback) {
         this.callback = callback;
     }
 
@@ -51,10 +52,5 @@ public class DeleteLoginConnector implements Callback<DeleteLoginResponse> {
     @Override
     public void onFailure(Call<DeleteLoginResponse> call, Throwable t) {
         callback.onFailure(t.getMessage());
-    }
-
-    public interface Result {
-        void onSuccess(Boolean isRemoved);
-        void onFailure(String errorMessage);
     }
 }

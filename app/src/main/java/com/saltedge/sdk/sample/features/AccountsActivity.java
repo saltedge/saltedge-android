@@ -35,9 +35,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 
-import com.saltedge.sdk.connector.AccountsConnector;
-import com.saltedge.sdk.connector.DeleteLoginConnector;
-import com.saltedge.sdk.connector.TokenConnector;
+import com.saltedge.sdk.interfaces.DeleteLoginResult;
+import com.saltedge.sdk.interfaces.FetchAccountsResult;
+import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -49,7 +49,7 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
-public class AccountsActivity extends AppCompatActivity implements TokenConnector.Result {
+public class AccountsActivity extends AppCompatActivity implements TokenConnectionResult {
 
     private ProgressDialog progressDialog;
     private ArrayList<AccountData> accounts;
@@ -157,7 +157,7 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecto
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_login));
         SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret,
-                new DeleteLoginConnector.Result() {
+                new DeleteLoginResult() {
                     @Override
                     public void onSuccess(Boolean isRemoved) {
                         if (isRemoved) {
@@ -195,7 +195,7 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecto
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
         SERequestManager.getInstance().fetchAccounts(customerSecret, loginSecret,
-                new AccountsConnector.Result() {
+                new FetchAccountsResult() {
                     @Override
                     public void onSuccess(ArrayList<AccountData> accountsList) {
                         onFetchAccountsSuccess(accountsList);
@@ -235,10 +235,5 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecto
     private void goToTransactions(String accountId) {
         Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, providerCode);
         startActivity(transactionsIntent);
-//        try {
-//            getFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 }

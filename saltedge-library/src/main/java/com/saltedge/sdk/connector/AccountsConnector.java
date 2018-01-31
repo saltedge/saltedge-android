@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
+import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.network.SERestClient;
@@ -36,13 +37,13 @@ import retrofit2.Response;
 
 public class AccountsConnector implements Callback<AccountsResponse> {
 
-    private final Result callback;
+    private final FetchAccountsResult callback;
     private String nextPageId = "";
     private ArrayList<AccountData> accountsList = new ArrayList<>();
     private String customerSecret = "";
     private String loginSecret = "";
 
-    public AccountsConnector(Result callback) {
+    public AccountsConnector(FetchAccountsResult callback) {
         this.callback = callback;
     }
 
@@ -80,10 +81,5 @@ public class AccountsConnector implements Callback<AccountsResponse> {
         } else {
             SERestClient.getInstance().service.getAccounts(loginSecret, customerSecret, nextPageId).enqueue(this);
         }
-    }
-
-    public interface Result {
-        void onSuccess(ArrayList<AccountData> accountsList);
-        void onFailure(String errorMessage);
     }
 }

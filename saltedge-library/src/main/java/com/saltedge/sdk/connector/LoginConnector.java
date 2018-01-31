@@ -21,13 +21,13 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
+import com.saltedge.sdk.interfaces.FetchLoginsResult;
 import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.model.response.LoginResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,11 +35,11 @@ import retrofit2.Response;
 
 public class LoginConnector implements Callback<LoginResponse> {
 
-    private final Result callback;
+    private final FetchLoginsResult callback;
     private ArrayList<LoginData> loginsList = new ArrayList<>();
     private int resultCount = 0;
 
-    public LoginConnector(Result callback) {
+    public LoginConnector(FetchLoginsResult callback) {
         this.callback = callback;
     }
 
@@ -67,10 +67,5 @@ public class LoginConnector implements Callback<LoginResponse> {
     @Override
     public void onFailure(Call<LoginResponse> call, Throwable t) {
         callback.onFailure(t.getMessage());
-    }
-
-    public interface Result {
-        void onSuccess(List<LoginData> logins);
-        void onFailure(String errorMessage);
     }
 }

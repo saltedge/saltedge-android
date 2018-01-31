@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
+import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.model.TransactionData;
 import com.saltedge.sdk.model.response.TransactionsResponse;
 import com.saltedge.sdk.network.SERestClient;
@@ -36,14 +37,14 @@ import retrofit2.Response;
 
 public class TransactionsConnector implements Callback<TransactionsResponse> {
 
-    private final Result callback;
+    private final FetchTransactionsResult callback;
     private String nextPageId = "";
     private ArrayList<TransactionData> transactionsList = new ArrayList<>();
     private String loginSecret = "";
     private String customerSecret = "";
     private String accountId = "";
 
-    public TransactionsConnector(Result callback) {
+    public TransactionsConnector(FetchTransactionsResult callback) {
         this.callback = callback;
     }
 
@@ -84,10 +85,5 @@ public class TransactionsConnector implements Callback<TransactionsResponse> {
             SERestClient.getInstance().service.getTransactions(loginSecret, customerSecret, accountId, nextPageId)
                     .enqueue(this);
         }
-    }
-
-    public interface Result {
-        void onSuccess(ArrayList<TransactionData> transactionsList);
-        void onFailure(String errorMessage);
     }
 }

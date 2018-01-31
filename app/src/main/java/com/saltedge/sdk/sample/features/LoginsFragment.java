@@ -31,7 +31,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.saltedge.sdk.connector.LoginConnector;
+import com.saltedge.sdk.interfaces.FetchLoginsResult;
 import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -86,7 +86,7 @@ public class LoginsFragment extends Fragment {
         progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.loading_logins));
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().fetchLogins(loginSecretsArray, customerSecret,
-                new LoginConnector.Result() {
+                new FetchLoginsResult() {
 
                     @Override
                     public void onSuccess(List<LoginData> logins) {
@@ -120,11 +120,5 @@ public class LoginsFragment extends Fragment {
     public void goToAccounts(String providerCode, String loginId) {
         Intent accountsIntent = AccountsActivity.newIntent(getActivity(), loginId, providerCode);
         startActivity(accountsIntent);
-//        try {
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.container, accountsFragment).addToBackStack(null).commit();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 }

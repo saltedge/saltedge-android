@@ -35,7 +35,7 @@ import android.widget.TabHost;
 import android.widget.Toast;
 
 import com.saltedge.sdk.connector.ProvidersConnector;
-import com.saltedge.sdk.connector.TokenConnector;
+import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.network.ApiConstants;
 import com.saltedge.sdk.network.SERequestManager;
@@ -129,7 +129,7 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
         String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().createToken(providerCode, scopes, Constants.CALLBACK_URL, customerSecret,
-                new TokenConnector.Result() {
+                new TokenConnectionResult() {
                     @Override
                     public void onSuccess(String connectUrl) {
                         UITools.destroyAlertDialog(progressDialog);

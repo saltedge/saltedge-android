@@ -21,10 +21,11 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.model.request.CreateTokenRequest;
-import com.saltedge.sdk.model.response.CreateTokenResponse;
 import com.saltedge.sdk.model.request.TokenRequest;
+import com.saltedge.sdk.model.response.CreateTokenResponse;
+import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import retrofit2.Call;
@@ -33,9 +34,9 @@ import retrofit2.Response;
 
 public class TokenConnector implements Callback<CreateTokenResponse> {
 
-    private final Result callback;
+    private final TokenConnectionResult callback;
 
-    public TokenConnector(Result callback) {
+    public TokenConnector(TokenConnectionResult callback) {
         this.callback = callback;
     }
 
@@ -64,10 +65,5 @@ public class TokenConnector implements Callback<CreateTokenResponse> {
     @Override
     public void onFailure(Call<CreateTokenResponse> call, Throwable t) {
         callback.onFailure(t.getMessage());
-    }
-
-    public interface Result {
-        void onSuccess(String connectUrl);
-        void onFailure(String errorMessage);
     }
 }

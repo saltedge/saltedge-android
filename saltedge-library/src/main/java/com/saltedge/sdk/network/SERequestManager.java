@@ -27,6 +27,12 @@ import com.saltedge.sdk.connector.LoginConnector;
 import com.saltedge.sdk.connector.ProvidersConnector;
 import com.saltedge.sdk.connector.TokenConnector;
 import com.saltedge.sdk.connector.TransactionsConnector;
+import com.saltedge.sdk.interfaces.CreateCustomerResult;
+import com.saltedge.sdk.interfaces.DeleteLoginResult;
+import com.saltedge.sdk.interfaces.FetchAccountsResult;
+import com.saltedge.sdk.interfaces.FetchLoginsResult;
+import com.saltedge.sdk.interfaces.FetchTransactionsResult;
+import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.utils.SEConstants;
 
 public class SERequestManager {
@@ -43,7 +49,7 @@ public class SERequestManager {
     /**
      *  Customers
      * */
-    public void createCustomer(String customerIdentifier, CustomerConnector.Result callback) {
+    public void createCustomer(String customerIdentifier, CreateCustomerResult callback) {
         if (customerIdentifier == null || TextUtils.isEmpty(customerIdentifier)) {
             throw new RuntimeException(SEConstants.KEY_SECRET.concat(" " + SEConstants.CANNOT_BE_NULL));
         }
@@ -53,15 +59,15 @@ public class SERequestManager {
     /**
      * Tokens
      * */
-    public void createToken(String providerCode, String[] scopes, String returnTo, String customerSecret, TokenConnector.Result callback) {
+    public void createToken(String providerCode, String[] scopes, String returnTo, String customerSecret, TokenConnectionResult callback) {
         new TokenConnector(callback).createToken(providerCode, scopes, returnTo, customerSecret);
     }
 
-    public void reconnectToken(String locale, String returnTo, String loginSecret, String customerSecret, TokenConnector.Result callback) {
+    public void reconnectToken(String locale, String returnTo, String loginSecret, String customerSecret, TokenConnectionResult callback) {
         new TokenConnector(callback).reconnectToken(locale, returnTo, loginSecret, customerSecret);
     }
 
-    public void refreshToken(String locale, String returnTo, String loginSecret, String customerSecret, TokenConnector.Result callback) {
+    public void refreshToken(String locale, String returnTo, String loginSecret, String customerSecret, TokenConnectionResult callback) {
         new TokenConnector(callback).refreshToken(locale, returnTo, loginSecret, customerSecret);
     }
 
@@ -75,18 +81,18 @@ public class SERequestManager {
     /**
      * Logins
      * */
-    public void fetchLogins(String[] loginSecretsArray, String customerSecret, LoginConnector.Result callback) {
+    public void fetchLogins(String[] loginSecretsArray, String customerSecret, FetchLoginsResult callback) {
         new LoginConnector(callback).fetchLogins(loginSecretsArray, customerSecret);
     }
 
-    public void deleteLogin(String loginSecret, String customerSecret, DeleteLoginConnector.Result callback) {
+    public void deleteLogin(String loginSecret, String customerSecret, DeleteLoginResult callback) {
         new DeleteLoginConnector(callback).deleteLogin(loginSecret, customerSecret);
     }
 
     /**
      * Accounts
      * */
-    public void fetchAccounts(String customerSecret, String loginSecret, AccountsConnector.Result callback) {
+    public void fetchAccounts(String customerSecret, String loginSecret, FetchAccountsResult callback) {
         new AccountsConnector(callback).fetchAccounts(customerSecret, loginSecret);
     }
 
@@ -94,7 +100,7 @@ public class SERequestManager {
      * Transactions
      * */
     public void listingTransactionsOfAccount(String customerSecret, String loginSecret, String accountId,
-                                             TransactionsConnector.Result callback) {
+                                             FetchTransactionsResult callback) {
         new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId);
     }
 }

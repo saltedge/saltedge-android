@@ -28,7 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.saltedge.sdk.SaltEdgeSDK;
-import com.saltedge.sdk.connector.CustomerConnector;
+import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
@@ -39,9 +39,9 @@ import java.util.Date;
 
 public class StartActivity extends AppCompatActivity {
 
-    private final String customerIdentifierPrefix = "ANDROID_APP_EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
-    private final String clientAppId = "R4Qw517-RL9FI5f2_xZeechnO1wduKAbUfkts7bV4vY";//TODO SET APP ID
-    private final String clientAppSecret = "Ylhr7TdW8uf-rpPbaUyJOSMqmiR_2qDMCz__tblPOZ8";//TODO SET APP SECRET
+    private final static String customerIdentifierPrefix = "ANDROID_APP_EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
+    private final static String clientAppId = "";//TODO SET APP ID
+    private final static String clientAppSecret = "";//TODO SET APP SECRET
     private ProgressDialog progressDialog;
 
     @Override
@@ -68,7 +68,7 @@ public class StartActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(customerSecret)) {
-            SERequestManager.getInstance().createCustomer(customerIdentifier, new CustomerConnector.Result() {
+            SERequestManager.getInstance().createCustomer(customerIdentifier, new CreateCustomerResult() {
                 @Override
                 public void onSuccess(String secret) {
                     onSecretCreateSuccess(secret);
@@ -77,7 +77,6 @@ public class StartActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(String errorResponse) {
                     onCreateCustomerFailure(errorResponse);
-
                 }
             });
         } else {

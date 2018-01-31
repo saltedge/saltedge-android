@@ -14,23 +14,23 @@ Clone this repository
 
 ## Connecting logins using the sample app
 
-1. Replace the `clientId`, `appSecret` constants in [AndroidManifest.xml:16-17](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/AndroidManifest.xml) with your Client ID and corresponding App secret.
-2. Add the `customerIdentifier` (that uniquely identifies a customer) to [StartActivity.java:35](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/StartActivity.java)
+1. Replace the `clientAppId`, `clientAppSecret` constants in [StartActivity:43-44](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/features/StartActivity.java) with your Client ID and corresponding App secret.
+2. Add the `customerIdentifier` (that uniquely identifies a customer) to [StartActivity.java:42](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/features/StartActivity.java)
 3. Run the app
 
-*Note*: You can find your Client ID and App secret on your [profile](https://www.saltedge.com/clients/profile/settings) page.
+*Note*: You can find your Client ID and App secret on your [profile](https://www.saltedge.com/keys_and_secrets) page.
 
 ### Usage
 
 * Open Android Studio and create a new app
 * Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import
-* Add the following keys to the manifest:
+* Add the clientAppId and clientAppSecret keys to the StartActivity:
         <meta-data android:name="App-secret" android:value="YOUR APP SECRET" />
         <meta-data android:name="Client-Id" android:value="YOUR CLIENT ID" />
 
-**Warning!** The SDK doesn't work without these settings!
+**Warning!** The SDK doesn't work without clientAppId and clientAppSecret!
 
-* The customerIdentifier is used to [create customers](https://docs.saltedge.com/guides/customers/#creating_customers). 
+* The customerIdentifier is used to [create customers](https://docs.saltedge.com/v4_apps/reference/#customers-create). 
 
 ```java
     private void createCustomer() {

@@ -32,7 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.saltedge.sdk.connector.TransactionsConnector;
+import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.model.TransactionData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -109,7 +109,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
         SERequestManager.getInstance().listingTransactionsOfAccount(customerSecret, loginSecret, accountId,
-                new TransactionsConnector.Result() {
+                new FetchTransactionsResult() {
                     @Override
                     public void onSuccess(ArrayList<TransactionData> transactionsList) {
                         UITools.destroyAlertDialog(progressDialog);

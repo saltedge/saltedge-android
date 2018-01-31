@@ -21,9 +21,10 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.model.request.CreateCustomerRequest;
 import com.saltedge.sdk.model.response.CreateCustomerResponse;
+import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import retrofit2.Call;
@@ -32,9 +33,9 @@ import retrofit2.Response;
 
 public class CustomerConnector implements Callback<CreateCustomerResponse> {
 
-    private final Result callback;
+    private final CreateCustomerResult callback;
 
-    public CustomerConnector(Result callback) {
+    public CustomerConnector(CreateCustomerResult callback) {
         this.callback = callback;
     }
 
@@ -53,10 +54,5 @@ public class CustomerConnector implements Callback<CreateCustomerResponse> {
     @Override
     public void onFailure(Call<CreateCustomerResponse> call, Throwable t) {
         callback.onFailure(t.getMessage());
-    }
-
-    public interface Result {
-        void onSuccess(String secret);
-        void onFailure(String errorMessage);
     }
 }
