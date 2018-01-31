@@ -108,7 +108,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         transactions = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
-        SERequestManager.getInstance().listingTransactionsOfAccount(customerSecret, loginSecret, accountId,
+        SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId,
                 new FetchTransactionsResult() {
                     @Override
                     public void onSuccess(ArrayList<TransactionData> transactionsList) {

@@ -35,12 +35,15 @@ Clone this repository
 ```java
     private void createCustomer() {
         String customerIdentifier = "customerIdentifier"; // Random num, each installation - new
-         SERequestManager.getInstance().createCustomer(customerIdentifier, new SERequestManager.FetchListener() {
-        @Override
-        public void onFailure(String errorResponse) {...}
+        SERequestManager.getInstance().createCustomer(customerIdentifier, new CreateCustomerResult() {
             @Override
-            public void onSuccess(Object response) {
-                String customerId = (String) response;
+            public void onSuccess(String secret) {
+                //save customer secret
+            }
+            
+            @Override
+            public void onFailure(String errorResponse) {
+                //process error
             }
         });
     }
@@ -50,18 +53,20 @@ Clone this repository
 
 
 ```java
-    public static void fetchProviders(final Context context,
-                                        final DialogInterface.OnClickListener listener) {
-            SERequestManager.getInstance().listingProviders(
-            new SERequestManager.FetchListener() {
-                @Override
-                public void onFailure(String errorResponse) {...}
+    public static void fetchProviders() {
+        String countryCode = "XX";//prefered country code or null
+        SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersConnector.Result() {
+        
+            @Override
+            public void onSuccess(ArrayList<ProviderData> providersList) {
+                //use providers list
+            }
 
-                @Override
-                public void onSuccess(Object response) {
-                    ArrayList<SEProvider> providers = (ArrayList<SEProvider>) response;
-                }
-            });
+            @Override
+            public void onFailure(String errorResponse) {
+                //process error
+            }
+        });
     }
 ```
 * To connect to the bank you need a provider code and a country code.
@@ -71,26 +76,26 @@ In order to encapsulate these params, you can use the `SECreateTokenParams` clas
 One more time, you need:
     - a bit of courage
     - provider_code
-    - country_code
-    - customerId
+    - scopes
+    - customerSecret
     - callbackUrl (the URL the user will be redirected to, you can pass an empty string if you developing mobile app)
     
 ```java
-     private void obtainCreateToken(SEProvider selectedProvider, String customerId) { 
-     SECreateTokenParams params = new SECreateTokenParams(selectedProvider.getCountryCode(),
-     selectedProvider.getCode(), callbackUrl, customerId);
-        SERequestManager.getInstance().createToken(params,
-                new SERequestManager.FetchListener() {
-                    @Override
-                    public void onFailure(String errorResponse) {...}
-
-                    @Override
-                    public void onSuccess(Object response) {
-                        // here is a URL you can use to redirect the user
-                        String bankUrl = (String) response;
-                    }
-                });
-
+     private void obtainCreateToken(SEProvider selectedProvider, String callbackUrl, String customerSecret) {
+         String providerCode = selectedProvider.getCode();
+         String[] scopes = {"accounts", "transactions"};;
+         SERequestManager.getInstance().createToken(providerCode, scopes, callbackUrl, customerSecret,
+             new TokenConnectionResult() {
+                 @Override
+                 public void onSuccess(String connectUrl) {
+                     // here is a URL you can use to redirect the user
+                 }
+        
+                 @Override
+                 public void onFailure(String errorMessage) {
+                     //process error
+                 }
+             });
     }
 ```
 * Using the returned URL, you can let the user import their data. After doing this, you will obtain a `loginSecret`.
@@ -113,85 +118,88 @@ One more time, you need:
 * Congratulations, using just a couple of lines you have obtained a `loginSecret`. This can be used to get the status of the login, its accounts and transactions.
 
 ```java
-    SERequestManager.getInstance().fetchLogin(loginSecret,
-                new SERequestManager.FetchListener() {
-                    @Override
-                    public void onFailure(String errorResponse) {...}
-
-                    @Override
-                    public void onSuccess(Object response) {
-                        SELogin login = (SELogin) response;
-                    }
-                });
+    SERequestManager.getInstance().fetchLogin(loginSecret, customerSecret, new FetchLoginsResult() {
+                        @Override
+                        public void onSuccess(List<LoginData> logins) {
+                            //show logins
+                        }
+    
+                        @Override
+                        public void onFailure(String errorResponse) {
+                            //process error
+                        }
+                    });
 ```                
 
 * You can now get all the accounts of the login using the `loginSecret`
     
 ```java    
-    SERequestManager.getInstance().listingAccounts(loginSecret, new SERequestManager.FetchListener() {
-            @Override
-            public void onFailure(String errorResponse) {...}
-
-            @Override
-            public void onSuccess(Object response) {
-                ArrayList<SEAccount> accounts = (ArrayList<SEAccount>) response;
-            }
-        });
+    SERequestManager.getInstance().fetchAccounts(customerSecret, loginSecret,
+                    new FetchAccountsResult() {
+                        @Override
+                        public void onSuccess(ArrayList<AccountData> accountsList) {
+                            //show accounts
+                        }
+    
+                        @Override
+                        public void onFailure(String errorResponse) {
+                            //process error
+                        }
+            });
 ```
 * For each accounts, you can obtain the list of transactions.
 
 ```java
-        SERequestManager.getInstance().listingTransactionsOfAccount(loginSecret, accountId, 
-        new SERequestManager.FetchListener() {
-            @Override
-            public void onFailure(String errorResponse) {...}
-
-            @Override
-            public void onSuccess(Object response) {
-                ArrayList<SETransaction> transactions = (ArrayList<SETransaction>) response;
-            }
-        });
+        SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId,
+                        new FetchTransactionsResult() {
+                            @Override
+                            public void onSuccess(ArrayList<TransactionData> transactionsList) {
+                                //show transactions
+                            }
+        
+                            @Override
+                            public void onFailure(String errorResponse) {
+                                //process error
+                            }
+                        });
 ```        
 
 * You can refresh the data for each login.
 To refresh, you can obtain a token.
 To create a `SERefreshToken`, you need:
-    - the ID of the Login (taken from an `SELogin`)
+    - localeCode
     - callbackUrl (the URL the user will be redirected to, you can pass an empty string if you developing mobile app)
     - loginSecret of the Login
 
 * Refresh :
 
 ```java
-        SETokenParams params = new SETokenParams(loginId, "", callbackUrl, false, null);
-        SERequestManager.getInstance().refreshToken(params, loginSecret,
-                new SERequestManager.FetchListener() {
-
+        SERequestManager.getInstance().refreshToken(localeCode, callbackUrl, loginSecret, customerSecret, new TokenConnectionResult() {
+        
                     @Override
-                    public void onFailure(String errorResponse) {...}
-
+                    public void onSuccess(String connectUrl) {
+                        // here is a URL you can use to redirect the user
+                    }
+        
                     @Override
-                    public void onSuccess(Object response) {
-                           String url = (String) response);
+                    public void onFailure(String errorMessage) {
+                        //process error
                     }
                 });
 ```    
 * Reconnect:
 
 ```java    
-        SETokenParams params = new SETokenParams(loginId, "", Constants.CALLBACK_URL, false, null);
-        SERequestManager.getInstance().refreshToken(params, loginSecret,
-                new SERequestManager.FetchListener() {
-
+        SERequestManager.getInstance().reconnectToken(localeCode, callbackUrl, loginSecret, customerSecret, new TokenConnectionResult() {
+        
                     @Override
-                    public void onFailure(String errorResponse) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        UITools.failedParsing(getActivity(), errorResponse);
+                    public void onSuccess(String connectUrl) {
+                        // here is a URL you can use to redirect the user
                     }
-
+        
                     @Override
-                    public void onSuccess(Object response) {
-                           String url = (String) response);
+                    public void onFailure(String errorMessage) {
+                        //process error
                     }
                 });
 ```           
@@ -199,15 +207,18 @@ To create a `SERefreshToken`, you need:
 * To delete a login you'll need a LoginSecret            
     
 ```java    
-        SERequestManager.getInstance().deleteLogin(loginSecret, new SERequestManager.FetchListener() {
-            @Override
-            public void onFailure(String errorResponse) {...}
-
-            @Override
-            public void onSuccess(Object response) {
-                String statusResponse = (String) response;
-            }
-        });
+        SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret,
+                        new DeleteLoginResult() {
+                            @Override
+                            public void onSuccess(Boolean isRemoved) {
+                                //show changes
+                            }
+        
+                            @Override
+                            public void onFailure(String errorResponse) {
+                                //process error
+                            }
+                });
 ```    
 
 #### Please consult the Demo app to see how it works

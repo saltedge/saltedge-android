@@ -103,7 +103,7 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
     @Override
     public void onProviderSelected(ProviderData provider) {
         Toast.makeText(getActivity(), "Selected " + String.valueOf(provider.getName()), Toast.LENGTH_SHORT).show();
-        createToken(provider);
+        createToken(provider, Constants.CALLBACK_URL);
     }
 
     private void loadURL(String url) {
@@ -122,16 +122,16 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
         });
     }
 
-    private void createToken(ProviderData selectedProvider) {
+    private void createToken(ProviderData selectedProvider, String callbackUrl) {
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.creating_token));
         providerCode = selectedProvider.getCode();
         String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        SERequestManager.getInstance().createToken(providerCode, scopes, Constants.CALLBACK_URL, customerSecret,
+        SERequestManager.getInstance().createToken(providerCode, scopes, callbackUrl, customerSecret,
                 new TokenConnectionResult() {
                     @Override
-                    public void onSuccess(String connectUrl) {
+                    public void onSuccess(String connectUrl) {// here is a URL you can use to redirect the user
                         UITools.destroyAlertDialog(progressDialog);
                         dataObtained(connectUrl);
                     }

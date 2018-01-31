@@ -63,12 +63,12 @@ public class SERequestManager {
         new TokenConnector(callback).createToken(providerCode, scopes, returnTo, customerSecret);
     }
 
-    public void reconnectToken(String locale, String returnTo, String loginSecret, String customerSecret, TokenConnectionResult callback) {
-        new TokenConnector(callback).reconnectToken(locale, returnTo, loginSecret, customerSecret);
+    public void reconnectToken(String localeCode, String returnTo, String loginSecret, String customerSecret, TokenConnectionResult callback) {
+        new TokenConnector(callback).reconnectToken(localeCode, returnTo, loginSecret, customerSecret);
     }
 
-    public void refreshToken(String locale, String returnTo, String loginSecret, String customerSecret, TokenConnectionResult callback) {
-        new TokenConnector(callback).refreshToken(locale, returnTo, loginSecret, customerSecret);
+    public void refreshToken(String localeCode, String returnTo, String loginSecret, String customerSecret, TokenConnectionResult callback) {
+        new TokenConnector(callback).refreshToken(localeCode, returnTo, loginSecret, customerSecret);
     }
 
     /**
@@ -81,6 +81,11 @@ public class SERequestManager {
     /**
      * Logins
      * */
+    public void fetchLogin(String loginSecret, String customerSecret, FetchLoginsResult callback) {
+        String[] secrets = { loginSecret };
+        fetchLogins(secrets, customerSecret, callback);
+    }
+
     public void fetchLogins(String[] loginSecretsArray, String customerSecret, FetchLoginsResult callback) {
         new LoginConnector(callback).fetchLogins(loginSecretsArray, customerSecret);
     }
@@ -99,8 +104,8 @@ public class SERequestManager {
     /**
      * Transactions
      * */
-    public void listingTransactionsOfAccount(String customerSecret, String loginSecret, String accountId,
-                                             FetchTransactionsResult callback) {
+    public void fetchTransactionsOfAccount(String customerSecret, String loginSecret, String accountId,
+                                           FetchTransactionsResult callback) {
         new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId);
     }
 }
