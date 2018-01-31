@@ -19,15 +19,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample.tabs;
+package com.saltedge.sdk.sample.features;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -44,47 +44,45 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
-public class TransactionsFragment extends Fragment {
+public class TransactionsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
     private ProgressDialog progressDialog;
     private ArrayList<TransactionData> transactions;
     private String accountId;
     private String providerCode;
 
-    public static TransactionsFragment newInstance(String accountId, String providerCode) {
-        Bundle args = new Bundle();
-        args.putString(SEConstants.KEY_ACCOUNT_ID, accountId);
-        args.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);
-        TransactionsFragment fragment = new TransactionsFragment();
-        fragment.setArguments(args);
-        return fragment;
+    public static Intent newIntent(Activity activity, String accountId, String providerCode) {
+        Intent intent = new Intent(activity, TransactionsActivity.class);
+        intent.putExtra(SEConstants.KEY_ACCOUNT_ID, accountId);
+        intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        return intent;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setContentView(R.layout.fragment_list_view);
+        getSupportActionBar().setTitle(R.string.transactions);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setInitialData();
     }
 
     private void setInitialData() {
-        Bundle bundle = this.getArguments();
-        if (bundle == null) return;
-        accountId = bundle.getString(SEConstants.KEY_ACCOUNT_ID, "");
-        providerCode = bundle.getString(SEConstants.KEY_PROVIDER_CODE, "");
+        Intent intent = this.getIntent();
+        accountId = intent.getStringExtra(SEConstants.KEY_ACCOUNT_ID);
+        providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mainView = inflater.inflate(R.layout.fragment_list_view, null);
-        getTransactions();
-        return mainView;
+    public void onStart() {
+        super.onStart();
+        fetchTransactions();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         UITools.destroyProgressDialog(progressDialog);
+        super.onDestroy();
     }
 
     @Override
@@ -92,18 +90,24 @@ public class TransactionsFragment extends Fragment {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                getFragmentManager().popBackStack();
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void getTransactions() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        String message = "Click ListItem Number " + String.valueOf(i);
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    private void fetchTransactions() {
+        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         transactions = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_transactions));
+        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
         SERequestManager.getInstance().listingTransactionsOfAccount(customerSecret, loginSecret, accountId,
                 new TransactionsConnector.Result() {
                     @Override
@@ -115,23 +119,19 @@ public class TransactionsFragment extends Fragment {
 
                     @Override
                     public void onFailure(String errorResponse) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        UITools.failedParsing(getActivity(), errorResponse);
+                        onConnectFail(errorResponse);
                     }
-        });
+                });
+    }
+
+    private void onConnectFail(String errorResponse) {
+        UITools.destroyAlertDialog(progressDialog);
+        UITools.failedParsing(this, errorResponse);
     }
 
     private void populateTransactions() {
-        ListView listView = getView().findViewById(R.id.listView);
-        listView.setAdapter(new TransactionAdapter(getActivity(), transactions));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getActivity(),
-                        "Click ListItem Number " + position, Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
+        ListView listView = findViewById(R.id.listView);
+        listView.setAdapter(new TransactionAdapter(this, transactions));
+        listView.setOnItemClickListener(this);
     }
-
 }

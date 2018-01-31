@@ -19,13 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample.tabs;
+package com.saltedge.sdk.sample.features;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.saltedge.sdk.sample.R;
@@ -38,15 +38,9 @@ public class TabHostFragmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setIcon(R.drawable.ic_launcher);
-        setContentView(R.layout.tab_host);
-        mTabHost = findViewById(android.R.id.tabhost);
-        mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
-
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.connect_title)).setIndicator(getString(R.string.connect_title)),
-                ConnectFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.logins_title)).setIndicator(getString(R.string.logins_title)),
-                LoginsFragment.class, null);
+        setupActionBar();
+        setContentView(R.layout.activity_tab_host);
+        setupContent();
     }
 
     @Override
@@ -55,4 +49,20 @@ public class TabHostFragmentActivity extends AppCompatActivity {
         SETools.uploadMessage = null;
     }
 
+    private void setupContent() {
+        mTabHost = findViewById(android.R.id.tabhost);
+        mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
+
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.connect_title)).setIndicator(getString(R.string.connect_title)),
+                ConnectFragment.class, null);
+        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.logins_title)).setIndicator(getString(R.string.logins_title)),
+                LoginsFragment.class, null);
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setLogo(R.drawable.ic_launcher);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setDisplayShowHomeEnabled(true);
+    }
 }

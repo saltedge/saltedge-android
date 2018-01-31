@@ -19,9 +19,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample.tabs;
+package com.saltedge.sdk.sample.features;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -50,14 +51,18 @@ public class LoginsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mainView = inflater.inflate(R.layout.fragment_list_view, null);
+        return inflater.inflate(R.layout.fragment_list_view, null);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         getLogins();
-        return mainView;
     }
 
     @Override
@@ -113,12 +118,13 @@ public class LoginsFragment extends Fragment {
     }
 
     public void goToAccounts(String providerCode, String loginId) {
-        AccountsFragment accountsFragment = AccountsFragment.newInstance(loginId, providerCode);
-        try {
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, accountsFragment).addToBackStack(null).commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Intent accountsIntent = AccountsActivity.newIntent(getActivity(), loginId, providerCode);
+        startActivity(accountsIntent);
+//        try {
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.container, accountsFragment).addToBackStack(null).commit();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

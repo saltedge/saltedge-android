@@ -19,19 +19,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample.tabs;
+package com.saltedge.sdk.sample.features;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -50,58 +49,52 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
-public class AccountsFragment extends Fragment implements TokenConnector.Result {
+public class AccountsActivity extends AppCompatActivity implements TokenConnector.Result {
 
     private ProgressDialog progressDialog;
     private ArrayList<AccountData> accounts;
     private String providerCode;
     private String loginId;
 
-    public static AccountsFragment newInstance(String loginId, String providerCode) {
-        Bundle args = new Bundle();
-        args.putString(SEConstants.KEY_LOGIN_ID, loginId);
-        args.putString(SEConstants.KEY_PROVIDER_CODE, providerCode);
-        AccountsFragment fragment = new AccountsFragment();
-        fragment.setArguments(args);
-        return fragment;
+    public static Intent newIntent(Activity activity, String loginId, String providerCode) {
+        Intent intent = new Intent(activity, AccountsActivity.class);
+        intent.putExtra(SEConstants.KEY_LOGIN_ID, loginId);
+        intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        return intent;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setInitialValues();
+        setContentView(R.layout.fragment_list_view);
+        getSupportActionBar().setTitle(R.string.accounts);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setInitialData();
     }
 
-    private void setInitialValues() {
-        Bundle bundle = this.getArguments();
-        if (bundle == null) return;
-        providerCode = bundle.getString(SEConstants.KEY_PROVIDER_CODE, "");
-        loginId = bundle.getString(SEConstants.KEY_LOGIN_ID, "");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_list_view, null);
+    private void setInitialData() {
+        Intent intent = this.getIntent();
+        providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
+        loginId = intent.getStringExtra(SEConstants.KEY_LOGIN_ID);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getAccounts();
+        fetchAccounts();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         UITools.destroyProgressDialog(progressDialog);
+        super.onDestroy();
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_accounts, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        return true;
     }
 
 
@@ -110,8 +103,7 @@ public class AccountsFragment extends Fragment implements TokenConnector.Result 
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                getFragmentManager().popBackStack();
+                finish();
                 return true;
             case R.id.action_refresh:
                 fetchRefreshToken();
@@ -130,95 +122,107 @@ public class AccountsFragment extends Fragment implements TokenConnector.Result 
     @Override
     public void onSuccess(String connectUrl) {
         UITools.destroyAlertDialog(progressDialog);
-        urlObtained(connectUrl);
+        onConnectUrlFetchSuccess(connectUrl);
     }
 
     @Override
     public void onFailure(String errorMessage) {
         UITools.destroyAlertDialog(progressDialog);
-        UITools.failedParsing(getActivity(), errorMessage);
+        UITools.failedParsing(this, errorMessage);
     }
 
     private void fetchRefreshToken() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
+        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
         String locale = "";
         String callbackUrl = Constants.CALLBACK_URL;
         SERequestManager.getInstance().refreshToken(locale, callbackUrl, loginSecret, customerSecret, this);
     }
 
     private void fetchReconnectToken() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
+        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
         String locale = "";
         String callbackUrl = Constants.CALLBACK_URL;
         SERequestManager.getInstance().reconnectToken(locale, callbackUrl, loginSecret, customerSecret, this);
     }
 
     private void deleteLogin() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.removing_login));
+        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_login));
         SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret,
                 new DeleteLoginConnector.Result() {
                     @Override
                     public void onSuccess(Boolean isRemoved) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        getFragmentManager().popBackStack();
+                        if (isRemoved) {
+                            onDeleteLoginSuccess();
+                        }
                     }
 
                     @Override
                     public void onFailure(String errorResponse) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        UITools.failedParsing(getActivity(), errorResponse);
+                        onConnectionError(errorResponse);
                     }
         });
     }
 
-    private void urlObtained(Object urlToGo) {
+    private void onDeleteLoginSuccess() {
+        PreferencesTools.removeLoginSecret(this, providerCode);
+        UITools.destroyAlertDialog(progressDialog);
         getFragmentManager().popBackStack();
-        PreferencesTools.putStringToPreferences(getActivity(), Constants.KEY_REFRESH_URL, (String) urlToGo);
-        TabHost host = getActivity().findViewById(android.R.id.tabhost);
+    }
+
+    private void onConnectUrlFetchSuccess(Object urlToGo) {
+        getFragmentManager().popBackStack();
+        PreferencesTools.putStringToPreferences(this, Constants.KEY_REFRESH_URL, (String) urlToGo);
+        TabHost host = this.findViewById(android.R.id.tabhost);
         host.setCurrentTab(0);
     }
 
-    private void getAccounts() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+    private void fetchAccounts() {
+        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         accounts = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
+        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
         SERequestManager.getInstance().fetchAccounts(customerSecret, loginSecret,
                 new AccountsConnector.Result() {
                     @Override
                     public void onSuccess(ArrayList<AccountData> accountsList) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        accounts = accountsList;
-                        populateAccounts();
+                        onFetchAccountsSuccess(accountsList);
                     }
 
                     @Override
                     public void onFailure(String errorResponse) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        UITools.failedParsing(getActivity(), errorResponse);
+                        onConnectionError(errorResponse);
                     }
         });
     }
 
+    private void onFetchAccountsSuccess(ArrayList<AccountData> accountsList) {
+        UITools.destroyAlertDialog(progressDialog);
+        accounts = accountsList;
+        populateAccounts();
+    }
+
+    private void onConnectionError(String errorResponse) {
+        UITools.destroyAlertDialog(progressDialog);
+        UITools.failedParsing(this, errorResponse);
+    }
+
     private void populateAccounts() {
-        View fragmentView = getView();
-        if (fragmentView == null) return;
-        ListView listView = fragmentView.findViewById(R.id.listView);
+        ListView listView = findViewById(R.id.listView);
         if (listView == null) return;
-        listView.setAdapter(new AccountAdapter(getActivity(), accounts));
+        listView.setAdapter(new AccountAdapter(this, accounts));
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -229,12 +233,12 @@ public class AccountsFragment extends Fragment implements TokenConnector.Result 
     }
 
     private void goToTransactions(String accountId) {
-        TransactionsFragment fragment = TransactionsFragment.newInstance(accountId, providerCode);
-        try {
-            getFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    fragment).addToBackStack(null).commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, providerCode);
+        startActivity(transactionsIntent);
+//        try {
+//            getFragmentManager().beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 }

@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample;
+package com.saltedge.sdk.sample.features;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -30,7 +30,7 @@ import android.text.TextUtils;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.connector.CustomerConnector;
 import com.saltedge.sdk.network.SERequestManager;
-import com.saltedge.sdk.sample.tabs.TabHostFragmentActivity;
+import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;

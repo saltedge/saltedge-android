@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample.tabs;
+package com.saltedge.sdk.sample.features;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -187,8 +187,7 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
     }
 
     private void onLoginSecretSuccessFetch(String loginSecret) {
-        PreferencesTools.putStringToPreferences(getActivity(), providerCode, loginSecret);
-        PreferencesTools.addStringToArrayPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY, loginSecret);
+        PreferencesTools.addLoginSecret(getActivity(), providerCode, loginSecret);
         Toast.makeText(getActivity(), "Login connected", Toast.LENGTH_SHORT).show();
         openLoginsFragment();
     }

@@ -50,10 +50,16 @@ public class PreferencesTools {
         return (String[])set.toArray(new String[set.size()]);
     }
 
-    public static void addStringToArrayPreferences(Context context, String key, String value) {
-        Set<String> set = PreferenceManager.getDefaultSharedPreferences(context).getStringSet(key, new HashSet<String>());
+    public static void addStringToArrayPreferences(Context context, String arrayKey, String value) {
+        Set<String> set = PreferenceManager.getDefaultSharedPreferences(context).getStringSet(arrayKey, new HashSet<String>());
         set.add(value);
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet(key, set).commit();
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet(arrayKey, set).commit();
+    }
+
+    public static void removeStringFromArrayPreferences(Context context, String arrayKey, String value) {
+        Set<String> set = PreferenceManager.getDefaultSharedPreferences(context).getStringSet(arrayKey, new HashSet<String>());
+        set.remove(value);
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet(arrayKey, set).commit();
     }
 
     public static String parseDateToString(Date date) {
@@ -64,6 +70,19 @@ public class PreferencesTools {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static void addLoginSecret(Context context, String providerCode, String loginSecret) {
+        putStringToPreferences(context, providerCode, loginSecret);
+        addStringToArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
+    }
+
+    public static void removeLoginSecret(Context context, String providerCode) {
+        String loginSecret = PreferencesTools.getStringFromPreferences(context, providerCode);
+        if (!loginSecret.isEmpty()) {
+            removeStringFromArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
+        }
+        removeRecordFromPreferences(context, providerCode);
     }
 }
 
