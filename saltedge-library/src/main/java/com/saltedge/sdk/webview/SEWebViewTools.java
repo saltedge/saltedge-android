@@ -34,18 +34,17 @@ import android.webkit.WebViewClient;
 import com.saltedge.sdk.network.ApiConstants;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEJsonTools;
-import com.saltedge.sdk.utils.SETools;
 import com.saltedge.sdk.utils.UITools;
 
 import org.json.JSONObject;
 
 public class SEWebViewTools {
 
+    public static ValueCallback<Uri[]> uploadMessage;
     private String returnStatus;
     private static SEWebViewTools instance;
     private ProgressDialog progressDialog;
     private Activity activity;
-    ValueCallback<Uri[]> uploadMessage;
     private WebViewRedirectListener webViewRedirectListener;
 /**
  * Parse JSON Interface
@@ -75,7 +74,7 @@ public class SEWebViewTools {
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
                                              FileChooserParams fileChooserParams) {
-                SETools.uploadMessage = filePathCallback;
+                uploadMessage = filePathCallback;
                 pickFile();
                 return true;
             }

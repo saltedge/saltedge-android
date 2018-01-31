@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class SEDateTools {
 
@@ -42,6 +43,7 @@ public class SEDateTools {
 
     public static Date parseShortStringToDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             return sdf.parse(date);
         } catch (ParseException e) {

@@ -29,7 +29,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.utils.SETools;
+import com.saltedge.sdk.webview.SEWebViewTools;
 
 public class TabHostFragmentActivity extends AppCompatActivity {
 
@@ -45,8 +45,8 @@ public class TabHostFragmentActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        SETools.uploadMessage.onReceiveValue(new Uri[]{intent.getData()});
-        SETools.uploadMessage = null;
+        SEWebViewTools.uploadMessage.onReceiveValue(new Uri[]{intent.getData()});
+        SEWebViewTools.uploadMessage = null;
     }
 
     private void setupContent() {
