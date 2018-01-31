@@ -25,92 +25,55 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.RequestHandle;
 import com.saltedge.sdk.SaltEdgeSDK;
-import com.saltedge.sdk.utils.SEConstants;
 
-//import org.apache.http.entity.StringEntity;
-//import org.apache.http.protocol.HTTP;
-
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-
-import cz.msebera.android.httpclient.entity.StringEntity;
-import cz.msebera.android.httpclient.protocol.HTTP;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SERestClient {
 
-    public static final int DEFAULT_MAX_RETRIES = 2;
-    public static final int DEFAULT_TIMEOUT = 2000;
+    private static final int DEFAULT_MAX_RETRIES = 2;
+    private static final int DEFAULT_TIMEOUT = 2000;
     private static final int DEFAULT_HTTP_PORT = 80;
     private static final int DEFAULT_HTTPS_PORT = 443;
 
-    public static boolean get(String servicePath,
-                              SEHTTPResponseHandler responseHandler,
-                              HashMap<String, String> headers) {
-        if (isNetworkUnavailable() || responseHandler == null) {
-            return false;
+    public ApiInterface service = createRetrofit().create(ApiInterface.class);
+
+    private static SERestClient instance;
+
+    public static SERestClient getInstance() {
+        if (instance == null) {
+            instance = new SERestClient();
         }
-        AsyncHttpClient client = createHttpClient(headers);
-        RequestHandle handler = client.get(SaltEdgeSDK.getInstance().getContext(),
-                getAbsoluteUrl(servicePath),
-                responseHandler);
-        return (handler != null);
+        return instance;
     }
 
-    public static boolean post(String servicePath,
-                               String jsonRequest,
-                               SEHTTPResponseHandler responseHandler,
-                               HashMap<String, String> headers) {
-        if (isNetworkUnavailable() || responseHandler == null) {
-            return false;
-        }
-        AsyncHttpClient client = createHttpClient(headers);
-        RequestHandle handler = null;
-        handler = client.post(SaltEdgeSDK.getInstance().getContext(),
-                getAbsoluteUrl(servicePath),
-                new StringEntity(jsonRequest, HTTP.UTF_8),
-                ApiConstants.MIME_TYPE_JSON,
-                responseHandler);
-        return (handler != null);
+    private Retrofit createRetrofit() {
+        return new Retrofit.Builder()
+                .baseUrl(getApiBaseUrl())
+                .client(createOkHttpClient())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
     }
 
-    public static boolean delete(String servicePath,
-                                 SEHTTPResponseHandler responseHandler,
-                                 HashMap<String, String> headers) {
-        if (isNetworkUnavailable() || responseHandler == null) {
-            return false;
-        }
-        AsyncHttpClient client = createHttpClient(headers);
-        RequestHandle handler = client.delete(SaltEdgeSDK.getInstance().getContext(),
-                getAbsoluteUrl(servicePath),
-                responseHandler);
-        return (handler != null);
+    private OkHttpClient createOkHttpClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new HeaderInterceptor())
+                .addInterceptor(prepareLoginInterceptor())
+                .build();
     }
 
-    private static AsyncHttpClient createHttpClient(HashMap<String, String> headers) {
-        AsyncHttpClient client = isHttpsPrefixInRootUrl()
-                ? new AsyncHttpClient(false, DEFAULT_HTTP_PORT, DEFAULT_HTTPS_PORT)
-                : new AsyncHttpClient(ApiConstants.HTTP_PORT);
-        client.setMaxRetriesAndTimeout(DEFAULT_MAX_RETRIES, DEFAULT_TIMEOUT);
-        for (HashMap.Entry<String, String> entry : headers.entrySet()) {
-            client.addHeader(entry.getKey(), entry.getValue());
-        }
-        return client;
+    private HttpLoggingInterceptor prepareLoginInterceptor() {
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        return interceptor;
     }
 
-    /**
-     * Convert relative URL to absolute URL.
-     *
-     * @param relativeUrl
-     * @return absolute URL
-     */
-    private static String getAbsoluteUrl(String relativeUrl) {
-        if (relativeUrl == null) {
-            relativeUrl = "";
-        }
-        return ApiConstants.ROOT_URL + relativeUrl;
+    private String getApiBaseUrl() {
+        int port = isHttpsPrefixInRootUrl() ? DEFAULT_HTTPS_PORT : DEFAULT_HTTP_PORT;
+        return ApiConstants.ROOT_URL + ":" + String.valueOf(port);
     }
 
     private static boolean isHttpsPrefixInRootUrl() {
@@ -131,5 +94,4 @@ public class SERestClient {
         }
         return (activeNetworkInfo == null || !activeNetworkInfo.isConnected());
     }
-
 }

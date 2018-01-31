@@ -47,11 +47,11 @@ public class SaltEdgeSDK {
         return clientId;
     }
 
-    public void init(Context context, String appSecret, String clientId) {
-        if (appSecret == null || appSecret.isEmpty()) {
+    public void init(Context context, String clientId, String appSecret) {
+        if (clientId == null || clientId.isEmpty()) {
             throw new RuntimeException(SEConstants.ERROR_CLIENT_ID_IS_NULL);
         }
-        if (clientId == null || clientId.isEmpty()) {
+        if (appSecret == null || appSecret.isEmpty()) {
             throw new RuntimeException(SEConstants.ERROR_APP_SECRET_IS_NULL);
         }
         SaltEdgeSDK.context = context;

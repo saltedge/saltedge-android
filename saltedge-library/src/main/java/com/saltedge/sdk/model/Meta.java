@@ -19,13 +19,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample.utils;
+package com.saltedge.sdk.model;
 
-public class Constants {
+import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.utils.SEConstants;
 
-    public static String LOGIN_SECRET_ARRAY = "login_secret_array";
-    public static String CALLBACK_URL = "http://img2.timeinc.net/health/img/web/2012/10/blogs/fat-cat-overweight-400x400.jpg";
-    public static final String KEY_REFRESH_URL = "refresh_url";
-    public static final String KEY_CUSTOMER_SECRET = "secret";
-    public static final String KEY_CUSTOMER_IDENTIFIER = "identifier";
+public class Meta {
+
+    @SerializedName(SEConstants.KEY_NEXT_ID)
+    private String nextId;
+
+    @SerializedName(SEConstants.KEY_NEXT_PAGE)
+    private String nextPage;
+
+    public String getNextId() {
+        return nextId;
+    }
+
+    public String getNextPage() {
+        return nextPage;
+    }
 }

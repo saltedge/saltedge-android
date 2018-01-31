@@ -19,50 +19,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.models;
+package com.saltedge.sdk.model.response;
 
 import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.model.Meta;
+import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.utils.SEConstants;
-import com.saltedge.sdk.utils.SEDateTools;
 
-import java.util.Date;
+import java.util.List;
 
-public abstract class BaseModel {
+public class ProvidersResponse {
 
-    @SerializedName(SEConstants.KEY_ID)
-    private String id;
+    @SerializedName(SEConstants.KEY_DATA)
+    private List<ProviderData> data;
 
-    @SerializedName(SEConstants.KEY_CREATED_AT)
-    private String createdAt;
+    @SerializedName(SEConstants.KEY_META)
+    private Meta meta;
 
-    @SerializedName(SEConstants.KEY_UPDATED_AT)
-    private String updatedAt;
-
-    public String getId() {
-        return id;
+    public List<ProviderData> getData() {
+        return data;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Date getCreatedAt() {
-        return SEDateTools.parseStringToDate(createdAt);
-    }
-
-    public void setCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return SEDateTools.parseStringToDate(updatedAt);
-    }
-
-    public void setUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public boolean equals(BaseModel object) {
-        return object != null && id == (object.getId());
+    public Meta getMeta() {
+        return meta;
     }
 }

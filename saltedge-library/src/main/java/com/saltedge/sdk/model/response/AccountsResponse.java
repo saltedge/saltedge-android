@@ -1,5 +1,5 @@
 /*
-Copyright © 2015 Salt Edge. https://saltedge.com
+Copyright © 2018 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,29 +19,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.params;
+package com.saltedge.sdk.model.response;
 
 import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.model.AccountData;
+import com.saltedge.sdk.model.Meta;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class SECreateCustomerParams extends SEBaseParams {
+import java.util.List;
+
+public class AccountsResponse {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private SECreateCustomerData data;
+    private List<AccountData> data;
 
-    public SECreateCustomerParams(String customerIdentifier) {
-        super();
-        data = new SECreateCustomerData(customerIdentifier);
+    @SerializedName(SEConstants.KEY_META)
+    private Meta meta;
+
+    public List<AccountData> getData() {
+        return data;
     }
 
-    private static class SECreateCustomerData {
-
-        @SerializedName(SEConstants.KEY_IDENTIFIER)
-        private String identifier;
-
-        private SECreateCustomerData(String identifier) {
-            this.identifier = identifier;
-        }
+    public Meta getMeta() {
+        return meta;
     }
-
 }

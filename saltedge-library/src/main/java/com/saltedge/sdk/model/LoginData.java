@@ -19,7 +19,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.models;
+package com.saltedge.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
@@ -28,7 +28,7 @@ import com.saltedge.sdk.utils.SEDateTools;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class SELogin extends BaseModel {
+public class LoginData extends BaseModel {
 
     @SerializedName(SEConstants.KEY_SECRET)
     private String secret;

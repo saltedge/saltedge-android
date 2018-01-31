@@ -1,5 +1,5 @@
 /*
-Copyright © 2015 Salt Edge. https://saltedge.com
+Copyright © 2018 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,14 +19,28 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.params;
+package com.saltedge.sdk.model.response;
 
-import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.model.Meta;
+import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.utils.SEConstants;
 
-public class SEBaseParams {
+import java.util.List;
 
-    public String toJson() {
-        Gson gson = new Gson();
-        return gson.toJson(this);
+public class TransactionsResponse {
+
+    @SerializedName(SEConstants.KEY_DATA)
+    private List<TransactionData> data;
+
+    @SerializedName(SEConstants.KEY_META)
+    private Meta meta;
+
+    public List<TransactionData> getData() {
+        return data;
+    }
+
+    public Meta getMeta() {
+        return meta;
     }
 }

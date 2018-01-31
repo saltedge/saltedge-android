@@ -100,12 +100,12 @@ One more time, you need:
         WebView webView = (WebView) view.findViewById(R.id.webView);
         SEWebViewTools.getInstance().initializeWithUrl(getActivity(), webView, url, new SEWebViewTools.WebViewRedirectListener() {
             @Override
-            public void onLoadingFinished(String responseStatus, String loginSecret) {
+            public void onLoginSecretFetchSuccess(String responseStatus, String loginSecret) {
                 String loginSecret = loginSecret;
             }
 
             @Override
-            public void onLoadingFinishedWithError(String errorResponse) {...}
+            public void onLoginSecretFetchError(String errorResponse) {...}
         });
     }
 ```

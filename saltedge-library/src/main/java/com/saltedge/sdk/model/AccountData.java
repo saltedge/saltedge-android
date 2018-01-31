@@ -19,72 +19,52 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.models;
+package com.saltedge.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
-import com.saltedge.sdk.utils.SEDateTools;
 
 import org.json.JSONObject;
 
-import java.util.Date;
+public class AccountData extends BaseModel {
 
-public class SETransaction extends BaseModel {
+    @SerializedName(SEConstants.KEY_NAME)
+    private String name;
 
-    @SerializedName(SEConstants.KEY_DUPLICATED)
-    private boolean duplicated;
+    @SerializedName(SEConstants.KEY_NATURE)
+    private String nature;
 
-    @SerializedName(SEConstants.KEY_MODE)
-    private String mode;
-
-    @SerializedName(SEConstants.KEY_MADE_ON)
-    private String madeOn;
-
-    @SerializedName(SEConstants.KEY_AMOUNT)
-    private double amount;
+    @SerializedName(SEConstants.KEY_BALANCE)
+    private double balance;
 
     @SerializedName(SEConstants.KEY_CURRENCY_CODE)
     private String currencyCode;
 
-    @SerializedName(SEConstants.KEY_DESCRIPTION)
-    private String description;
-
-    @SerializedName(SEConstants.KEY_CATEGORY)
-    private String category;
-
     @SerializedName(SEConstants.KEY_EXTRA)
     private JSONObject extra;
 
-    public boolean isDuplicated() {
-        return duplicated;
+    public String getName() {
+        return name;
     }
 
-    public void setDuplicated(boolean duplicated) {
-        this.duplicated = duplicated;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getMode() {
-        return mode;
+    public String getNature() {
+        return nature;
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    public void setNature(String nature) {
+        this.nature = nature;
     }
 
-    public Date getMadeOn() {
-        return SEDateTools.parseShortStringToDate(madeOn);
+    public double getBalance() {
+        return balance;
     }
 
-    public void setMadeOn(String madeOn) {
-        this.madeOn = madeOn;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public String getCurrencyCode() {
@@ -95,22 +75,6 @@ public class SETransaction extends BaseModel {
         this.currencyCode = currencyCode;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
     public JSONObject getExtra() {
         return extra;
     }
@@ -118,5 +82,4 @@ public class SETransaction extends BaseModel {
     public void setExtra(JSONObject extra) {
         this.extra = extra;
     }
-
 }

@@ -24,6 +24,7 @@ package com.saltedge.sdk.sample.tabs;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,24 +36,24 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 
-import com.saltedge.sdk.models.SEAccount;
-import com.saltedge.sdk.models.comparators.SEAccountComparator;
+import com.saltedge.sdk.connector.AccountsConnector;
+import com.saltedge.sdk.connector.DeleteLoginConnector;
+import com.saltedge.sdk.connector.TokenConnector;
+import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.network.SERequestManager;
-import com.saltedge.sdk.params.SETokenParams;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.AccountAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.Tools;
+import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class AccountsFragment extends Fragment {
+public class AccountsFragment extends Fragment implements TokenConnector.Result {
 
     private ProgressDialog progressDialog;
-    private ArrayList<SEAccount> accounts;
+    private ArrayList<AccountData> accounts;
     private String providerCode;
     private String loginId;
 
@@ -69,8 +70,7 @@ public class AccountsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        progressDialog = UITools.createProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setInitialValues();
     }
 
@@ -83,9 +83,13 @@ public class AccountsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mainView = inflater.inflate(R.layout.fragment_list_view, null);
+        return inflater.inflate(R.layout.fragment_list_view, null);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         getAccounts();
-        return mainView;
     }
 
     @Override
@@ -96,7 +100,7 @@ public class AccountsFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.token_menu, menu);
+        inflater.inflate(R.menu.menu_accounts, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -106,7 +110,7 @@ public class AccountsFragment extends Fragment {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 getFragmentManager().popBackStack();
                 return true;
             case R.id.action_refresh:
@@ -123,105 +127,90 @@ public class AccountsFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSuccess(String connectUrl) {
+        UITools.destroyAlertDialog(progressDialog);
+        urlObtained(connectUrl);
+    }
+
+    @Override
+    public void onFailure(String errorMessage) {
+        UITools.destroyAlertDialog(progressDialog);
+        UITools.failedParsing(getActivity(), errorMessage);
+    }
+
     private void fetchRefreshToken() {
-        String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        UITools.showProgress(progressDialog);
-        SETokenParams params = new SETokenParams(loginId, "", Constants.CALLBACK_URL, false, null);
-        SERequestManager.getInstance().refreshToken(params, loginSecret, customerSecret,
-                new SERequestManager.FetchListener() {
-
-                    @Override
-                    public void onFailure(String errorResponse) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        UITools.failedParsing(getActivity(), errorResponse);
-                    }
-
-                    @Override
-                    public void onSuccess(Object response) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        urlObtained(response);
-                    }
-                });
-
+        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        UITools.destroyProgressDialog(progressDialog);
+        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
+        String locale = "";
+        String callbackUrl = Constants.CALLBACK_URL;
+        SERequestManager.getInstance().refreshToken(locale, callbackUrl, loginSecret, customerSecret, this);
     }
 
     private void fetchReconnectToken() {
-        String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        UITools.showProgress(progressDialog);
-        SETokenParams params = new SETokenParams(loginId, "", Constants.CALLBACK_URL, false, null);
-        SERequestManager.getInstance().reconnectToken(params, loginSecret, customerSecret,
-                new SERequestManager.FetchListener() {
+        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        UITools.destroyProgressDialog(progressDialog);
+        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
+        String locale = "";
+        String callbackUrl = Constants.CALLBACK_URL;
+        SERequestManager.getInstance().reconnectToken(locale, callbackUrl, loginSecret, customerSecret, this);
+    }
+
+    private void deleteLogin() {
+        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        UITools.destroyProgressDialog(progressDialog);
+        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.removing_login));
+        SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret,
+                new DeleteLoginConnector.Result() {
+                    @Override
+                    public void onSuccess(Boolean isRemoved) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        getFragmentManager().popBackStack();
+                    }
+
                     @Override
                     public void onFailure(String errorResponse) {
                         UITools.destroyAlertDialog(progressDialog);
                         UITools.failedParsing(getActivity(), errorResponse);
                     }
-
-                    @Override
-                    public void onSuccess(Object response) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        urlObtained(response);
-                    }
-                });
-
-    }
-
-    private void deleteLogin() {
-        String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        UITools.showProgress(progressDialog);
-        SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret, new SERequestManager.FetchListener() {
-            @Override
-            public void onFailure(String errorResponse) {
-                UITools.destroyAlertDialog(progressDialog);
-                UITools.failedParsing(getActivity(), errorResponse);
-            }
-
-            @Override
-            public void onSuccess(Object response) {
-                UITools.destroyAlertDialog(progressDialog);
-                getFragmentManager().popBackStack();
-            }
         });
     }
 
     private void urlObtained(Object urlToGo) {
         getFragmentManager().popBackStack();
-        Tools.addStringToPreferences(getActivity(), Constants.KEY_REFRESH_URL, (String) urlToGo);
+        PreferencesTools.putStringToPreferences(getActivity(), Constants.KEY_REFRESH_URL, (String) urlToGo);
         TabHost host = getActivity().findViewById(android.R.id.tabhost);
         host.setCurrentTab(0);
     }
 
     private void getAccounts() {
-        String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         accounts = new ArrayList<>();
-        UITools.showProgress(progressDialog);
-        SERequestManager.getInstance().listingAccounts(loginSecret, customerSecret, true, new SERequestManager.FetchListener() {
-            @Override
-            public void onFailure(String errorResponse) {
-                UITools.destroyAlertDialog(progressDialog);
-                UITools.failedParsing(getActivity(), errorResponse);
-            }
+        UITools.destroyProgressDialog(progressDialog);
+        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
+        SERequestManager.getInstance().fetchAccounts(customerSecret, loginSecret,
+                new AccountsConnector.Result() {
+                    @Override
+                    public void onSuccess(ArrayList<AccountData> accountsList) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        accounts = accountsList;
+                        populateAccounts();
+                    }
 
-            @Override
-            public void onSuccess(Object response) {
-                UITools.destroyAlertDialog(progressDialog);
-                accounts = (ArrayList<SEAccount>) response;
-                Collections.sort(accounts, new SEAccountComparator());
-                populateAccounts();
-            }
+                    @Override
+                    public void onFailure(String errorResponse) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        UITools.failedParsing(getActivity(), errorResponse);
+                    }
         });
-
-    }
-
-    private void failedParsing(String message) {
-        UITools.showAlertDialog(getActivity(), message);
     }
 
     private void populateAccounts() {
@@ -233,7 +222,7 @@ public class AccountsFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SEAccount account= accounts.get(position);
+                AccountData account= accounts.get(position);
                 goToTransactions(account.getId());
             }
         });

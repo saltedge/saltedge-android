@@ -26,20 +26,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v7.app.AppCompatActivity;
 
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.utils.SETools;
 
-public class TabHostFragmentActivity extends FragmentActivity {
+public class TabHostFragmentActivity extends AppCompatActivity {
 
     private FragmentTabHost mTabHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActionBar().setIcon(R.drawable.ic_launcher);
+        getSupportActionBar().setIcon(R.drawable.ic_launcher);
         setContentView(R.layout.tab_host);
-        mTabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+        mTabHost = findViewById(android.R.id.tabhost);
         mTabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
 
         mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.connect_title)).setIndicator(getString(R.string.connect_title)),

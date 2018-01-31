@@ -21,70 +21,87 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.sample;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.saltedge.sdk.SaltEdgeSDK;
+import com.saltedge.sdk.connector.CustomerConnector;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.tabs.TabHostFragmentActivity;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.Tools;
+import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
-import com.saltedge.sdk.utils.SEConstants;
 
-public class StartActivity extends Activity {
+import java.util.Date;
 
-    ProgressDialog progressDialog;
+public class StartActivity extends AppCompatActivity {
+
+    private final String customerIdentifierPrefix = "ANDROID_APP_EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
+    private final String clientAppId = "R4Qw517-RL9FI5f2_xZeechnO1wduKAbUfkts7bV4vY";//TODO SET APP ID
+    private final String clientAppSecret = "Ylhr7TdW8uf-rpPbaUyJOSMqmiR_2qDMCz__tblPOZ8";//TODO SET APP SECRET
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        progressDialog = UITools.createProgressDialog(this, "");
+
         setupSaltEdgeSDK();
         createCustomer();
     }
 
     private void setupSaltEdgeSDK() {
-        String appSecret = "Su9rqnXxtB5dC38Tb7PHTQhLhLjecadvT6xxDYZLx08";
-        String clientId = "FFRs9xmO0GCUUG6FFZfQtg";
-        SaltEdgeSDK.getInstance().init(this.getApplicationContext(), appSecret, clientId);
+        SaltEdgeSDK.getInstance().init(this.getApplicationContext(), clientAppId, clientAppSecret);
     }
 
     private void createCustomer() {
-        String customerIdentifier = "EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
-        UITools.showProgress(progressDialog);
-        String customerSecret = Tools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        progressDialog = UITools.showProgressDialog(this, getString(R.string.creating_customer));
+        String customerIdentifier = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_IDENTIFIER);
+        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+
+        if (customerIdentifier.isEmpty()) {
+            customerIdentifier = customerIdentifierPrefix + String.valueOf(new Date().getTime());
+            PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_IDENTIFIER, customerIdentifier);
+        }
+
         if (TextUtils.isEmpty(customerSecret)) {
-            SERequestManager.getInstance().createCustomer(customerIdentifier, new SERequestManager.FetchListener() {
+            SERequestManager.getInstance().createCustomer(customerIdentifier, new CustomerConnector.Result() {
                 @Override
-                public void onFailure(String errorResponse) {
-                    UITools.destroyAlertDialog(progressDialog);
-                    UITools.failedParsing(StartActivity.this, errorResponse);
+                public void onSuccess(String secret) {
+                    onSecretCreateSuccess(secret);
                 }
 
                 @Override
-                public void onSuccess(Object response) {
-                    UITools.destroyAlertDialog(progressDialog);
-                    dataObtained((String) response);
+                public void onFailure(String errorResponse) {
+                    onCreateCustomerFailure(errorResponse);
+
                 }
             });
         } else {
-            intentToTabs();
+            showTabsActivity();
         }
     }
 
-    private void intentToTabs() {
-        Intent intent = new Intent(this, TabHostFragmentActivity.class);
-        startActivity(intent);
+    private void onCreateCustomerFailure(String errorResponse) {
+        UITools.destroyAlertDialog(progressDialog);
+        UITools.failedParsing(StartActivity.this, errorResponse);
     }
 
-    private void dataObtained(String secret) {
-        Tools.addStringToPreferences(this, Constants.KEY_CUSTOMER_SECRET, secret);
-        intentToTabs();
+    private void onSecretCreateSuccess(String secret) {
+        UITools.destroyAlertDialog(progressDialog);
+        PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_SECRET, secret);
+        showTabsActivity();
     }
 
+    private void showTabsActivity() {
+        try {
+            Intent intent = new Intent(this, TabHostFragmentActivity.class);
+            startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

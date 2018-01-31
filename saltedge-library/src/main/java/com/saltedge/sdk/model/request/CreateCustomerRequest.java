@@ -19,42 +19,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.params;
+package com.saltedge.sdk.model.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class SECreateTokenParams extends SEBaseParams {
+public class CreateCustomerRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private SECreateTokenData data;
+    private SECreateCustomerData data;
 
-    public SECreateTokenParams(String[] allowedCountries,
-                               String providerCode,
-                               String returnTo) {
-        super();
-        data = new SECreateTokenData(allowedCountries, providerCode, returnTo, SEConstants.IFRAME);
+    public CreateCustomerRequest(String customerIdentifier) {
+        data = new SECreateCustomerData(customerIdentifier);
     }
 
-    private static class SECreateTokenData {
+    class SECreateCustomerData {
 
-        @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
-        private String[] allowedCountries;
+        @SerializedName(SEConstants.KEY_IDENTIFIER)
+        private String identifier;
 
-        @SerializedName(SEConstants.KEY_PROVIDER_CODE)
-        private String providerCode;
-
-        @SerializedName(SEConstants.KEY_RETURN_TO)
-        private String returnTo;
-
-        @SerializedName(SEConstants.JAVASCRIPT_CALLBACK)
-        private String javascriptCallback;
-
-        private SECreateTokenData(String[] allowedCountries, String providerCode, String returnTo, String javascriptCallback) {
-            this.allowedCountries = allowedCountries;
-            this.providerCode = providerCode;
-            this.returnTo = returnTo;
-            this.javascriptCallback = javascriptCallback;
+        SECreateCustomerData(String customerIdentifier) {
+            this.identifier = customerIdentifier;
         }
     }
 }

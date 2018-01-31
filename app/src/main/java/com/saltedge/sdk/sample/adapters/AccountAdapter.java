@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.models.SEAccount;
+import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.sample.R;
 
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ import java.util.ArrayList;
 public class AccountAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
-    ArrayList<SEAccount> accountList;
-    public AccountAdapter(Context context, ArrayList<SEAccount> accountList) {
+    ArrayList<AccountData> accountList;
+    public AccountAdapter(Context context, ArrayList<AccountData> accountList) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.accountList = accountList;
@@ -49,7 +49,7 @@ public class AccountAdapter extends BaseAdapter {
     }
 
     @Override
-    public SEAccount getItem(int position) {
+    public AccountData getItem(int position) {
         return accountList.get(position);
     }
 
@@ -63,7 +63,7 @@ public class AccountAdapter extends BaseAdapter {
         View rowView = layoutInflater.inflate(R.layout.list_item_account, parent, false);
         TextView title = (TextView) rowView.findViewById(R.id.title);
         TextView subtitle = (TextView) rowView.findViewById(R.id.subtitle);
-        SEAccount account = getItem(position);
+        AccountData account = getItem(position);
         title.setText(account.getName());
         subtitle.setText(String.valueOf(account.getBalance()) + " " +account.getCurrencyCode());
         return rowView;

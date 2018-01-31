@@ -19,48 +19,45 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.models;
+package com.saltedge.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
-import com.saltedge.sdk.utils.SEDateTools;
 
-import java.util.Date;
-
-public class SEProvider extends BaseModel {
-
-    @SerializedName(SEConstants.KEY_AUTOMATIC_FETCH)
-    private boolean automaticFetch;
+public class ProviderData extends BaseModel {
 
     @SerializedName(SEConstants.KEY_CODE)
     private String code;
 
-    @SerializedName(SEConstants.KEY_COUNTRY_CODE)
-    private String countryCode;
-
-    @SerializedName(SEConstants.KEY_FORUM_URL)
-    private String forumUrl;
-
-    @SerializedName(SEConstants.KEY_HOME_URL)
-    private String homeUrl;
-
-    @SerializedName(SEConstants.KEY_INSTRUCTION)
-    private String instruction;
-
-    @SerializedName(SEConstants.KEY_INTERACTIVE)
-    private boolean interactive;
-
-    @SerializedName(SEConstants.KEY_LOGIN_URL)
-    private String loginUrl;
+    @SerializedName(SEConstants.KEY_NAME)
+    private String name;
 
     @SerializedName(SEConstants.KEY_MODE)
     private String mode;
 
-    @SerializedName(SEConstants.KEY_NAME)
-    private String name;
-
     @SerializedName(SEConstants.KEY_STATUS)
     private String status;
+
+    @SerializedName(SEConstants.KEY_AUTOMATIC_FETCH)
+    private boolean automaticFetch;
+
+    @SerializedName(SEConstants.KEY_INTERACTIVE)
+    private boolean interactive;
+
+    @SerializedName(SEConstants.KEY_INSTRUCTION)
+    private String instruction;
+
+    @SerializedName(SEConstants.KEY_HOME_URL)
+    private String homeUrl;
+
+    @SerializedName(SEConstants.KEY_LOGIN_URL)
+    private String loginUrl;
+
+    @SerializedName(SEConstants.KEY_FORUM_URL)
+    private String forumUrl;
+
+    @SerializedName(SEConstants.KEY_COUNTRY_CODE)
+    private String countryCode;
 
     @SerializedName(SEConstants.KEY_REFRESH_TIMEOUT)
     private int refreshTimeout;

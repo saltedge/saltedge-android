@@ -23,32 +23,33 @@ package com.saltedge.sdk.network;
 
 public class ApiConstants {
 
-    public static final int HTTP_PORT = 80;
-
     //Headers
-    public static final String KEY_HEADER_CLIENT_APP_SECRET = "Secret";
-    public static final String KEY_HEADER_CLIENT_APP_ID = "App-id";
-    public static final String KEY_HEADER_CUSTOMER_SECRET = "Customer-Secret";
-    public static final String KEY_HEADER_LOGIN_SECRET = "Login-secret";
-    public static final String MIME_TYPE_JSON = "application/json";
+    static final String KEY_HEADER_ACCEPT = "Accept";
+    static final String KEY_HEADER_CONTENT_TYPE = "Content-type";
+    static final String KEY_HEADER_CLIENT_APP_ID = "App-id";
+    static final String KEY_HEADER_CLIENT_APP_SECRET = "Secret";
+    static final String KEY_HEADER_CUSTOMER_SECRET = "Customer-Secret";
+    static final String KEY_HEADER_LOGIN_SECRET = "Login-secret";
+    static final String MIME_TYPE_JSON = "application/json";
 
     //PREFIX
     public static final String PREFIX_SALTBRIDGE = "saltbridge://connect/";
-    public static final String PREFIX_FROM = "?from_id=";
 
     //API urls
-    public static final String ROOT_URL = "https://www.saltedge.com/api/v4";
-    public static final String CUSTOMERS_URL = "/customers";
-    public static final String PROVIDERS_URL = "/providers";
-    public static final String PER_PAGE = "/per";
-    public static final String TOKENS_URL = "/tokens";
-    public static final String LOGIN_URL = "/login";
-    public static final String ACCOUNTS_URL = "/accounts";
-    public static final String TRANSACTIONS_URL = "/transactions";
-    public static final String PENDING_TRANSACTIONS_URL = "/pending";
+    static final String ROOT_URL = "https://www.saltedge.com";
+    private static final String API_VERSION_PATH = "/api/v4";
+    static final String API_CUSTOMERS_PATH = API_VERSION_PATH + "/customers";
+    static final String API_PROVIDERS_PATHL = API_VERSION_PATH + "/providers";
+    static final String PER_PAGE = API_VERSION_PATH + "/per";
+    private static final String API_TOKENS_PATH = API_VERSION_PATH + "/tokens";
+    static final String API_LOGIN_PATH = API_VERSION_PATH + "/login";
+    static final String API_ACCOUNTS_PATH = API_VERSION_PATH + "/accounts";
+    static final String API_TRANSACTIONS_PATH = API_VERSION_PATH + "/transactions";
+    static final String API_PENDING_TRANSACTIONS_PATH = API_VERSION_PATH + "/pending";
+    static final String API_TOKEN_RECONNECT_PATH = ApiConstants.API_TOKENS_PATH + "/reconnect";
+    static final String API_TOKEN_CREATE_PATH = ApiConstants.API_TOKENS_PATH + "/create";
+    static final String API_TOKEN_REFRESH_PATH = ApiConstants.API_TOKENS_PATH + "/refresh";
 
-    //Login tails
-    public static final String TAIL_RECONNECT = "/reconnect";
-    public static final String TAIL_CREATE = "/create";
-    public static final String TAIL_REFRESH = "/refresh";
+    //SCOPES
+    public static final String[] SCOPE_ACCOUNT_TRANSACTIONS = {"accounts", "transactions"};
 }

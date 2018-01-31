@@ -33,7 +33,7 @@ import android.webkit.WebViewClient;
 
 import com.saltedge.sdk.network.ApiConstants;
 import com.saltedge.sdk.utils.SEConstants;
-import com.saltedge.sdk.utils.SEJSONTools;
+import com.saltedge.sdk.utils.SEJsonTools;
 import com.saltedge.sdk.utils.SETools;
 import com.saltedge.sdk.utils.UITools;
 
@@ -51,8 +51,8 @@ public class SEWebViewTools {
  * Parse JSON Interface
  * */
     public interface WebViewRedirectListener {
-        void onLoadingFinished(String statusResponse, String loginSecret);
-        void onLoadingFinishedWithError(String statusResponse);
+        void onLoginSecretFetchSuccess(String statusResponse, String loginSecret);
+        void onLoginSecretFetchError(String statusResponse);
     }
 
     public static SEWebViewTools getInstance() {
@@ -93,7 +93,7 @@ public class SEWebViewTools {
     private class CustomWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (urlIsFenturyRedirection(url)) {
+            if (urlIsSaltedgeRedirection(url)) {
                 view.loadUrl(url);
             }
             return true;
@@ -112,16 +112,16 @@ public class SEWebViewTools {
         }
     }
 
-    private boolean urlIsFenturyRedirection(String url) {
+    private boolean urlIsSaltedgeRedirection(String url) {
         if (url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
             String redirectURL = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
-            JSONObject dataJsonObject = SEJSONTools.getObject(SEJSONTools.stringToJSON(redirectURL), SEConstants.KEY_DATA);
-            String stage = SEJSONTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
-            String loginSecret = SEJSONTools.getString(dataJsonObject, SEConstants.KEY_SECRET);
+            JSONObject dataJsonObject = SEJsonTools.getObject(SEJsonTools.stringToJSON(redirectURL), SEConstants.KEY_DATA);
+            String stage = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
+            String loginSecret = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_SECRET);
             if (stage.equals(SEConstants.STATUS_SUCCESS)) {
-                webViewRedirectListener.onLoadingFinished(stage, loginSecret);
+                webViewRedirectListener.onLoginSecretFetchSuccess(stage, loginSecret);
             } else if (stage.equals(SEConstants.STATUS_ERROR)) {
-                webViewRedirectListener.onLoadingFinishedWithError(stage);
+                webViewRedirectListener.onLoginSecretFetchError(stage);
             }
             return false;
         }

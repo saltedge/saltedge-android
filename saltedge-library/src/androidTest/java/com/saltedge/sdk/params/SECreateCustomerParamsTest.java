@@ -2,13 +2,9 @@ package com.saltedge.sdk.params;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.saltedge.sdk.utils.SEDateTools;
+import com.saltedge.sdk.model.request.CreateCustomerRequest;
 
 import junit.framework.TestCase;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 /**
  * Created by AGalkin
@@ -18,7 +14,7 @@ public class SECreateCustomerParamsTest extends TestCase {
 
     @SmallTest
     public void testCreateCustomerToJson() throws Exception {
-        SECreateCustomerParams params = new SECreateCustomerParams("customerId");
+        CreateCustomerRequest params = new CreateCustomerRequest("customerId");
         assertEquals("{\"data\":{\"identifier\":\"customerId\"}}", params.toJson().toString());
     }
 

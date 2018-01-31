@@ -30,15 +30,19 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-public class Tools {
+public class PreferencesTools {
 
-    public static void addStringToPreferences(Context context, String key, String value) {
+    public static void putStringToPreferences(Context context, String key, String value) {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit().putString(key, value).commit();
     }
 
     public static String getStringFromPreferences(Context context, String key) {
         return PreferenceManager.getDefaultSharedPreferences(context).getString(key, "");
+    }
+
+    public static void removeRecordFromPreferences(Context context, String key) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().remove(key).apply();
     }
 
     public static String[] getArrayFromPreferences(Context context, String key) {

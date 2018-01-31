@@ -34,10 +34,17 @@ public class SEConstants {
     public static final String KEY_DATA = "data";
     public static final String KEY_META = "meta";
     public static final String KEY_NEXT_ID = "next_id";
+    public static final String KEY_NEXT_PAGE = "next_page";
     public static final String KEY_ERROR_MESSAGE = "error_message";
+    public static final String KEY_ERROR = "error";
+    public static final String KEY_ERROR_CLASS = "error_class";
     public static final String KEY_IDENTIFIER = "identifier";
     public static final String KEY_OAUTH = "oauth";
     public static final String KEY_CONNECT_URL = "connect_url";
+    public static final String KEY_TOKEN = "token";
+    public static final String KEY_EXPIRES_AT = "expires_at";
+    public static final String KEY_REMOVED = "removed";
+    public static final String KEY_FETCH_SCOPES = "fetch_scopes";
 
     //String resources
     public static final String REQUEST_ERROR = "Request error";
@@ -65,6 +72,7 @@ public class SEConstants {
     public static final String KEY_REFRESH_TIMEOUT = "refresh_timeout";
     public static final String KEY_CREATED_AT = "created_at";
     public static final String KEY_UPDATED_AT = "updated_at";
+    public static final String KEY_INCLUDE_FAKE_PROVIDERS = "include_fake_providers";
 
     //Login keys
     public static final String KEY_ID = "id";

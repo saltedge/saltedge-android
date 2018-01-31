@@ -22,6 +22,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:design:27.0.2'
     compile project(':saltedge-library')
     compile 'com.google.code.gson:gson:2.8.2'
 }

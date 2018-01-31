@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.models.SELogin;
+import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.sample.R;
 
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ import java.util.ArrayList;
 public class LoginsAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
-    ArrayList<SELogin> loginsList;
-    public LoginsAdapter(Context context, ArrayList<SELogin> loginsList) {
+    ArrayList<LoginData> loginsList;
+    public LoginsAdapter(Context context, ArrayList<LoginData> loginsList) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.loginsList = loginsList;
@@ -49,7 +49,7 @@ public class LoginsAdapter extends BaseAdapter {
     }
 
     @Override
-    public SELogin getItem(int position) {
+    public LoginData getItem(int position) {
         return loginsList.get(position);
     }
 
@@ -62,7 +62,7 @@ public class LoginsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = layoutInflater.inflate(R.layout.list_item_login, parent, false);
         TextView title = (TextView) rowView.findViewById(R.id.title);
-        SELogin login = getItem(position);
+        LoginData login = getItem(position);
         title.setText(login.getProviderName());
         return rowView;
     }

@@ -22,7 +22,6 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.tabs;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,27 +32,66 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.TabHost;
+import android.widget.Toast;
 
-import com.saltedge.sdk.models.SEProvider;
+import com.saltedge.sdk.connector.ProvidersConnector;
+import com.saltedge.sdk.connector.TokenConnector;
+import com.saltedge.sdk.model.ProviderData;
+import com.saltedge.sdk.network.ApiConstants;
 import com.saltedge.sdk.network.SERequestManager;
-import com.saltedge.sdk.params.SECreateTokenParams;
+import com.saltedge.sdk.sample.BuildConfig;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.Tools;
+import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
-import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.webview.SEWebViewTools;
 
-public class ConnectFragment extends Fragment {
+import java.util.ArrayList;
+
+public class ConnectFragment extends Fragment implements ProvidersDialog.ProviderSelectListener {
 
     private ProgressDialog progressDialog;
-    private WebView webView;
     private String providerCode;
+    private ArrayList<ProviderData> providers;
+    private WebView webView;
+    private String applicationLanguage = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        applicationLanguage = getResources().getConfiguration().locale.getLanguage();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View mainView = inflater.inflate(R.layout.fragment_connect, null);
+        webView = mainView.findViewById(R.id.webView);
+        return mainView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_provider, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_provider_list:
+                fetchProviders();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        String url = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_REFRESH_URL);
+        loadURL(url.isEmpty() ? Constants.CALLBACK_URL : url);
     }
 
     @Override
@@ -63,91 +101,104 @@ public class ConnectFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View mainView = inflater.inflate(R.layout.fragment_connect, null);
-        progressDialog = UITools.createProgressDialog(getActivity(), getString(R.string.creating_token));
-        String url = Tools.getStringFromPreferences(getActivity(), Constants.KEY_REFRESH_URL);
-        goToURL(url.isEmpty() ? Constants.CALLBACK_URL : url, mainView);
-        return mainView;
+    public void onProviderSelected(ProviderData provider) {
+        Toast.makeText(getActivity(), "Selected " + String.valueOf(provider.getName()), Toast.LENGTH_SHORT).show();
+        createToken(provider);
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.provider_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_provider_list:
-                UITools.fetchProviders(getActivity(), new DialogInterface.OnClickListener() {
+    private void loadURL(String url) {
+        PreferencesTools.putStringToPreferences(getActivity(), Constants.KEY_REFRESH_URL, "");
+        SEWebViewTools.getInstance().initializeWithUrl(getActivity(), webView, url,
+                new SEWebViewTools.WebViewRedirectListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        obtainCreateToken(UITools.searchedProviders.get(which));
+                    public void onLoginSecretFetchSuccess(String responseStatus, String loginSecret) {
+                        onLoginSecretSuccessFetch(loginSecret);
+                    }
+
+                    @Override
+                    public void onLoginSecretFetchError(String errorResponse) {
+                        showError(errorResponse);
+                    }
+        });
+    }
+
+    private void createToken(ProviderData selectedProvider) {
+        UITools.destroyProgressDialog(progressDialog);
+        progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.creating_token));
+        providerCode = selectedProvider.getCode();
+        String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
+        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        SERequestManager.getInstance().createToken(providerCode, scopes, Constants.CALLBACK_URL, customerSecret,
+                new TokenConnector.Result() {
+                    @Override
+                    public void onSuccess(String connectUrl) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        dataObtained(connectUrl);
+                    }
+
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        failedParsing(errorMessage);
                     }
                 });
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+    }
+
+    private void fetchProviders() {
+        if (providers == null || providers.isEmpty()) {
+            UITools.destroyProgressDialog(progressDialog);
+            progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_providers));
+            String countryCode = (BuildConfig.DEBUG) ? "XF" : applicationLanguage;
+            SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersConnector.Result() {
+
+                @Override
+                public void onSuccess(ArrayList<ProviderData> providersList) {
+                    UITools.destroyAlertDialog(progressDialog);
+                    providers = providersList;
+                    showProviders();
+                }
+
+                @Override
+                public void onFailure(String errorResponse) {
+                    UITools.destroyAlertDialog(progressDialog);
+                    UITools.failedParsing(getActivity(), errorResponse);
+                }
+            });
+        } else {
+            showProviders();
         }
     }
 
-    private void obtainCreateToken(SEProvider selectedProvider) {
-        UITools.showProgress(progressDialog);
-        providerCode = selectedProvider.getCode();
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        SECreateTokenParams params = new SECreateTokenParams(new String[0], providerCode, Constants.CALLBACK_URL);
-        SERequestManager.getInstance().createToken(params, customerSecret,
-                new SERequestManager.FetchListener() {
-                    @Override
-                    public void onFailure(String errorResponse) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        failedParsing(errorResponse);
-                    }
-
-                    @Override
-                    public void onSuccess(Object response) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        dataObtained(response);
-                    }
-                });
+    private void showProviders() {
+        if (providers != null && !providers.isEmpty()) {
+            Toast.makeText(getActivity(), "Fetched " + String.valueOf(providers.size()) + " providers", Toast.LENGTH_SHORT).show();
+            ProvidersDialog.newInstance(providers, this).show(getFragmentManager(), "");
+        } else {
+            UITools.showAlertDialog(getActivity(), getString(R.string.providers_empty));
+        }
     }
 
     private void failedParsing(String message) {
         UITools.showAlertDialog(getActivity(), message);
     }
 
-    private void dataObtained(Object urlToGo) {
-        goToURL((String) urlToGo, getView());
+    private void dataObtained(String urlToGo) {
+        loadURL(urlToGo);
     }
 
-    private void goToURL(String url, View view) {
-        Tools.addStringToPreferences(getActivity(), Constants.KEY_REFRESH_URL, "");
-        webView = (WebView) view.findViewById(R.id.webView);
-        SEWebViewTools.getInstance().initializeWithUrl(getActivity(), webView, url, new SEWebViewTools.WebViewRedirectListener() {
-            @Override
-            public void onLoadingFinished(String responseStatus, String loginSecret) {
-                Tools.addStringToPreferences(getActivity(), providerCode, loginSecret);
-                Tools.addStringToArrayPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY, loginSecret);
-                openLoginsFragment();
-            }
+    private void onLoginSecretSuccessFetch(String loginSecret) {
+        PreferencesTools.putStringToPreferences(getActivity(), providerCode, loginSecret);
+        PreferencesTools.addStringToArrayPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY, loginSecret);
+        Toast.makeText(getActivity(), "Login connected", Toast.LENGTH_SHORT).show();
+        openLoginsFragment();
+    }
 
-            @Override
-            public void onLoadingFinishedWithError(String errorResponse) {
-                // TODO
-            }
-        });
+    private void showError(String errorResponse) {
+        UITools.showAlertDialog(getActivity(), errorResponse);
     }
 
     private void openLoginsFragment() {
-        TabHost host = (TabHost) getActivity().findViewById(android.R.id.tabhost);
+        TabHost host = getActivity().findViewById(android.R.id.tabhost);
         host.setCurrentTab(1);
     }
 }

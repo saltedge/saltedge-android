@@ -21,11 +21,16 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.utils;
 
+import com.google.gson.Gson;
+import com.saltedge.sdk.model.ApiError;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class SEJSONTools {
+import okhttp3.ResponseBody;
+
+public class SEJsonTools {
 
     /**
      * Extract string, int, boolean, double, array, object, stringToJSON or errorMessage value from JSONObject by key.
@@ -79,10 +84,20 @@ public class SEJSONTools {
 
     public static String getErrorMessage(JSONObject error) {
         String result = SEConstants.REQUEST_ERROR;
-        if (!SEJSONTools.getString(error, SEConstants.KEY_ERROR_MESSAGE).isEmpty()) {
-            result = SEJSONTools.getString(error, SEConstants.KEY_ERROR_MESSAGE);
+        if (!SEJsonTools.getString(error, SEConstants.KEY_ERROR_MESSAGE).isEmpty()) {
+            result = SEJsonTools.getString(error, SEConstants.KEY_ERROR_MESSAGE);
         }
         return result;
+    }
+
+    public static String getErrorMessage(ResponseBody error) {
+        try {
+            ApiError apiError = new Gson().fromJson(error.string(), ApiError.class);
+            return apiError.getErrorMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return SEConstants.REQUEST_ERROR;
+        }
     }
 
     private static boolean validation(JSONObject jsonObject, String key) {

@@ -28,18 +28,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.models.SETransaction;
+import com.saltedge.sdk.model.TransactionData;
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.sample.utils.Tools;
+import com.saltedge.sdk.sample.utils.PreferencesTools;
 
 import java.util.ArrayList;
 
 public class TransactionAdapter extends BaseAdapter {
 
     LayoutInflater layoutInflater;
-    ArrayList<SETransaction> transactionsList;
+    ArrayList<TransactionData> transactionsList;
 
-    public TransactionAdapter(Context context, ArrayList<SETransaction> transactionsList) {
+    public TransactionAdapter(Context context, ArrayList<TransactionData> transactionsList) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.transactionsList = transactionsList;
@@ -51,7 +51,7 @@ public class TransactionAdapter extends BaseAdapter {
     }
 
     @Override
-    public SETransaction getItem(int position) {
+    public TransactionData getItem(int position) {
         return transactionsList.get(position);
     }
 
@@ -66,9 +66,9 @@ public class TransactionAdapter extends BaseAdapter {
         TextView title = (TextView) rowView.findViewById(R.id.title);
         TextView subtitleLeft = (TextView) rowView.findViewById(R.id.subtitleLeft);
         TextView subtitleRight = (TextView) rowView.findViewById(R.id.subtitleRight);
-        SETransaction transaction = getItem(position);
+        TransactionData transaction = getItem(position);
         title.setText(transaction.getDescription());
-        subtitleLeft.setText(Tools.parseDateToString(transaction.getMadeOn()));
+        subtitleLeft.setText(PreferencesTools.parseDateToString(transaction.getMadeOn()));
         subtitleRight.setText(transaction.getCurrencyCode() + " " + transaction.getAmount());
         return rowView;
     }

@@ -30,26 +30,27 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.saltedge.sdk.models.SELogin;
+import com.saltedge.sdk.connector.LoginConnector;
+import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.LoginsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.Tools;
+import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class LoginsFragment extends Fragment {
 
     private ProgressDialog progressDialog;
-    private ArrayList<SELogin> logins;
+    private ArrayList<LoginData> loginsList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        progressDialog = UITools.createProgressDialog(getActivity(), getString(R.string.loading));
     }
 
     @Override
@@ -66,46 +67,45 @@ public class LoginsFragment extends Fragment {
     }
 
     private void getLogins() {
-        String[] loginSecretArray = Tools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
-        logins = new ArrayList<>();
-        getAllLogins(loginSecretArray, 0);
+        String[] loginSecretArray = PreferencesTools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
+        loginsList = new ArrayList<>();
+        if (loginSecretArray.length == 0) {
+            UITools.showAlertDialog(getActivity(), getString(R.string.no_logins));
+        } else {
+            getAllLogins(loginSecretArray);
+        }
     }
 
-    public void getAllLogins(final String[] loginSecretArray, int i) {
-        final int position = i;
-        if (position >= loginSecretArray.length) {
-            showLogin();
-            return;
-        }
-        UITools.showProgress(progressDialog);
-        String loginSecret = loginSecretArray[position];
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        SERequestManager.getInstance().fetchLogin(loginSecret, customerSecret,
-                new SERequestManager.FetchListener() {
+    public void getAllLogins(String[] loginSecretsArray) {
+        UITools.destroyProgressDialog(progressDialog);
+        progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.loading_logins));
+        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+        SERequestManager.getInstance().fetchLogins(loginSecretsArray, customerSecret,
+                new LoginConnector.Result() {
+
+                    @Override
+                    public void onSuccess(List<LoginData> logins) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        loginsList = new ArrayList<>(logins);
+                        showLogins();
+                    }
 
                     @Override
                     public void onFailure(String errorResponse) {
                         UITools.destroyAlertDialog(progressDialog);
                         UITools.failedParsing(getActivity(), errorResponse);
                     }
-
-                    @Override
-                    public void onSuccess(Object response) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        logins.add((SELogin) response);
-                        getAllLogins(loginSecretArray, position + 1);
-                    }
                 });
     }
 
-    public void showLogin() {
+    public void showLogins() {
         if (getView() != null) {
             ListView listView = getView().findViewById(R.id.listView);
-            listView.setAdapter(new LoginsAdapter(getActivity(), logins));
+            listView.setAdapter(new LoginsAdapter(getActivity(), loginsList));
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    SELogin login = logins.get(position);
+                    LoginData login = loginsList.get(position);
                     goToAccounts(login.getProviderCode(), login.getId());
                 }
             });

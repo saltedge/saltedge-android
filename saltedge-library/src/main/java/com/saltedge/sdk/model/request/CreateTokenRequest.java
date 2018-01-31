@@ -19,48 +19,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.params;
+package com.saltedge.sdk.model.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-import java.util.ArrayList;
-
-public class SETokenParams extends SEBaseParams {
+public class CreateTokenRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
     private SECreateTokenData data;
 
-    public SETokenParams(String login_id, String locale, String returnTo, boolean returnLoginId, ArrayList<String> providerModes) {
-        super();
-        data = new SECreateTokenData(login_id, locale, returnTo, returnLoginId, providerModes);
+    public CreateTokenRequest(String[] allowedCountries, String providerCode, String[] scopes, String returnTo) {
+        data = new SECreateTokenData(allowedCountries, providerCode, scopes, returnTo, SEConstants.IFRAME);
     }
 
-    private static class SECreateTokenData {
+    private class SECreateTokenData {
 
-        @SerializedName(SEConstants.KEY_LOGIN_ID)
-        private String login_id;
+        @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
+        private String[] allowedCountries;
 
-        @SerializedName(SEConstants.KEY_LOCALE)
-        private String locale;
+        @SerializedName(SEConstants.KEY_PROVIDER_CODE)
+        private String providerCode;
+
+        @SerializedName(SEConstants.KEY_FETCH_SCOPES)
+        private String[] fetchScopes;
 
         @SerializedName(SEConstants.KEY_RETURN_TO)
         private String returnTo;
 
-        @SerializedName(SEConstants.KEY_RETURN_LOGIN_ID)
-        private boolean returnLoginId;
+        @SerializedName(SEConstants.JAVASCRIPT_CALLBACK)
+        private String javascriptCallback;
 
-        @SerializedName(SEConstants.KEY_PROVIDER_MODES)
-        private ArrayList<String> providerModes;
-
-
-        private SECreateTokenData(String login_id, String locale, String returnTo, boolean returnLoginId, ArrayList<String> providerModes) {
-            this.login_id = login_id;
-            this.locale = locale;
+        private SECreateTokenData(String[] allowedCountries, String providerCode, String[] scopes,
+                                  String returnTo, String javascriptCallback) {
+            this.allowedCountries = allowedCountries;
+            this.providerCode = providerCode;
+            this.fetchScopes = scopes;
             this.returnTo = returnTo;
-            this.returnLoginId = returnLoginId;
-            this.providerModes = providerModes;
+            this.javascriptCallback = javascriptCallback;
         }
     }
-
 }

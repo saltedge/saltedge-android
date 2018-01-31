@@ -24,7 +24,6 @@ package com.saltedge.sdk.sample.tabs;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,23 +32,22 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.saltedge.sdk.models.SETransaction;
-import com.saltedge.sdk.models.comparators.SETransactionComparator;
+import com.saltedge.sdk.connector.TransactionsConnector;
+import com.saltedge.sdk.model.TransactionData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.TransactionAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.Tools;
+import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class TransactionsFragment extends Fragment {
 
     private ProgressDialog progressDialog;
-    private ArrayList<SETransaction> transactions;
+    private ArrayList<TransactionData> transactions;
     private String accountId;
     private String providerCode;
 
@@ -66,7 +64,6 @@ public class TransactionsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        progressDialog = UITools.createProgressDialog(getActivity(), getActivity().getString(R.string.fetching_accounts));
         setInitialData();
     }
 
@@ -102,27 +99,25 @@ public class TransactionsFragment extends Fragment {
     }
 
     private void getTransactions() {
-        String loginSecret = Tools.getStringFromPreferences(getActivity(), providerCode);
-        String customerSecret = Tools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
-            return;
-        }
+        String loginSecret = PreferencesTools.getStringFromPreferences(getActivity(), providerCode);
+        String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         transactions = new ArrayList<>();
-        UITools.showProgress(progressDialog);
-        SERequestManager.getInstance().listingTransactionsOfAccount(loginSecret, customerSecret, accountId, new SERequestManager.FetchListener() {
-            @Override
-            public void onFailure(String errorResponse) {
-                UITools.destroyAlertDialog(progressDialog);
-                UITools.failedParsing(getActivity(), errorResponse);
-            }
+        UITools.destroyProgressDialog(progressDialog);
+        progressDialog = UITools.showProgressDialog(getActivity(), getActivity().getString(R.string.fetching_transactions));
+        SERequestManager.getInstance().listingTransactionsOfAccount(customerSecret, loginSecret, accountId,
+                new TransactionsConnector.Result() {
+                    @Override
+                    public void onSuccess(ArrayList<TransactionData> transactionsList) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        transactions = transactionsList;
+                        populateTransactions();
+                    }
 
-            @Override
-            public void onSuccess(Object response) {
-                UITools.destroyAlertDialog(progressDialog);
-                transactions = (ArrayList<SETransaction>) response;
-                Collections.sort(transactions, new SETransactionComparator());
-                populateTransactions();
-            }
+                    @Override
+                    public void onFailure(String errorResponse) {
+                        UITools.destroyAlertDialog(progressDialog);
+                        UITools.failedParsing(getActivity(), errorResponse);
+                    }
         });
     }
 
