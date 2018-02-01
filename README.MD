@@ -24,9 +24,7 @@ Clone this repository
 
 * Open Android Studio and create a new app
 * Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import
-* Add the clientAppId and clientAppSecret keys to the StartActivity:
-        <meta-data android:name="App-secret" android:value="YOUR APP SECRET" />
-        <meta-data android:name="Client-Id" android:value="YOUR CLIENT ID" />
+* Add the clientAppId and clientAppSecret keys to the StartActivity
 
 **Warning!** The SDK doesn't work without clientAppId and clientAppSecret!
 
