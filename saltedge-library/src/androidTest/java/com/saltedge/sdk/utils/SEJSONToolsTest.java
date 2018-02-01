@@ -1,3 +1,24 @@
+/*
+Copyright © 2018 Salt Edge. https://saltedge.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 package com.saltedge.sdk.utils;
 
 import android.test.suitebuilder.annotation.SmallTest;
@@ -7,10 +28,6 @@ import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-/**
- * Created by AGalkin
- * On 1/28/15.
- */
 public class SEJSONToolsTest extends TestCase {
 
     @SmallTest
@@ -18,7 +35,7 @@ public class SEJSONToolsTest extends TestCase {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "value");
 
-        assertEquals("value", SEJSONTools.getString(jsonObject, "name"));
+        assertEquals("value", SEJsonTools.getString(jsonObject, "name"));
     }
 
     @SmallTest
@@ -26,7 +43,7 @@ public class SEJSONToolsTest extends TestCase {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameInt", 12);
 
-        assertEquals(12, SEJSONTools.getInt(jsonObject, "nameInt"));
+        assertEquals(12, SEJsonTools.getInt(jsonObject, "nameInt"));
     }
 
     @SmallTest
@@ -34,7 +51,7 @@ public class SEJSONToolsTest extends TestCase {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameBoolean", true);
 
-        assertEquals(true, SEJSONTools.getBoolean(jsonObject, "nameBoolean").booleanValue());
+        assertEquals(true, SEJsonTools.getBoolean(jsonObject, "nameBoolean").booleanValue());
     }
 
     @SmallTest
@@ -42,7 +59,7 @@ public class SEJSONToolsTest extends TestCase {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameDouble", 12.12);
 
-        assertEquals(12.12, SEJSONTools.getDouble(jsonObject, "nameDouble"));
+        assertEquals(12.12, SEJsonTools.getDouble(jsonObject, "nameDouble"));
     }
 
     @SmallTest
@@ -54,9 +71,9 @@ public class SEJSONToolsTest extends TestCase {
         array.put("test3");
         jsonObject.put("nameArray", array);
 
-        assertEquals(3, SEJSONTools.getJSONArray(jsonObject, "nameArray").length());
+        assertEquals(3, SEJsonTools.getJSONArray(jsonObject, "nameArray").length());
 
-        assertEquals("test2", SEJSONTools.getJSONArray(jsonObject, "nameArray").get(1));
+        assertEquals("test2", SEJsonTools.getJSONArray(jsonObject, "nameArray").get(1));
     }
 
     @SmallTest
@@ -64,21 +81,21 @@ public class SEJSONToolsTest extends TestCase {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameJsonObject", new JSONObject());
 
-        assertEquals(JSONObject.class, SEJSONTools.getObject(jsonObject, "nameJsonObject").getClass());
+        assertEquals(JSONObject.class, SEJsonTools.getObject(jsonObject, "nameJsonObject").getClass());
     }
 
     @SmallTest
     public void testStringToJSON() throws Exception {
 
-        assertEquals(JSONObject.class, SEJSONTools.stringToJSON("{\"data\":customerId\"}").getClass());
+        assertEquals(JSONObject.class, SEJsonTools.stringToJSON("{\"data\":customerId\"}").getClass());
     }
 
     @SmallTest
     public void testGetErrorMessage() throws Exception {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("message", "error message");
+        jsonObject.put(SEConstants.KEY_ERROR_MESSAGE, "error message");
 
-        assertEquals("error message", SEJSONTools.getErrorMessage(jsonObject));
+        assertEquals("error message", SEJsonTools.getErrorMessage(jsonObject));
     }
 
 }

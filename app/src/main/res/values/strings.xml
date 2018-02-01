@@ -14,8 +14,14 @@
     <string name="refresh_provider">Refresh</string>
     <string name="reconnect_provider">Reconnect</string>
     <string name="delete_provider">Delete</string>
+    <string name="creating_customer">Creating customer</string>
     <string name="creating_token">Creating token</string>
     <string name="fetching_providers">Fetching Providers</string>
     <string name="fetching_accounts">Fetching Accounts</string>
-
+    <string name="removing_login">Removing Login</string>
+    <string name="fetching_transactions">Fetching Transactions</string>
+    <string name="clear_all">Clear all</string>
+    <string name="no_logins">No logins, connect provider.</string>
+    <string name="transactions">Transactions</string>
+    <string name="accounts">Accounts</string>
 </resources>

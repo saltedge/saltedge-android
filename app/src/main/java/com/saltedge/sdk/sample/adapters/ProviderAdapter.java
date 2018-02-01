@@ -1,5 +1,5 @@
 /*
-Copyright © 2015 Salt Edge. https://saltedge.com
+Copyright © 2018 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,38 +22,40 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.models.SEProvider;
+import com.google.gson.Gson;
+import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.sample.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ProviderAdapter extends BaseAdapter {
 
-    LayoutInflater layoutInflater;
-    ArrayList<SEProvider> providerList;
+    private LayoutInflater layoutInflater;
+    private List<ProviderData> providersList;
+
     public ProviderAdapter(Context context) {
-         layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setListItems(ArrayList<SEProvider> providerList) {
-        this.providerList = providerList;
+    public void setListItems(List<ProviderData> providersList) {
+        this.providersList = providersList;
     }
 
     @Override
     public int getCount() {
-        return providerList.size();
+        return providersList.size();
     }
 
     @Override
-    public SEProvider getItem(int position) {
-        return providerList.get(position);
+    public ProviderData getItem(int position) {
+        return (position < 0 || position >= providersList.size()) ? null : providersList.get(position);
     }
 
     @Override
@@ -64,8 +66,13 @@ public class ProviderAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = layoutInflater.inflate(R.layout.list_item_provider, parent, false);
-        TextView textView = (TextView) rowView.findViewById(R.id.providerTitle);
-        textView.setText(getItem(position).getName());
+        TextView textView = rowView.findViewById(R.id.providerTitle);
+        ProviderData item = getItem(position);
+        if (item != null) {
+            textView.setText(getItem(position).getName());
+        } else {
+            Log.d("ProviderAdapter", "null position: " + position);
+        }
         return rowView;
     }
 }

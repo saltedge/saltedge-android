@@ -1,5 +1,5 @@
 /*
-Copyright © 2015 Salt Edge. https://saltedge.com
+Copyright © 2018 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,9 +22,6 @@ THE SOFTWARE.
 package com.saltedge.sdk;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
 
 import com.saltedge.sdk.utils.SEConstants;
 
@@ -46,39 +43,31 @@ public class SaltEdgeSDK {
         return appSecret;
     }
 
-    private void setAppSecret(String appSecret) {
-        this.appSecret = appSecret;
-    }
-
-    private void setClientId(String cliendId) {
-        this.clientId = cliendId;
-    }
-
     public String getClientId() {
         return clientId;
     }
 
-    public void setContext(Context context) {
-        this.context = context;
-        ApplicationInfo appInfo = null;
-        try {
-            appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+    public void init(Context context, String clientId, String appSecret) {
+        if (clientId == null || clientId.isEmpty()) {
+            throw new RuntimeException(SEConstants.ERROR_CLIENT_ID_IS_NULL);
         }
-        Bundle bundle = appInfo.metaData;
-        setAppSecret(bundle.getString(SEConstants.KEY_HEADER_APP_SECRET));
-        setClientId(bundle.getString(SEConstants.KEY_HEADER_CLIENT_ID));
-        if (getClientId() == null) {
-            throw new RuntimeException(SEConstants.CLIENT_ID_IS_NULL);
+        if (appSecret == null || appSecret.isEmpty()) {
+            throw new RuntimeException(SEConstants.ERROR_APP_SECRET_IS_NULL);
         }
-        if (getAppSecret() == null) {
-            throw new RuntimeException(SEConstants.APP_SECRET_IS_NULL);
-        }
-
+        SaltEdgeSDK.context = context;
+        setAppSecret(appSecret);
+        setClientId(clientId);
     }
 
     public Context getContext() {
         return context;
+    }
+
+    private void setAppSecret(String appSecret) {
+        SaltEdgeSDK.appSecret = appSecret;
+    }
+
+    private void setClientId(String cliendId) {
+        SaltEdgeSDK.clientId = cliendId;
     }
 }

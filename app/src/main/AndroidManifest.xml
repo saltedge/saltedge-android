@@ -13,12 +13,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="App-secret" android:value="" />
-        <meta-data android:name="Client-Id" android:value="" />
-
         <activity
-            android:name="com.saltedge.sdk.sample.StartActivity"
-            android:label="@string/app_name" >
+            android:name="com.saltedge.sdk.sample.features.StartActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:noHistory="true"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +27,20 @@
         </activity>
 
         <activity
-            android:name="com.saltedge.sdk.sample.tabs.TabHostFragmentActivity"
+            android:name="com.saltedge.sdk.sample.features.TabHostFragmentActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:icon="@drawable/ic_launcher"/>
+
+        <activity
+            android:name="com.saltedge.sdk.sample.features.AccountsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
+
+        <activity
+            android:name="com.saltedge.sdk.sample.features.TransactionsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>

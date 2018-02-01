@@ -1,5 +1,5 @@
 /*
-Copyright © 2015 Salt Edge. https://saltedge.com
+Copyright © 2018 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -26,4 +26,6 @@ public class Constants {
     public static String LOGIN_SECRET_ARRAY = "login_secret_array";
     public static String CALLBACK_URL = "http://img2.timeinc.net/health/img/web/2012/10/blogs/fat-cat-overweight-400x400.jpg";
     public static final String KEY_REFRESH_URL = "refresh_url";
+    public static final String KEY_CUSTOMER_SECRET = "secret";
+    public static final String KEY_CUSTOMER_IDENTIFIER = "identifier";
 }
