@@ -93,7 +93,8 @@ public class SEJsonTools {
     public static String getErrorMessage(ResponseBody error) {
         try {
             ApiError apiError = new Gson().fromJson(error.string(), ApiError.class);
-            return apiError.getErrorMessage();
+            String result = apiError.getErrorMessage();
+            return (result != null) ? result : SEConstants.REQUEST_ERROR;
         } catch (Exception e) {
             e.printStackTrace();
             return SEConstants.REQUEST_ERROR;

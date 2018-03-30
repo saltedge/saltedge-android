@@ -48,7 +48,7 @@ public class SEDateToolsTest extends TestCase {
     }
 
     @SmallTest
-    public void testParseDateToShortStrin() throws Exception {
+    public void testParseDateToShortString() throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
         Date date = sdf.parse("2015-01-23T15:05:13Z");
         assertEquals("2015-01-23", SEDateTools.parseDateToShortString(date));

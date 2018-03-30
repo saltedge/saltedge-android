@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.2"
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "sdk.saltedge.com.sample"
@@ -20,9 +20,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.android.support:design:27.0.2'
-    compile project(':saltedge-library')
-    compile 'com.google.code.gson:gson:2.8.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
+    implementation project(':saltedge-library')
+    implementation 'com.google.code.gson:gson:2.8.2'
 }
