@@ -23,10 +23,13 @@ package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.model.request.CreateTokenRequest;
+import com.saltedge.sdk.model.request.MappedRequest;
 import com.saltedge.sdk.model.request.TokenRequest;
 import com.saltedge.sdk.model.response.CreateTokenResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEJsonTools;
+
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +45,11 @@ public class TokenConnector implements Callback<CreateTokenResponse> {
 
     public void createToken(String providerCode, String[] scopes, String returnTo, String customerSecret) {
         CreateTokenRequest request = new CreateTokenRequest(new String[0], providerCode, scopes, returnTo);
+        SERestClient.getInstance().service.createToken(customerSecret, request).enqueue(this);
+    }
+
+    public void createToken(Map<String, Object> dataMap, String customerSecret) {
+        MappedRequest request = new MappedRequest(dataMap);
         SERestClient.getInstance().service.createToken(customerSecret, request).enqueue(this);
     }
 

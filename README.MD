@@ -81,7 +81,7 @@ One more time, you need:
 ```java
      private void obtainCreateToken(SEProvider selectedProvider, String callbackUrl, String customerSecret) {
          String providerCode = selectedProvider.getCode();
-         String[] scopes = {"accounts", "transactions"};;
+         String[] scopes = {"accounts", "transactions"};
          SERequestManager.getInstance().createToken(providerCode, scopes, callbackUrl, customerSecret,
              new TokenConnectionResult() {
                  @Override
@@ -96,6 +96,30 @@ One more time, you need:
              });
     }
 ```
+or call createToken(...) with custom map of params
+```java
+     private void obtainCreateToken(SEProvider selectedProvider, String callbackUrl, String customerSecret) {
+         HashMap<String, Object> dataMap = new HashMap<>();
+         String providerCode = selectedProvider.getCode();
+         dataMap.put("provider_code", providerCode);
+         String[] scopes = {"accounts", "transactions"};
+         dataMap.put("scopes", scopes);
+         dataMap.put("return_to", "custom return url");
+         SERequestManager.getInstance().createToken(dataMap, customerSecret,
+             new TokenConnectionResult() {
+                 @Override
+                 public void onSuccess(String connectUrl) {
+                     // here is a URL you can use to redirect the user
+                 }
+
+                 @Override
+                 public void onFailure(String errorMessage) {
+                     //process error
+                 }
+             });
+    }
+```
+
 * Using the returned URL, you can let the user import their data. After doing this, you will obtain a `loginSecret`.
 
 ```java   

@@ -35,6 +35,8 @@ import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.utils.SEConstants;
 
+import java.util.Map;
+
 public class SERequestManager {
 
     private static SERequestManager instance;
@@ -61,6 +63,10 @@ public class SERequestManager {
      * */
     public void createToken(String providerCode, String[] scopes, String returnTo, String customerSecret, TokenConnectionResult callback) {
         new TokenConnector(callback).createToken(providerCode, scopes, returnTo, customerSecret);
+    }
+
+    public void createToken(Map<String, Object> dataMap, String customerSecret, TokenConnectionResult callback) {
+        new TokenConnector(callback).createToken(dataMap, customerSecret);
     }
 
     public void reconnectToken(String localeCode, String returnTo, String loginSecret, String customerSecret, TokenConnectionResult callback) {

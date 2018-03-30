@@ -23,6 +23,7 @@ package com.saltedge.sdk.network;
 
 import com.saltedge.sdk.model.request.CreateCustomerRequest;
 import com.saltedge.sdk.model.request.CreateTokenRequest;
+import com.saltedge.sdk.model.request.MappedRequest;
 import com.saltedge.sdk.model.request.TokenRequest;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.model.response.CreateCustomerResponse;
@@ -50,6 +51,10 @@ public interface ApiInterface {
     Call<CreateTokenResponse> createToken(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
                                           @Body CreateTokenRequest body);
 
+    @POST(ApiConstants.API_TOKEN_CREATE_PATH)
+    Call<CreateTokenResponse> createToken(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                          @Body MappedRequest body);
+
     @POST(ApiConstants.API_TOKEN_RECONNECT_PATH)
     Call<CreateTokenResponse> reconnectToken(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
                                              @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
@@ -60,7 +65,7 @@ public interface ApiInterface {
                                            @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                            @Body TokenRequest body);
 
-    @GET(ApiConstants.API_PROVIDERS_PATHL)
+    @GET(ApiConstants.API_PROVIDERS_PATH)
     Call<ProvidersResponse> getProviders(@Query(SEConstants.KEY_COUNTRY_CODE) String countryCode,
                                          @Query(SEConstants.KEY_INCLUDE_FAKE_PROVIDERS) boolean includeFakeProviders,
                                          @Query(SEConstants.KEY_FROM_ID) String fromId);

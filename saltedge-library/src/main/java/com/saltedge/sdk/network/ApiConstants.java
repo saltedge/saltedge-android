@@ -39,7 +39,7 @@ public class ApiConstants {
     static final String ROOT_URL = "https://www.saltedge.com";
     private static final String API_VERSION_PATH = "/api/v4";
     static final String API_CUSTOMERS_PATH = API_VERSION_PATH + "/customers";
-    static final String API_PROVIDERS_PATHL = API_VERSION_PATH + "/providers";
+    static final String API_PROVIDERS_PATH = API_VERSION_PATH + "/providers";
     static final String PER_PAGE = API_VERSION_PATH + "/per";
     private static final String API_TOKENS_PATH = API_VERSION_PATH + "/tokens";
     static final String API_LOGIN_PATH = API_VERSION_PATH + "/login";
