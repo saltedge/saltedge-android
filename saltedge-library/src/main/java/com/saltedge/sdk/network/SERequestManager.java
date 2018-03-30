@@ -32,6 +32,7 @@ import com.saltedge.sdk.interfaces.DeleteLoginResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.interfaces.FetchLoginsResult;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
+import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.utils.SEConstants;
 
@@ -80,7 +81,7 @@ public class SERequestManager {
     /**
      * Provider list
      * */
-    public void fetchProviders(String countryCode, ProvidersConnector.Result callback) {
+    public void fetchProviders(String countryCode, ProvidersResult callback) {
         new ProvidersConnector(callback).fetchProviders(countryCode);
     }
 

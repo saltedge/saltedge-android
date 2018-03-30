@@ -22,6 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.BuildConfig;
+import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.model.response.ProvidersResponse;
 import com.saltedge.sdk.network.SERestClient;
@@ -37,13 +38,13 @@ import retrofit2.Response;
 
 public class ProvidersConnector implements Callback<ProvidersResponse> {
 
-    private final Result callback;
+    private final ProvidersResult callback;
     private String nextPageId = "";
     private ArrayList<ProviderData> providersList = new ArrayList<>();
     private boolean includeFakeProviders = BuildConfig.DEBUG;
     private String countryCode = "";
 
-    public ProvidersConnector(Result callback) {
+    public ProvidersConnector(ProvidersResult callback) {
         this.callback = callback;
     }
 
@@ -80,10 +81,5 @@ public class ProvidersConnector implements Callback<ProvidersResponse> {
         } else {
             SERestClient.getInstance().service.getProviders(countryCode, includeFakeProviders, nextPageId).enqueue(this);
         }
-    }
-
-    public interface Result {
-        void onSuccess(ArrayList<ProviderData> providersList);
-        void onFailure(String errorMessage);
     }
 }

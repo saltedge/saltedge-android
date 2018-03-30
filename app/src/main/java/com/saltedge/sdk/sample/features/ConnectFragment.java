@@ -34,7 +34,7 @@ import android.webkit.WebView;
 import android.widget.TabHost;
 import android.widget.Toast;
 
-import com.saltedge.sdk.connector.ProvidersConnector;
+import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.network.ApiConstants;
@@ -119,7 +119,7 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
                     public void onLoginSecretFetchError(String errorResponse) {
                         showError(errorResponse);
                     }
-        });
+                });
     }
 
     private void createToken(ProviderData selectedProvider, String callbackUrl) {
@@ -128,20 +128,20 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
         providerCode = selectedProvider.getCode();
         String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
+
         SERequestManager.getInstance().createToken(providerCode, scopes, callbackUrl, customerSecret,
                 new TokenConnectionResult() {
                     @Override
-                    public void onSuccess(String connectUrl) {// here is a URL you can use to redirect the user
+                    public void onSuccess(String connectUrl) {
+                        // here is a URL you can use to redirect the user
                         UITools.destroyAlertDialog(progressDialog);
                         dataObtained(connectUrl);
                     }
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        failedParsing(errorMessage);
-                    }
-                });
+                        onFetchError(errorMessage);
+                    }});
     }
 
     private void fetchProviders() {
@@ -149,24 +149,30 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
             UITools.destroyProgressDialog(progressDialog);
             progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_providers));
             String countryCode = (BuildConfig.DEBUG) ? "XF" : applicationLanguage;
-            SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersConnector.Result() {
-
+            SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersResult() {
                 @Override
                 public void onSuccess(ArrayList<ProviderData> providersList) {
-                    UITools.destroyAlertDialog(progressDialog);
-                    providers = providersList;
-                    showProviders();
+                    onFetchProvidersSuccess(providersList);
                 }
 
                 @Override
-                public void onFailure(String errorResponse) {
-                    UITools.destroyAlertDialog(progressDialog);
-                    UITools.failedParsing(getActivity(), errorResponse);
-                }
-            });
+                public void onFailure(String errorMessage) {
+                    onFetchError(errorMessage);
+                }});
         } else {
             showProviders();
         }
+    }
+
+    private void onFetchError(String errorMessage) {
+        UITools.destroyAlertDialog(progressDialog);
+        UITools.failedParsing(getActivity(), errorMessage);
+    }
+
+    private void onFetchProvidersSuccess(ArrayList<ProviderData> providersList) {
+        UITools.destroyAlertDialog(progressDialog);
+        providers = providersList;
+        showProviders();
     }
 
     private void showProviders() {
@@ -176,10 +182,6 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
         } else {
             UITools.showAlertDialog(getActivity(), getString(R.string.providers_empty));
         }
-    }
-
-    private void failedParsing(String message) {
-        UITools.showAlertDialog(getActivity(), message);
     }
 
     private void dataObtained(String urlToGo) {
