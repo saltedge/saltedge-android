@@ -44,11 +44,9 @@ import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
-import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.webview.SEWebViewTools;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ConnectFragment extends Fragment implements ProvidersDialog.ProviderSelectListener {
 
@@ -131,28 +129,19 @@ public class ConnectFragment extends Fragment implements ProvidersDialog.Provide
         String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
 
-        HashMap<String, Object> dataMap = new HashMap<>();
-        dataMap.put(SEConstants.KEY_PROVIDER_CODE, providerCode);
-        dataMap.put(SEConstants.KEY_FETCH_SCOPES, scopes);
-        dataMap.put(SEConstants.KEY_RETURN_TO, callbackUrl);
-        dataMap.put(SEConstants.KEY_ALLOWED_COUNTRIES, new String[0]);
-        dataMap.put(SEConstants.JAVASCRIPT_CALLBACK, SEConstants.IFRAME);
-        dataMap.put("connect_template", "boffin");
+        SERequestManager.getInstance().createToken(providerCode, scopes, callbackUrl, customerSecret,
+                new TokenConnectionResult() {
+                    @Override
+                    public void onSuccess(String connectUrl) {
+                        // here is a URL you can use to redirect the user
+                        UITools.destroyAlertDialog(progressDialog);
+                        dataObtained(connectUrl);
+                    }
 
-        //        SERequestManager.getInstance().createToken(providerCode, scopes, callbackUrl, customerSecret,
-
-        SERequestManager.getInstance().createToken(dataMap, customerSecret, new TokenConnectionResult() {
-            @Override
-            public void onSuccess(String connectUrl) {
-                // here is a URL you can use to redirect the user
-                UITools.destroyAlertDialog(progressDialog);
-                dataObtained(connectUrl);
-            }
-
-            @Override
-            public void onFailure(String errorMessage) {
-                onFetchError(errorMessage);
-            }});
+                    @Override
+                    public void onFailure(String errorMessage) {
+                        onFetchError(errorMessage);
+                    }});
     }
 
     private void fetchProviders() {
