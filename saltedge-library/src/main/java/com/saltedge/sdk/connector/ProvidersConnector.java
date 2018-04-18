@@ -26,6 +26,7 @@ import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.model.response.ProvidersResponse;
 import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class ProvidersConnector implements Callback<ProvidersResponse> {
 
     @Override
     public void onFailure(Call<ProvidersResponse> call, Throwable t) {
-        callback.onFailure(t.getMessage());
+        callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {

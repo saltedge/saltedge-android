@@ -36,7 +36,8 @@ public class ApiConstants {
     public static final String PREFIX_SALTBRIDGE = "saltbridge://connect/";
 
     //API urls
-    static final String ROOT_URL = "https://www.saltedge.com";
+    static final String ROOT_HOST_NAME = "www.saltedge.com";
+    static final String ROOT_URL = "https://" + ROOT_HOST_NAME;
     private static final String API_VERSION_PATH = "/api/v4";
     static final String API_CUSTOMERS_PATH = API_VERSION_PATH + "/customers";
     static final String API_PROVIDERS_PATH = API_VERSION_PATH + "/providers";

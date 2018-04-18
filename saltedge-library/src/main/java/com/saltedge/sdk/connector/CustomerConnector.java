@@ -25,6 +25,7 @@ import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.model.request.CreateCustomerRequest;
 import com.saltedge.sdk.model.response.CreateCustomerResponse;
 import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import retrofit2.Call;
@@ -53,6 +54,6 @@ public class CustomerConnector implements Callback<CreateCustomerResponse> {
 
     @Override
     public void onFailure(Call<CreateCustomerResponse> call, Throwable t) {
-        callback.onFailure(t.getMessage());
+        callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }

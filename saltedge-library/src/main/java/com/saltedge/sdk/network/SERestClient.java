@@ -27,6 +27,7 @@ import android.net.NetworkInfo;
 
 import com.saltedge.sdk.SaltEdgeSDK;
 
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -62,6 +63,13 @@ public class SERestClient {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HeaderInterceptor())
                 .addInterceptor(prepareLoginInterceptor())
+                .certificatePinner(createCertificatePinner())
+                .build();
+    }
+
+    private CertificatePinner createCertificatePinner() {
+        return new CertificatePinner.Builder()
+                .add(ApiConstants.ROOT_HOST_NAME, "sha256/9Mr/WLcHYqaEHTM9rvQH1l7XdR9RD/6cDWqmMayuiwo=")
                 .build();
     }
 
