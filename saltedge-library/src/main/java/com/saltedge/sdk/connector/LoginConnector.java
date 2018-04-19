@@ -25,6 +25,7 @@ import com.saltedge.sdk.interfaces.FetchLoginsResult;
 import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.model.response.LoginResponse;
 import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
@@ -33,17 +34,26 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginConnector implements Callback<LoginResponse> {
+public class LoginConnector extends BasePinnedConnector implements Callback<LoginResponse> {
 
     private final FetchLoginsResult callback;
+    private String customerSecret = "";
+    private String[] loginSecretsArray = new String[0];
     private ArrayList<LoginData> loginsList = new ArrayList<>();
-    private int resultCount = 0;
+    private int resultCount;
 
     public LoginConnector(FetchLoginsResult callback) {
         this.callback = callback;
     }
 
     public void fetchLogins(String[] loginSecretsArray, String customerSecret) {
+        this.customerSecret = customerSecret;
+        this.loginSecretsArray = loginSecretsArray;
+        checkAndLoadPinsOrDoRequest();
+    }
+
+    @Override
+    void enqueueCall() {
         resultCount = loginSecretsArray.length;
         for (String loginSecret : loginSecretsArray) {
             SERestClient.getInstance().service.getLogin(customerSecret, loginSecret).enqueue(this);
@@ -51,10 +61,15 @@ public class LoginConnector implements Callback<LoginResponse> {
     }
 
     @Override
+    void onFailure(String errorMessage) {
+        if (callback != null) callback.onFailure(errorMessage);
+    }
+
+    @Override
     public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
         LoginResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) onSuccess(responseBody.getData());
-        else callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     private void onSuccess(LoginData data) {
@@ -66,6 +81,6 @@ public class LoginConnector implements Callback<LoginResponse> {
 
     @Override
     public void onFailure(Call<LoginResponse> call, Throwable t) {
-        callback.onFailure(t.getMessage());
+        onFailure(SEErrorTools.processConnectionError(t));
     }
 }

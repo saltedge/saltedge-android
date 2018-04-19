@@ -19,23 +19,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.utils;
+package com.saltedge.sdk.network.pin;
 
-import javax.net.ssl.SSLPeerUnverifiedException;
-
-public class SEErrorTools {
-
-    public final static String ERROR_INVALID_HPKP = "Invalid HPKP data";
-    public final static String ERROR_SSL_CERT_FAIL = "SSL Certificate failure!";
-
-    /**
-     * Returns localized message from exception or custom message
-     *
-     * @param t Throwable exception
-     * @return string value of error message
-     */
-    public static String processConnectionError(Throwable t) {
-        if (t instanceof SSLPeerUnverifiedException) return ERROR_SSL_CERT_FAIL;
-        else return t.getLocalizedMessage();
-    }
+public interface PinsLoaderResult {
+    void onPinLoadSuccess();
+    void onPinLoadFailure(String errorMessage);
 }

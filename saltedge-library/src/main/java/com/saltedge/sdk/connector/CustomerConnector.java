@@ -32,17 +32,30 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CustomerConnector implements Callback<CreateCustomerResponse> {
+public class CustomerConnector extends BasePinnedConnector implements Callback<CreateCustomerResponse> {
 
     private final CreateCustomerResult callback;
+    private String customerIdentifier = "";
 
     public CustomerConnector(CreateCustomerResult callback) {
+
         this.callback = callback;
     }
 
     public void createCustomer(String customerIdentifier) {
+        this.customerIdentifier = customerIdentifier;
+        checkAndLoadPinsOrDoRequest();
+    }
+
+    @Override
+    void enqueueCall() {
         SERestClient.getInstance().service.createCustomer(new CreateCustomerRequest(customerIdentifier))
                 .enqueue(this);
+    }
+
+    @Override
+    void onFailure(String errorMessage) {
+        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -54,6 +67,6 @@ public class CustomerConnector implements Callback<CreateCustomerResponse> {
 
     @Override
     public void onFailure(Call<CreateCustomerResponse> call, Throwable t) {
-        callback.onFailure(SEErrorTools.processConnectionError(t));
+        onFailure(SEErrorTools.processConnectionError(t));
     }
 }

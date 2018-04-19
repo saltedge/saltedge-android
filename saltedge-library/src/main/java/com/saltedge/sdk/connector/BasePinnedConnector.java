@@ -19,23 +19,33 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.utils;
+package com.saltedge.sdk.connector;
 
-import javax.net.ssl.SSLPeerUnverifiedException;
+import com.saltedge.sdk.network.pin.PinsLoaderResult;
+import com.saltedge.sdk.network.pin.SEPinsManager;
 
-public class SEErrorTools {
+abstract class BasePinnedConnector implements PinsLoaderResult {
 
-    public final static String ERROR_INVALID_HPKP = "Invalid HPKP data";
-    public final static String ERROR_SSL_CERT_FAIL = "SSL Certificate failure!";
+    void checkAndLoadPinsOrDoRequest() {
+        if (SEPinsManager.savedPinsExpired()) {
+            SEPinsManager.getInstance().loadPins(this);
+        } else {
+            SEPinsManager.getInstance().clearPinLoaderCallback();
+            enqueueCall();
+        }
+    }
 
-    /**
-     * Returns localized message from exception or custom message
-     *
-     * @param t Throwable exception
-     * @return string value of error message
-     */
-    public static String processConnectionError(Throwable t) {
-        if (t instanceof SSLPeerUnverifiedException) return ERROR_SSL_CERT_FAIL;
-        else return t.getLocalizedMessage();
+    abstract void enqueueCall();
+
+    abstract void onFailure(String errorMessage);
+
+    @Override
+    public void onPinLoadSuccess() {
+        enqueueCall();
+    }
+
+    @Override
+    public void onPinLoadFailure(String errorMessage) {
+        onFailure(errorMessage);
     }
 }

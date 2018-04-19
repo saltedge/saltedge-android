@@ -53,4 +53,9 @@ public class SEDateToolsTest extends TestCase {
         Date date = sdf.parse("2015-01-23T15:05:13Z");
         assertEquals("2015-01-23", SEDateTools.parseDateToShortString(date));
     }
+
+    @SmallTest
+    public void testConvertMaxAgeToExpireAt() throws Exception {
+        assertEquals(System.currentTimeMillis() + 1000, SEDateTools.convertMaxAgeToExpireAt(1));
+    }
 }

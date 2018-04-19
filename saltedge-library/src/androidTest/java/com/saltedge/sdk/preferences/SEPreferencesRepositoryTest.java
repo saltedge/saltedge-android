@@ -19,23 +19,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.utils;
+package com.saltedge.sdk.preferences;
 
-import javax.net.ssl.SSLPeerUnverifiedException;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.test.suitebuilder.annotation.SmallTest;
 
-public class SEErrorTools {
+import junit.framework.TestCase;
 
-    public final static String ERROR_INVALID_HPKP = "Invalid HPKP data";
-    public final static String ERROR_SSL_CERT_FAIL = "SSL Certificate failure!";
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-    /**
-     * Returns localized message from exception or custom message
-     *
-     * @param t Throwable exception
-     * @return string value of error message
-     */
-    public static String processConnectionError(Throwable t) {
-        if (t instanceof SSLPeerUnverifiedException) return ERROR_SSL_CERT_FAIL;
-        else return t.getLocalizedMessage();
+public class SEPreferencesRepositoryTest extends TestCase {
+
+    @SmallTest
+    public void testUpdatePinsAndMaxAge() throws Exception {
+        Context context = InstrumentationRegistry.getTargetContext();
+        String[] pins = new String[] {"hash1", "hash2"};
+
+        SEPreferencesRepository.updatePinsAndMaxAge(context, pins, 12L);
+
+        assertThat(SEPreferencesRepository.getExpireAt(context), equalTo(12L));
+        assertThat(SEPreferencesRepository.getPins(context), equalTo(new String[] {"hash1", "hash2"}));
     }
 }

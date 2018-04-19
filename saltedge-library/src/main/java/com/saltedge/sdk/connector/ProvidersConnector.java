@@ -37,13 +37,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProvidersConnector implements Callback<ProvidersResponse> {
+public class ProvidersConnector extends BasePinnedConnector implements Callback<ProvidersResponse> {
 
     private final ProvidersResult callback;
-    private String nextPageId = "";
     private ArrayList<ProviderData> providersList = new ArrayList<>();
     private boolean includeFakeProviders = BuildConfig.DEBUG;
     private String countryCode = "";
+    private String nextPageId = "";
 
     public ProvidersConnector(ProvidersResult callback) {
         this.callback = callback;
@@ -51,7 +51,17 @@ public class ProvidersConnector implements Callback<ProvidersResponse> {
 
     public void fetchProviders(String providersCountryCode) {
         this.countryCode = providersCountryCode.toUpperCase();
+        checkAndLoadPinsOrDoRequest();
+    }
+
+    @Override
+    void enqueueCall() {
         SERestClient.getInstance().service.getProviders(countryCode, includeFakeProviders, nextPageId).enqueue(this);
+    }
+
+    @Override
+    void onFailure(String errorMessage) {
+        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -62,25 +72,25 @@ public class ProvidersConnector implements Callback<ProvidersResponse> {
             nextPageId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
-        else callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
     public void onFailure(Call<ProvidersResponse> call, Throwable t) {
-        callback.onFailure(SEErrorTools.processConnectionError(t));
+        onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
-            Collections.sort(providersList, new Comparator<ProviderData>() {
-                @Override
-                public int compare(ProviderData p1, ProviderData p2) {
-                    return p1.getName().compareTo(p2.getName());
-                }
-            });
-            callback.onSuccess(providersList);
-        } else {
-            SERestClient.getInstance().service.getProviders(countryCode, includeFakeProviders, nextPageId).enqueue(this);
+            Collections.sort(providersList, new ProviderDataComparator());
+            if (callback != null) callback.onSuccess(providersList);
+        } else enqueueCall();
+    }
+
+    private class ProviderDataComparator implements Comparator<ProviderData> {
+        @Override
+        public int compare(ProviderData p1, ProviderData p2) {
+            return p1.getName().compareTo(p2.getName());
         }
     }
 }
