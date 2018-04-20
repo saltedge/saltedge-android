@@ -25,6 +25,7 @@ import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.model.TransactionData;
 import com.saltedge.sdk.model.response.TransactionsResponse;
 import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TransactionsConnector implements Callback<TransactionsResponse> {
+public class TransactionsConnector extends BasePinnedConnector implements Callback<TransactionsResponse> {
 
     private final FetchTransactionsResult callback;
     private String nextPageId = "";
@@ -52,8 +53,18 @@ public class TransactionsConnector implements Callback<TransactionsResponse> {
         this.loginSecret = loginSecret;
         this.customerSecret = customerSecret;
         this.accountId = accountId;
+        checkAndLoadPinsOrDoRequest();
+    }
+
+    @Override
+    void enqueueCall() {
         SERestClient.getInstance().service.getTransactions(customerSecret, loginSecret, accountId, nextPageId)
                 .enqueue(this);
+    }
+
+    @Override
+    void onFailure(String errorMessage) {
+        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -64,12 +75,12 @@ public class TransactionsConnector implements Callback<TransactionsResponse> {
             nextPageId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
-        else callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
     public void onFailure(Call<TransactionsResponse> call, Throwable t) {
-        callback.onFailure(t.getMessage());
+        onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {
@@ -81,9 +92,6 @@ public class TransactionsConnector implements Callback<TransactionsResponse> {
                 }
             });
             callback.onSuccess(transactionsList);
-        } else {
-            SERestClient.getInstance().service.getTransactions(loginSecret, customerSecret, accountId, nextPageId)
-                    .enqueue(this);
-        }
+        } else enqueueCall();
     }
 }

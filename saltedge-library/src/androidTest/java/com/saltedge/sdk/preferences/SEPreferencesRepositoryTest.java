@@ -19,43 +19,27 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.utils;
+package com.saltedge.sdk.preferences;
 
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import junit.framework.TestCase;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
-public class SEDateToolsTest extends TestCase {
-
-    @SmallTest
-    public void testParseStringToDate() throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-        Date date = sdf.parse("2015-01-23T15:05:13Z");
-        assertEquals(date, SEDateTools.parseStringToDate("2015-01-23T15:05:13Z"));
-    }
+public class SEPreferencesRepositoryTest extends TestCase {
 
     @SmallTest
-    public void testParseShortStringToDate() throws Exception {
-        assertThat(SEDateTools.parseShortStringToDate("2015-01-23").toGMTString(),
-                equalTo("23 Jan 2015 00:00:00 GMT"));
-    }
+    public void testUpdatePinsAndMaxAge() throws Exception {
+        Context context = InstrumentationRegistry.getTargetContext();
+        String[] pins = new String[] {"hash1", "hash2"};
 
-    @SmallTest
-    public void testParseDateToShortString() throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
-        Date date = sdf.parse("2015-01-23T15:05:13Z");
-        assertEquals("2015-01-23", SEDateTools.parseDateToShortString(date));
-    }
+        SEPreferencesRepository.updatePinsAndMaxAge(context, pins, 12L);
 
-    @SmallTest
-    public void testConvertMaxAgeToExpireAt() throws Exception {
-        assertEquals(System.currentTimeMillis() + 1000, SEDateTools.convertMaxAgeToExpireAt(1));
+        assertThat(SEPreferencesRepository.getExpireAt(context), equalTo(12L));
+        assertThat(SEPreferencesRepository.getPins(context), equalTo(new String[] {"hash1", "hash2"}));
     }
 }

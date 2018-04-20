@@ -58,7 +58,6 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void createCustomer() {
-        progressDialog = UITools.showProgressDialog(this, getString(R.string.creating_customer));
         String customerIdentifier = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_IDENTIFIER);
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
 
@@ -68,6 +67,7 @@ public class StartActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(customerSecret)) {
+            progressDialog = UITools.showProgressDialog(this, getString(R.string.creating_customer));
             SERequestManager.getInstance().createCustomer(customerIdentifier, new CreateCustomerResult() {
                 @Override
                 public void onSuccess(String secret) {

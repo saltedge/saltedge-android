@@ -58,4 +58,7 @@ public class SEDateTools {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
     }
 
+    public static long convertMaxAgeToExpireAt(int maxAgeSeconds) {
+        return System.currentTimeMillis() + maxAgeSeconds * 1000;
+    }
 }

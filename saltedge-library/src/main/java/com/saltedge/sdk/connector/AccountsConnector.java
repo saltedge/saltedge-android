@@ -25,6 +25,7 @@ import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AccountsConnector implements Callback<AccountsResponse> {
+public class AccountsConnector extends BasePinnedConnector implements Callback<AccountsResponse> {
 
     private final FetchAccountsResult callback;
     private String nextPageId = "";
@@ -50,7 +51,17 @@ public class AccountsConnector implements Callback<AccountsResponse> {
     public void fetchAccounts(String customerSecret, String loginSecret) {
         this.customerSecret = customerSecret;
         this.loginSecret = loginSecret;
+        checkAndLoadPinsOrDoRequest();
+    }
+
+    @Override
+    void enqueueCall() {
         SERestClient.getInstance().service.getAccounts(customerSecret, loginSecret, nextPageId).enqueue(this);
+    }
+
+    @Override
+    void onFailure(String errorMessage) {
+        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -61,12 +72,12 @@ public class AccountsConnector implements Callback<AccountsResponse> {
             nextPageId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
-        else callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
     public void onFailure(Call<AccountsResponse> call, Throwable t) {
-        callback.onFailure(t.getMessage());
+        onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {
@@ -78,8 +89,6 @@ public class AccountsConnector implements Callback<AccountsResponse> {
                 }
             });
             callback.onSuccess(accountsList);
-        } else {
-            SERestClient.getInstance().service.getAccounts(loginSecret, customerSecret, nextPageId).enqueue(this);
-        }
+        } else enqueueCall();
     }
 }

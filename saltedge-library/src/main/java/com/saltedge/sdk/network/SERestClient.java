@@ -25,8 +25,11 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.saltedge.sdk.BuildConfig;
 import com.saltedge.sdk.SaltEdgeSDK;
+import com.saltedge.sdk.preferences.SEPreferencesRepository;
 
+import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -40,7 +43,6 @@ public class SERestClient {
     private static final int DEFAULT_HTTPS_PORT = 443;
 
     public ApiInterface service = createRetrofit().create(ApiInterface.class);
-
     private static SERestClient instance;
 
     public static SERestClient getInstance() {
@@ -48,6 +50,10 @@ public class SERestClient {
             instance = new SERestClient();
         }
         return instance;
+    }
+
+    public void initService() {
+        service = createRetrofit().create(ApiInterface.class);
     }
 
     private Retrofit createRetrofit() {
@@ -62,12 +68,24 @@ public class SERestClient {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HeaderInterceptor())
                 .addInterceptor(prepareLoginInterceptor())
+                .certificatePinner(createCertificatePinner())
                 .build();
+    }
+
+    private CertificatePinner createCertificatePinner() {
+        CertificatePinner.Builder pinnerBuilder = new CertificatePinner.Builder();
+        try {
+            String[] pins = SEPreferencesRepository.getInstance().getPins();
+            pinnerBuilder.add(ApiConstants.ROOT_HOST_NAME, pins);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return pinnerBuilder.build();
     }
 
     private HttpLoggingInterceptor prepareLoginInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         return interceptor;
     }
 

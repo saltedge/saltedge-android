@@ -67,7 +67,7 @@ public class SaltEdgeSDK {
         SaltEdgeSDK.appSecret = appSecret;
     }
 
-    private void setClientId(String cliendId) {
-        SaltEdgeSDK.clientId = cliendId;
+    private void setClientId(String clientId) {
+        SaltEdgeSDK.clientId = clientId;
     }
 }

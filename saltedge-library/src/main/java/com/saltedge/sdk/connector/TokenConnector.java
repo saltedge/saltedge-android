@@ -27,6 +27,7 @@ import com.saltedge.sdk.model.request.MappedRequest;
 import com.saltedge.sdk.model.request.TokenRequest;
 import com.saltedge.sdk.model.response.CreateTokenResponse;
 import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.Map;
@@ -35,43 +36,58 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TokenConnector implements Callback<CreateTokenResponse> {
+public class TokenConnector extends BasePinnedConnector implements Callback<CreateTokenResponse> {
 
     private final TokenConnectionResult callback;
+    private Call<CreateTokenResponse> call;
 
     public TokenConnector(TokenConnectionResult callback) {
         this.callback = callback;
     }
 
     public void createToken(String providerCode, String[] scopes, String returnTo, String customerSecret) {
-        CreateTokenRequest request = new CreateTokenRequest(new String[0], providerCode, scopes, returnTo);
-        SERestClient.getInstance().service.createToken(customerSecret, request).enqueue(this);
+        CreateTokenRequest requestData = new CreateTokenRequest(new String[0], providerCode, scopes, returnTo);
+        call = SERestClient.getInstance().service.createToken(customerSecret, requestData);
+        checkAndLoadPinsOrDoRequest();
     }
 
     public void createToken(Map<String, Object> dataMap, String customerSecret) {
-        MappedRequest request = new MappedRequest(dataMap);
-        SERestClient.getInstance().service.createToken(customerSecret, request).enqueue(this);
+        MappedRequest requestData = new MappedRequest(dataMap);
+        call = SERestClient.getInstance().service.createToken(customerSecret, requestData);
+        checkAndLoadPinsOrDoRequest();
     }
 
     public void reconnectToken(String locale, String returnTo, String loginSecret, String customerSecret) {
-        TokenRequest request = new TokenRequest(locale, returnTo);
-        SERestClient.getInstance().service.reconnectToken(customerSecret, loginSecret, request).enqueue(this);
+        TokenRequest requestData = new TokenRequest(locale, returnTo);
+        call = SERestClient.getInstance().service.reconnectToken(customerSecret, loginSecret, requestData);
+        checkAndLoadPinsOrDoRequest();
     }
 
     public void refreshToken(String locale, String returnTo, String loginSecret, String customerSecret) {
-        TokenRequest request = new TokenRequest(locale, returnTo);
-        SERestClient.getInstance().service.refreshToken(customerSecret, loginSecret, request).enqueue(this);
+        TokenRequest requestData = new TokenRequest(locale, returnTo);
+        call = SERestClient.getInstance().service.refreshToken(customerSecret, loginSecret, requestData);
+        checkAndLoadPinsOrDoRequest();
+    }
+
+    @Override
+    void enqueueCall() {
+        if (call != null) call.enqueue(this);
+    }
+
+    @Override
+    void onFailure(String errorMessage) {
+        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
     public void onResponse(Call<CreateTokenResponse> call, Response<CreateTokenResponse> response) {
         CreateTokenResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getConnectUrl());
-        else callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
     public void onFailure(Call<CreateTokenResponse> call, Throwable t) {
-        callback.onFailure(t.getMessage());
+        onFailure(SEErrorTools.processConnectionError(t));
     }
 }

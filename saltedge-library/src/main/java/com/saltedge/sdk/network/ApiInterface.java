@@ -38,11 +38,15 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
+
+    @HEAD(ApiConstants.API_COUNTRIES_PATH)
+    Call<Void> getPins();
 
     @POST(ApiConstants.API_CUSTOMERS_PATH)
     Call<CreateCustomerResponse> createCustomer(@Body CreateCustomerRequest body);
