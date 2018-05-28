@@ -21,8 +21,6 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.preferences;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import junit.framework.TestCase;
@@ -34,12 +32,11 @@ public class SEPreferencesRepositoryTest extends TestCase {
 
     @SmallTest
     public void testUpdatePinsAndMaxAge() throws Exception {
-        Context context = InstrumentationRegistry.getTargetContext();
         String[] pins = new String[] {"hash1", "hash2"};
 
-        SEPreferencesRepository.updatePinsAndMaxAge(context, pins, 12L);
+        SEPreferencesRepository.getInstance().updatePinsAndMaxAge(pins, 12L);
 
-        assertThat(SEPreferencesRepository.getExpireAt(context), equalTo(12L));
-        assertThat(SEPreferencesRepository.getPins(context), equalTo(new String[] {"hash1", "hash2"}));
+        assertThat(SEPreferencesRepository.getInstance().getExpireAt(), equalTo(12L));
+        assertThat(SEPreferencesRepository.getInstance().getPins(), equalTo(new String[] {"hash1", "hash2"}));
     }
 }

@@ -90,7 +90,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
             Collections.sort(transactionsList, new Comparator<TransactionData>() {
                 @Override
                 public int compare(TransactionData t1, TransactionData t2) {
-                    return t1.getMadeOn().compareTo(t2.getMadeOn());
+                    return t1.getMadeOnData().compareTo(t2.getMadeOnData());
                 }
             });
             callback.onSuccess(transactionsList);

@@ -46,7 +46,7 @@ public class SERestClient {
     private static final int DEFAULT_HTTP_PORT = 80;
     private static final int DEFAULT_HTTPS_PORT = 443;
 
-    public ApiInterface service = createRetrofit().create(ApiInterface.class);
+    public ApiInterface service;// = createRetrofit().create(ApiInterface.class);
     private static SERestClient instance;
 
     public static SERestClient getInstance() {
@@ -86,7 +86,9 @@ public class SERestClient {
         CertificatePinner.Builder pinnerBuilder = new CertificatePinner.Builder();
         try {
             String[] pins = SEPreferencesRepository.getInstance().getPins();
-            pinnerBuilder.add(ApiConstants.ROOT_HOST_NAME, pins);
+            if (pins != null && pins.length > 0) {
+                pinnerBuilder.add(ApiConstants.ROOT_HOST_NAME, pins);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

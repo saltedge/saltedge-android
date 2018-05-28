@@ -37,6 +37,9 @@ public class TransactionData extends BaseModel {
     @SerializedName(SEConstants.KEY_MODE)
     private String mode;
 
+    @SerializedName(SEConstants.KEY_STATUS)
+    private String status;
+
     @SerializedName(SEConstants.KEY_MADE_ON)
     private String madeOn;
 
@@ -51,6 +54,9 @@ public class TransactionData extends BaseModel {
 
     @SerializedName(SEConstants.KEY_CATEGORY)
     private String category;
+
+    @SerializedName(SEConstants.KEY_ACCOUNT_ID)
+    private String accountId;
 
     @SerializedName(SEConstants.KEY_EXTRA)
     private JSONObject extra;
@@ -71,7 +77,19 @@ public class TransactionData extends BaseModel {
         this.mode = mode;
     }
 
-    public Date getMadeOn() {
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getMadeOn() {
+        return madeOn;
+    }
+
+    public Date getMadeOnData() {
         return SEDateTools.parseShortStringToDate(madeOn);
     }
 
@@ -109,6 +127,14 @@ public class TransactionData extends BaseModel {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getAccountId() {
+        return accountId;
     }
 
     public JSONObject getExtra() {

@@ -4,9 +4,9 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.saltedge.sdk.SaltEdgeSDK;
+import com.saltedge.sdk.TestTools;
 import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.network.ApiInterface;
-import com.saltedge.sdk.network.HeaderInterceptor;
 import com.saltedge.sdk.network.SERestClient;
 
 import org.junit.After;
@@ -20,13 +20,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,14 +37,15 @@ public class TokenConnectorTest implements TokenConnectionResult {
 
         String[] scopes = {"value2", "value3"};
         new TokenConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
-        doneSignal.await(5, TimeUnit.SECONDS);
+        doneSignal.await(10, TimeUnit.SECONDS);
+
+        Assert.assertNull(errorMessage);
+        assertThat(connectUrl, equalTo("test_connect_url"));
+
         RecordedRequest request = mockWebServer.takeRequest();
 
         Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
         assertThat(request.getPath(), equalTo("/api/v4/tokens/create"));
-
-        Assert.assertNull(errorMessage);
-        assertThat(connectUrl, equalTo("test_connect_url"));
     }
 
     @Test
@@ -61,13 +59,14 @@ public class TokenConnectorTest implements TokenConnectionResult {
         dataMap.put("return_to", "test_url");
         new TokenConnector(this).createToken(dataMap, "test customer secret");
         doneSignal.await(5, TimeUnit.SECONDS);
+
+        Assert.assertNull(errorMessage);
+        assertThat(connectUrl, equalTo("test_connect_url"));
+
         RecordedRequest request = mockWebServer.takeRequest();
 
         Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
         assertThat(request.getPath(), equalTo("/api/v4/tokens/create"));
-
-        Assert.assertNull(errorMessage);
-        assertThat(connectUrl, equalTo("test_connect_url"));
     }
 
     @Test
@@ -78,12 +77,14 @@ public class TokenConnectorTest implements TokenConnectionResult {
         String[] scopes = {"value2", "value3"};
         new TokenConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
         doneSignal.await(5, TimeUnit.SECONDS);
+
+        assertThat(errorMessage, equalTo("Resource Not Found"));
+        Assert.assertNull(connectUrl);
+
         RecordedRequest request = mockWebServer.takeRequest();
 
         Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
         assertThat(request.getPath(), equalTo("/api/v4/tokens/create"));
-        assertThat(errorMessage, equalTo("Resource Not Found"));
-        Assert.assertNull(connectUrl);
     }
 
     private CountDownLatch doneSignal;
@@ -96,12 +97,13 @@ public class TokenConnectorTest implements TokenConnectionResult {
     @Before
     public void setUp() throws Exception {
         SaltEdgeSDK.getInstance().init(InstrumentationRegistry.getTargetContext(), "testClientId", "testAppSecret");
+        TestTools.saveValidPinsInPreferences();
         connectUrl = null;
         errorMessage = null;
         mockWebServer = new MockWebServer();
         mockWebServer.start();
         HttpUrl url = mockWebServer.url("/");
-        mockRetrofit = createMockRetrofit(url);
+        mockRetrofit = TestTools.createMockRetrofit(url);
         SERestClient.getInstance().service = mockRetrofit.create(ApiInterface.class);
         doneSignal = new CountDownLatch(1);
     }
@@ -109,27 +111,6 @@ public class TokenConnectorTest implements TokenConnectionResult {
     @After
     public void tearDown() throws Exception {
         if (mockWebServer != null) mockWebServer.shutdown();
-    }
-
-    private Retrofit createMockRetrofit(HttpUrl url) {
-        return new Retrofit.Builder()
-                .baseUrl(url)
-                .client(createTestClient())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-    }
-
-    private OkHttpClient createTestClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new HeaderInterceptor())
-                .addInterceptor(prepareLoginInterceptor())
-                .build();
-    }
-
-    private HttpLoggingInterceptor prepareLoginInterceptor() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return interceptor;
     }
 
     @Override
