@@ -46,7 +46,7 @@ public class SERestClient {
     private static final int DEFAULT_HTTP_PORT = 80;
     private static final int DEFAULT_HTTPS_PORT = 443;
 
-    public ApiInterface service;// = createRetrofit().create(ApiInterface.class);
+    public ApiInterface service = createRetrofit().create(ApiInterface.class);
     private static SERestClient instance;
 
     public static SERestClient getInstance() {

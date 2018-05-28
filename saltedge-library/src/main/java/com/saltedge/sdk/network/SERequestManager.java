@@ -113,6 +113,11 @@ public class SERequestManager {
      * */
     public void fetchTransactionsOfAccount(String customerSecret, String loginSecret, String accountId,
                                            FetchTransactionsResult callback) {
-        new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId);
+        fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, "", callback);
+    }
+
+    public void fetchTransactionsOfAccount(String customerSecret, String loginSecret, String accountId,
+                                           String fromId, FetchTransactionsResult callback) {
+        new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId, fromId);
     }
 }
