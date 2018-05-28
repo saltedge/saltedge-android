@@ -25,9 +25,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.saltedge.sdk.BuildConfig;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.preferences.SEPreferencesRepository;
+
+import org.json.JSONObject;
 
 import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
@@ -60,8 +64,14 @@ public class SERestClient {
         return new Retrofit.Builder()
                 .baseUrl(getApiBaseUrl())
                 .client(createOkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(createDefaultGson()))
                 .build();
+    }
+
+    private Gson createDefaultGson() {
+        return new GsonBuilder()
+                .registerTypeAdapter(JSONObject.class, new ExtraJsonDataAdapter())
+                .create();
     }
 
     private OkHttpClient createOkHttpClient() {

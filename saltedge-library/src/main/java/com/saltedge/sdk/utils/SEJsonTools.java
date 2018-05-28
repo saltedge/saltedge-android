@@ -71,9 +71,7 @@ public class SEJsonTools {
 
     public static JSONObject stringToJSON(String string) {
         JSONObject result = new JSONObject();
-        if (string == null || string.isEmpty()) {
-            return result;
-        }
+        if (string == null || string.isEmpty()) return result;
         try {
             return new JSONObject(string);
         } catch (JSONException e) {

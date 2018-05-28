@@ -118,5 +118,4 @@ public class TransactionData extends BaseModel {
     public void setExtra(JSONObject extra) {
         this.extra = extra;
     }
-
 }
