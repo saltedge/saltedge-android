@@ -31,6 +31,7 @@ import com.saltedge.sdk.utils.SEJsonTools;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,7 +72,8 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     public void onResponse(Call<TransactionsResponse> call, Response<TransactionsResponse> response) {
         TransactionsResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) {
-            transactionsList.addAll(responseBody.getData());
+            List<TransactionData> newTransactions = responseBody.getData();
+            if (newTransactions != null) transactionsList.addAll(newTransactions);
             nextPageId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
@@ -88,7 +90,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
             Collections.sort(transactionsList, new Comparator<TransactionData>() {
                 @Override
                 public int compare(TransactionData t1, TransactionData t2) {
-                    return t1.getMadeOn().compareTo(t2.getMadeOn());
+                    return t1.getMadeOnData().compareTo(t2.getMadeOnData());
                 }
             });
             callback.onSuccess(transactionsList);

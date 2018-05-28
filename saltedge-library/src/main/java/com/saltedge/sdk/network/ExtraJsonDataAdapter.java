@@ -19,24 +19,22 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.preferences;
+package com.saltedge.sdk.network;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
+import com.saltedge.sdk.utils.SEJsonTools;
 
-import junit.framework.TestCase;
+import org.json.JSONObject;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import java.lang.reflect.Type;
 
-public class SEPreferencesRepositoryTest extends TestCase {
+public class ExtraJsonDataAdapter implements JsonDeserializer<JSONObject> {
 
-    @SmallTest
-    public void testUpdatePinsAndMaxAge() throws Exception {
-        String[] pins = new String[] {"hash1", "hash2"};
-
-        SEPreferencesRepository.getInstance().updatePinsAndMaxAge(pins, 12L);
-
-        assertThat(SEPreferencesRepository.getInstance().getExpireAt(), equalTo(12L));
-        assertThat(SEPreferencesRepository.getInstance().getPins(), equalTo(new String[] {"hash1", "hash2"}));
+    @Override
+    public JSONObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        return SEJsonTools.stringToJSON(json.getAsJsonObject().toString());
     }
 }

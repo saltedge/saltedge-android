@@ -36,8 +36,8 @@ import java.util.ArrayList;
 
 public class TransactionAdapter extends BaseAdapter {
 
-    LayoutInflater layoutInflater;
-    ArrayList<TransactionData> transactionsList;
+    private LayoutInflater layoutInflater;
+    private ArrayList<TransactionData> transactionsList;
 
     public TransactionAdapter(Context context, ArrayList<TransactionData> transactionsList) {
         layoutInflater = (LayoutInflater) context
@@ -63,13 +63,14 @@ public class TransactionAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = layoutInflater.inflate(R.layout.list_item_transaction, parent, false);
-        TextView title = (TextView) rowView.findViewById(R.id.title);
-        TextView subtitleLeft = (TextView) rowView.findViewById(R.id.subtitleLeft);
-        TextView subtitleRight = (TextView) rowView.findViewById(R.id.subtitleRight);
+        TextView title = rowView.findViewById(R.id.title);
+        TextView subtitleLeft = rowView.findViewById(R.id.subtitleLeft);
+        TextView subtitleRight = rowView.findViewById(R.id.subtitleRight);
         TransactionData transaction = getItem(position);
         title.setText(transaction.getDescription());
-        subtitleLeft.setText(PreferencesTools.parseDateToString(transaction.getMadeOn()));
-        subtitleRight.setText(transaction.getCurrencyCode() + " " + transaction.getAmount());
+        subtitleLeft.setText(PreferencesTools.parseDateToString(transaction.getMadeOnData()));
+        String subTitle = transaction.getCurrencyCode() + " " + transaction.getAmount();
+        subtitleRight.setText(subTitle);
         return rowView;
     }
 }

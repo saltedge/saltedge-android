@@ -44,7 +44,7 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
-public class TransactionsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class TransactionsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, FetchTransactionsResult {
 
     private ProgressDialog progressDialog;
     private ArrayList<TransactionData> transactions;
@@ -102,26 +102,25 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public void onSuccess(ArrayList<TransactionData> transactionsList) {
+        UITools.destroyAlertDialog(progressDialog);
+        transactions = transactionsList;
+        populateTransactions();
+    }
+
+    @Override
+    public void onFailure(String errorResponse) {
+        onConnectFail(errorResponse);
+    }
+
     private void fetchTransactions() {
         String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         transactions = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
-        SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId,
-                new FetchTransactionsResult() {
-                    @Override
-                    public void onSuccess(ArrayList<TransactionData> transactionsList) {
-                        UITools.destroyAlertDialog(progressDialog);
-                        transactions = transactionsList;
-                        populateTransactions();
-                    }
-
-                    @Override
-                    public void onFailure(String errorResponse) {
-                        onConnectFail(errorResponse);
-                    }
-                });
+        SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
     }
 
     private void onConnectFail(String errorResponse) {
@@ -130,8 +129,12 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void populateTransactions() {
-        ListView listView = findViewById(R.id.listView);
-        listView.setAdapter(new TransactionAdapter(this, transactions));
-        listView.setOnItemClickListener(this);
+        try {
+            ListView listView = findViewById(R.id.listView);
+            listView.setAdapter(new TransactionAdapter(this, transactions));
+            listView.setOnItemClickListener(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

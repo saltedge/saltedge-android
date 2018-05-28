@@ -25,9 +25,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.saltedge.sdk.BuildConfig;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.preferences.SEPreferencesRepository;
+
+import org.json.JSONObject;
 
 import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
@@ -42,7 +46,7 @@ public class SERestClient {
     private static final int DEFAULT_HTTP_PORT = 80;
     private static final int DEFAULT_HTTPS_PORT = 443;
 
-    public ApiInterface service = createRetrofit().create(ApiInterface.class);
+    public ApiInterface service;// = createRetrofit().create(ApiInterface.class);
     private static SERestClient instance;
 
     public static SERestClient getInstance() {
@@ -60,8 +64,14 @@ public class SERestClient {
         return new Retrofit.Builder()
                 .baseUrl(getApiBaseUrl())
                 .client(createOkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(createDefaultGson()))
                 .build();
+    }
+
+    private Gson createDefaultGson() {
+        return new GsonBuilder()
+                .registerTypeAdapter(JSONObject.class, new ExtraJsonDataAdapter())
+                .create();
     }
 
     private OkHttpClient createOkHttpClient() {
@@ -76,7 +86,9 @@ public class SERestClient {
         CertificatePinner.Builder pinnerBuilder = new CertificatePinner.Builder();
         try {
             String[] pins = SEPreferencesRepository.getInstance().getPins();
-            pinnerBuilder.add(ApiConstants.ROOT_HOST_NAME, pins);
+            if (pins != null && pins.length > 0) {
+                pinnerBuilder.add(ApiConstants.ROOT_HOST_NAME, pins);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
