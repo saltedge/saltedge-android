@@ -169,10 +169,27 @@ or call createToken(...) with custom map of params
                         }
             });
 ```
-* For each accounts, you can obtain the list of transactions.
+* For each accounts, you can obtain the list of all transactions.
 
 ```java
         SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId,
+                        new FetchTransactionsResult() {
+                            @Override
+                            public void onSuccess(ArrayList<TransactionData> transactionsList) {
+                                //show transactions
+                            }
+        
+                            @Override
+                            public void onFailure(String errorResponse) {
+                                //process error
+                            }
+                        });
+```
+
+* For each accounts, you can obtain the list of all new transactions from specified ID.
+
+```java
+        SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, fromId,
                         new FetchTransactionsResult() {
                             @Override
                             public void onSuccess(ArrayList<TransactionData> transactionsList) {

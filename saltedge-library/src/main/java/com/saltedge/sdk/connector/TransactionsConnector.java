@@ -29,8 +29,6 @@ import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,26 +38,27 @@ import retrofit2.Response;
 public class TransactionsConnector extends BasePinnedConnector implements Callback<TransactionsResponse> {
 
     private final FetchTransactionsResult callback;
-    private String nextPageId = "";
     private ArrayList<TransactionData> transactionsList = new ArrayList<>();
     private String loginSecret = "";
     private String customerSecret = "";
     private String accountId = "";
+    private String fromId = "";
 
     public TransactionsConnector(FetchTransactionsResult callback) {
         this.callback = callback;
     }
 
-    public void fetchTransactions(String customerSecret, String loginSecret, String accountId) {
+    public void fetchTransactions(String customerSecret, String loginSecret, String accountId, String fromId) {
         this.loginSecret = loginSecret;
         this.customerSecret = customerSecret;
         this.accountId = accountId;
+        this.fromId = fromId;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.getTransactions(customerSecret, loginSecret, accountId, nextPageId)
+        SERestClient.getInstance().service.getTransactions(customerSecret, loginSecret, accountId, fromId)
                 .enqueue(this);
     }
 
@@ -74,7 +73,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
         if (response.isSuccessful() && responseBody != null) {
             List<TransactionData> newTransactions = responseBody.getData();
             if (newTransactions != null) transactionsList.addAll(newTransactions);
-            nextPageId = responseBody.getMeta().getNextId();
+            fromId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
@@ -86,13 +85,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     }
 
     private void fetchNextPageOrFinish() {
-        if (nextPageId == null || nextPageId.isEmpty()) {
-            Collections.sort(transactionsList, new Comparator<TransactionData>() {
-                @Override
-                public int compare(TransactionData t1, TransactionData t2) {
-                    return t1.getMadeOnData().compareTo(t2.getMadeOnData());
-                }
-            });
+        if (fromId == null || fromId.isEmpty()) {
             callback.onSuccess(transactionsList);
         } else enqueueCall();
     }
