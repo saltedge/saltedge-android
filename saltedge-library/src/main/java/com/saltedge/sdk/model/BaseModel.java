@@ -25,9 +25,10 @@ import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEDateTools;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public abstract class BaseModel {
+public abstract class BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_ID)
     private String id;

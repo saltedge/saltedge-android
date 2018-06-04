@@ -22,14 +22,12 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.sample.R;
 
@@ -70,8 +68,6 @@ public class ProviderAdapter extends BaseAdapter {
         ProviderData item = getItem(position);
         if (item != null) {
             textView.setText(getItem(position).getName());
-        } else {
-            Log.d("ProviderAdapter", "null position: " + position);
         }
         return rowView;
     }

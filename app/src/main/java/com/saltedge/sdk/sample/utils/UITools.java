@@ -66,8 +66,4 @@ public class UITools {
     public static void hideProgress(ProgressDialog dialog) {
         dialog.hide();
     }
-
-    public static void failedParsing(Context context, String message) {
-        UITools.showAlertDialog(context, message);
-    }
 }

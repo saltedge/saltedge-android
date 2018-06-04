@@ -125,7 +125,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
 
     private void onConnectFail(String errorResponse) {
         UITools.destroyAlertDialog(progressDialog);
-        UITools.failedParsing(this, errorResponse);
+        UITools.showAlertDialog(this, errorResponse);
     }
 
     private void populateTransactions() {
