@@ -10,4 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal" />
+
+    <TextView
+        android:id="@+id/emptyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:background="@android:color/white"/>
 </FrameLayout>

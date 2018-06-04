@@ -22,18 +22,27 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.features;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.FetchLoginsResult;
+import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.model.LoginData;
+import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.network.SERequestManager;
+import com.saltedge.sdk.sample.BuildConfig;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.LoginsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
@@ -43,15 +52,21 @@ import com.saltedge.sdk.sample.utils.UITools;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginsFragment extends Fragment {
+public class LoginsFragment extends Fragment implements ProvidersDialog.ProviderSelectListener,
+        AdapterView.OnItemClickListener, View.OnClickListener {
 
     private ProgressDialog progressDialog;
+    private ArrayList<ProviderData> providers;
     private ArrayList<LoginData> loginsList;
+    private String applicationLanguage = "";
+    private ListView listView;
+    private TextView emptyView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
+        applicationLanguage = getResources().getConfiguration().locale.getLanguage();
     }
 
     @Override
@@ -60,9 +75,18 @@ public class LoginsFragment extends Fragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listView = (ListView) getView().findViewById(R.id.listView);
+        emptyView = (TextView) getView().findViewById(R.id.emptyView);
+        listView.setOnItemClickListener(this);
+        emptyView.setOnClickListener(this);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        getLogins();
+        updateViewData();
     }
 
     @Override
@@ -71,52 +95,135 @@ public class LoginsFragment extends Fragment {
         UITools.destroyProgressDialog(progressDialog);
     }
 
-    private void getLogins() {
-        String[] loginSecretArray = PreferencesTools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
-        loginsList = new ArrayList<>();
-        if (loginSecretArray.length == 0) {
-            UITools.showAlertDialog(getActivity(), getString(R.string.no_logins));
-        } else {
-            getAllLogins(loginSecretArray);
+    @Override
+    public void onProviderSelected(ProviderData provider) {
+        Toast.makeText(getActivity(), "Selected " + String.valueOf(provider.getName()), Toast.LENGTH_SHORT).show();
+        showConnectActivity(provider.getCode());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_add_provider, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_provider_list:
+                fetchAndShowProviders();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
-    public void getAllLogins(String[] loginSecretsArray) {
+    @Override
+    public void onClick(View view) {
+        String[] loginSecretArray = PreferencesTools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
+        if (loginSecretArray.length == 0) {
+            fetchAndShowProviders();
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+        LoginData login = loginsList.get(position);
+        showLoginAccounts(login.getProviderCode(), login.getSecret());
+    }
+
+    private void updateViewData() {
+        String[] loginSecretArray = PreferencesTools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
+
+        loginsList = new ArrayList<>();
+        emptyView.setVisibility(View.VISIBLE);
+        if (loginSecretArray.length == 0) {
+            emptyView.setText(R.string.no_logins);
+        } else {
+            emptyView.setText(R.string.fetching_logins);
+            fetchLogins(loginSecretArray);
+        }
+    }
+
+    private void fetchLogins(String[] loginSecretsArray) {
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.loading_logins));
+        progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_logins));
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().fetchLogins(loginSecretsArray, customerSecret, new FetchLoginsResult() {
                     @Override
                     public void onSuccess(List<LoginData> logins) {
                         UITools.destroyAlertDialog(progressDialog);
                         loginsList = new ArrayList<>(logins);
-                        showLogins();
+                        updateProvidersList();
                     }
 
                     @Override
                     public void onFailure(String errorResponse) {
                         UITools.destroyAlertDialog(progressDialog);
-                        UITools.failedParsing(getActivity(), errorResponse);
+                        UITools.showAlertDialog(getActivity(), errorResponse);
                     }
                 });
     }
 
-    public void showLogins() {
-        if (getView() != null) {
-            ListView listView = getView().findViewById(R.id.listView);
-            listView.setAdapter(new LoginsAdapter(getActivity(), loginsList));
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    private void updateProvidersList() {
+        emptyView.setVisibility(View.GONE);
+        listView.setAdapter(new LoginsAdapter(getActivity(), loginsList));
+    }
+
+    private void showLoginAccounts(String providerCode, String loginSecret) {
+        startActivity(AccountsActivity.newIntent(getActivity(), loginSecret, providerCode));
+    }
+
+    private void fetchAndShowProviders() {
+        if (providers == null || providers.isEmpty()) {
+            UITools.destroyProgressDialog(progressDialog);
+            progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_providers));
+            String countryCode = (BuildConfig.DEBUG) ? "XF" : applicationLanguage;
+            SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersResult() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    LoginData login = loginsList.get(position);
-                    goToAccounts(login.getProviderCode(), login.getId());
+                public void onSuccess(ArrayList<ProviderData> providersList) {
+                    onFetchProvidersSuccess(providersList);
                 }
-            });
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    onFetchError(errorMessage);
+                }});
+        } else {
+            showProvidersListDialog();
         }
     }
 
-    public void goToAccounts(String providerCode, String loginId) {
-        Intent accountsIntent = AccountsActivity.newIntent(getActivity(), loginId, providerCode);
-        startActivity(accountsIntent);
+    private void onFetchError(String errorMessage) {
+        UITools.destroyAlertDialog(progressDialog);
+        UITools.showAlertDialog(getActivity(), errorMessage);
+    }
+
+    private void onFetchProvidersSuccess(ArrayList<ProviderData> providersList) {
+        UITools.destroyAlertDialog(progressDialog);
+        providers = providersList;
+        showProvidersListDialog();
+    }
+
+    private void showProvidersListDialog() {
+        if (providers != null && !providers.isEmpty()) {
+            Toast.makeText(getActivity(), "Fetched " + String.valueOf(providers.size()) + " providers", Toast.LENGTH_SHORT).show();
+            if (isVisible()) {
+                ProvidersDialog.newInstance(providers, this).show(getFragmentManager(), "");
+            }
+        } else {
+            if (isVisible()) {
+                UITools.showAlertDialog(getActivity(), getString(R.string.providers_empty));
+            }
+        }
+    }
+
+    private void showConnectActivity(String providerCode) {
+        try {
+            getActivity().startActivityForResult(ConnectActivity.newIntent(getActivity(), providerCode, null, null),
+                    Constants.CONNECT_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

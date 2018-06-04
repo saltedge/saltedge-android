@@ -21,48 +21,35 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.sample.features;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTabHost;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.webview.SEWebViewTools;
 
-public class TabHostFragmentActivity extends AppCompatActivity {
-
-    private FragmentTabHost mTabHost;
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         setupActionBar();
-        setContentView(R.layout.activity_tab_host);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginsFragment()).commit();
+        }
         setupContent();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        SEWebViewTools.uploadMessage.onReceiveValue(new Uri[]{intent.getData()});
-        SEWebViewTools.uploadMessage = null;
-    }
-
     private void setupContent() {
-        mTabHost = findViewById(android.R.id.tabhost);
-        mTabHost.setup(this, getSupportFragmentManager(), android.R.id.tabcontent);
 
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.connect_title)).setIndicator(getString(R.string.connect_title)),
-                ConnectFragment.class, null);
-        mTabHost.addTab(mTabHost.newTabSpec(getString(R.string.logins_title)).setIndicator(getString(R.string.logins_title)),
-                LoginsFragment.class, null);
     }
 
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setLogo(R.drawable.ic_launcher);
-        actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setDisplayShowHomeEnabled(true);
+        if (actionBar != null) {
+            actionBar.setLogo(R.drawable.ic_launcher);
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
     }
 }

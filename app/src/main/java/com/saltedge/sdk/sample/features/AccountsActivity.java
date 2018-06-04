@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -33,7 +34,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TabHost;
 
 import com.saltedge.sdk.interfaces.DeleteLoginResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
@@ -49,16 +49,16 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
-public class AccountsActivity extends AppCompatActivity implements TokenConnectionResult {
+public class AccountsActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
     private ArrayList<AccountData> accounts;
     private String providerCode;
-    private String loginId;
+    private String loginSecret;
 
-    public static Intent newIntent(Activity activity, String loginId, String providerCode) {
+    public static Intent newIntent(Activity activity, String loginSecret, String providerCode) {
         Intent intent = new Intent(activity, AccountsActivity.class);
-        intent.putExtra(SEConstants.KEY_LOGIN_ID, loginId);
+        intent.putExtra(Constants.KEY_LOGIN_SECRET, loginSecret);
         intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
         return intent;
     }
@@ -67,15 +67,12 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecti
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_list_view);
-        getSupportActionBar().setTitle(R.string.accounts);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            getSupportActionBar().setTitle(R.string.accounts);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         setInitialData();
-    }
-
-    private void setInitialData() {
-        Intent intent = this.getIntent();
-        providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
-        loginId = intent.getStringExtra(SEConstants.KEY_LOGIN_ID);
     }
 
     @Override
@@ -97,7 +94,6 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecti
         return true;
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -106,10 +102,10 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecti
                 finish();
                 return true;
             case R.id.action_refresh:
-                fetchRefreshToken();
+                showConnectActivity(true);
                 return true;
             case R.id.action_reconnect:
-                fetchReconnectToken();
+                showConnectActivity(false);
                 return true;
             case R.id.action_delete:
                 deleteLogin();
@@ -117,38 +113,6 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecti
 
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onSuccess(String connectUrl) {
-        UITools.destroyAlertDialog(progressDialog);
-        onConnectUrlFetchSuccess(connectUrl);
-    }
-
-    @Override
-    public void onFailure(String errorMessage) {
-        UITools.destroyAlertDialog(progressDialog);
-        UITools.failedParsing(this, errorMessage);
-    }
-
-    private void fetchRefreshToken() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
-        UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
-        String locale = "";
-        String callbackUrl = Constants.CALLBACK_URL;
-        SERequestManager.getInstance().refreshToken(locale, callbackUrl, loginSecret, customerSecret, this);
-    }
-
-    private void fetchReconnectToken() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
-        UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
-        String locale = "";
-        String callbackUrl = Constants.CALLBACK_URL;
-        SERequestManager.getInstance().reconnectToken(locale, callbackUrl, loginSecret, customerSecret, this);
     }
 
     private void deleteLogin() {
@@ -173,16 +137,13 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecti
     }
 
     private void onDeleteLoginSuccess() {
-        PreferencesTools.removeLoginSecret(this, providerCode);
-        UITools.destroyAlertDialog(progressDialog);
-        getFragmentManager().popBackStack();
-    }
-
-    private void onConnectUrlFetchSuccess(Object urlToGo) {
-        getFragmentManager().popBackStack();
-        PreferencesTools.putStringToPreferences(this, Constants.KEY_REFRESH_URL, (String) urlToGo);
-        TabHost host = this.findViewById(android.R.id.tabhost);
-        host.setCurrentTab(0);
+        try {
+            PreferencesTools.removeLoginSecret(this, providerCode);
+            UITools.destroyAlertDialog(progressDialog);
+            this.finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void fetchAccounts() {
@@ -216,7 +177,7 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecti
 
     private void onConnectionError(String errorResponse) {
         UITools.destroyAlertDialog(progressDialog);
-        UITools.failedParsing(this, errorResponse);
+        UITools.showAlertDialog(this, errorResponse);
     }
 
     private void populateAccounts() {
@@ -235,5 +196,20 @@ public class AccountsActivity extends AppCompatActivity implements TokenConnecti
     private void goToTransactions(String accountId) {
         Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, providerCode);
         startActivity(transactionsIntent);
+    }
+
+    private void showConnectActivity(Boolean tryToRefresh) {
+        try {
+            startActivityForResult(ConnectActivity.newIntent(this, providerCode, loginSecret, tryToRefresh),
+                    Constants.CONNECT_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setInitialData() {
+        Intent intent = this.getIntent();
+        providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
+        loginSecret = intent.getStringExtra(Constants.KEY_LOGIN_SECRET);
     }
 }

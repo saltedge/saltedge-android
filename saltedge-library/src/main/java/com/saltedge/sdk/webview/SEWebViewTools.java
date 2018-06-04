@@ -41,16 +41,15 @@ import org.json.JSONObject;
 public class SEWebViewTools {
 
     public static ValueCallback<Uri[]> uploadMessage;
-    private String returnStatus;
     private static SEWebViewTools instance;
     private ProgressDialog progressDialog;
     private Activity activity;
     private WebViewRedirectListener webViewRedirectListener;
-/**
- * Parse JSON Interface
- * */
+    private String returnUrl;
+
     public interface WebViewRedirectListener {
         void onLoginSecretFetchSuccess(String statusResponse, String loginSecret);
+        void onLoginRefreshSuccess();
         void onLoginSecretFetchError(String statusResponse);
     }
 
@@ -61,9 +60,10 @@ public class SEWebViewTools {
         return instance;
     }
 
-    public void initializeWithUrl(Activity activity, final WebView webView, final String url, WebViewRedirectListener listener) {
+    public void initializeWithUrl(Activity activity, final WebView webView, String url, String returnUrl, WebViewRedirectListener listener) {
         this.activity = activity;
         this.webViewRedirectListener = listener;
+        this.returnUrl = returnUrl;
         progressDialog = UITools.createProgressDialog(this.activity);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -92,7 +92,7 @@ public class SEWebViewTools {
     private class CustomWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (urlIsSaltedgeRedirection(url)) {
+            if (view != null && urlIsSaltedgeRedirection(url)) {
                 view.loadUrl(url);
             }
             return true;
@@ -101,18 +101,25 @@ public class SEWebViewTools {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
-            UITools.showProgress(progressDialog);
+            if (activity != null && !activity.isFinishing()) {
+                UITools.showProgress(progressDialog);
+            }
+
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            UITools.destroyProgressDialog(progressDialog);
+            if (activity != null && !activity.isFinishing()) {
+                UITools.destroyProgressDialog(progressDialog);
+            }
         }
     }
 
     private boolean urlIsSaltedgeRedirection(String url) {
-        if (url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
+        if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
+            webViewRedirectListener.onLoginRefreshSuccess();
+        } else if (url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
             String redirectURL = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
             JSONObject dataJsonObject = SEJsonTools.getObject(SEJsonTools.stringToJSON(redirectURL), SEConstants.KEY_DATA);
             String stage = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
@@ -126,5 +133,4 @@ public class SEWebViewTools {
         }
         return true;
     }
-
 }

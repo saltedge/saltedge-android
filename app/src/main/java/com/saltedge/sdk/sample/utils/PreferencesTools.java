@@ -22,6 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import java.text.SimpleDateFormat;
@@ -33,33 +34,20 @@ import java.util.Set;
 public class PreferencesTools {
 
     public static void putStringToPreferences(Context context, String key, String value) {
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit().putString(key, value).commit();
+        getDefaultSharedPreferences(context).edit().putString(key, value).apply();
     }
 
     public static String getStringFromPreferences(Context context, String key) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(key, "");
+        return getDefaultSharedPreferences(context).getString(key, "");
     }
 
     public static void removeRecordFromPreferences(Context context, String key) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().remove(key).apply();
+        getDefaultSharedPreferences(context).edit().remove(key).apply();
     }
 
     public static String[] getArrayFromPreferences(Context context, String key) {
-        Set set = PreferenceManager.getDefaultSharedPreferences(context).getStringSet(key, new HashSet<String>());
-        return (String[])set.toArray(new String[set.size()]);
-    }
-
-    public static void addStringToArrayPreferences(Context context, String arrayKey, String value) {
-        Set<String> set = PreferenceManager.getDefaultSharedPreferences(context).getStringSet(arrayKey, new HashSet<String>());
-        set.add(value);
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet(arrayKey, set).commit();
-    }
-
-    public static void removeStringFromArrayPreferences(Context context, String arrayKey, String value) {
-        Set<String> set = PreferenceManager.getDefaultSharedPreferences(context).getStringSet(arrayKey, new HashSet<String>());
-        set.remove(value);
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putStringSet(arrayKey, set).commit();
+        Set set = getDefaultSharedPreferences(context).getStringSet(key, new HashSet<String>());
+        return (String[]) set.toArray(new String[set.size()]);
     }
 
     public static String parseDateToString(Date date) {
@@ -78,11 +66,29 @@ public class PreferencesTools {
     }
 
     public static void removeLoginSecret(Context context, String providerCode) {
-        String loginSecret = PreferencesTools.getStringFromPreferences(context, providerCode);
+        String loginSecret = getStringFromPreferences(context, providerCode);
         if (!loginSecret.isEmpty()) {
             removeStringFromArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
         }
         removeRecordFromPreferences(context, providerCode);
+    }
+
+    private static void addStringToArrayPreferences(Context context, String arrayKey, String value) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        Set<String> set = preferences.getStringSet(arrayKey, new HashSet<String>());
+        set.add(value);
+        preferences.edit().putStringSet(arrayKey, set).apply();
+    }
+
+    private static void removeStringFromArrayPreferences(Context context, String arrayKey, String value) {
+        SharedPreferences preferences = getDefaultSharedPreferences(context);
+        Set<String> set = preferences.getStringSet(arrayKey, new HashSet<String>());
+        set.remove(value);
+        preferences.edit().putStringSet(arrayKey, set).apply();
+    }
+
+    private static SharedPreferences getDefaultSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
     }
 }
 

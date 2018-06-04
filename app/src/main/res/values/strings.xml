@@ -17,6 +17,7 @@
     <string name="creating_customer">Creating customer</string>
     <string name="creating_token">Creating token</string>
     <string name="fetching_providers">Fetching Providers</string>
+    <string name="fetching_logins">Fetching Logins</string>
     <string name="fetching_accounts">Fetching Accounts</string>
     <string name="removing_login">Removing Login</string>
     <string name="fetching_transactions">Fetching Transactions</string>

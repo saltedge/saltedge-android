@@ -40,8 +40,8 @@ import java.util.Date;
 public class StartActivity extends AppCompatActivity {
 
     private final static String customerIdentifierPrefix = "ANDROID_APP_EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
-    private final static String clientAppId = "";//TODO SET APP ID
-    private final static String clientAppSecret = "";//TODO SET APP SECRET
+    private final static String clientAppId = "R4Qw517-RL9FI5f2_xZeechnO1wduKAbUfkts7bV4vY";//TODO SET APP ID
+    private final static String clientAppSecret = "Ylhr7TdW8uf-rpPbaUyJOSMqmiR_2qDMCz__tblPOZ8";//TODO SET APP SECRET
     private ProgressDialog progressDialog;
 
     @Override
@@ -80,24 +80,24 @@ public class StartActivity extends AppCompatActivity {
                 }
             });
         } else {
-            showTabsActivity();
+            showMainActivity();
         }
     }
 
     private void onCreateCustomerFailure(String errorResponse) {
         UITools.destroyAlertDialog(progressDialog);
-        UITools.failedParsing(StartActivity.this, errorResponse);
+        UITools.showAlertDialog(StartActivity.this, errorResponse);
     }
 
     private void onSecretCreateSuccess(String secret) {
         UITools.destroyAlertDialog(progressDialog);
         PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_SECRET, secret);
-        showTabsActivity();
+        showMainActivity();
     }
 
-    private void showTabsActivity() {
+    private void showMainActivity() {
         try {
-            Intent intent = new Intent(this, TabHostFragmentActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
