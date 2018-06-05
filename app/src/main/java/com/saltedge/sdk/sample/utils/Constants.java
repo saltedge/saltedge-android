@@ -31,5 +31,6 @@ public class Constants {
     public static final String KEY_PROVIDER = "provider";
     public static final String KEY_LOGIN_SECRET = "login_secret";
     public static final String KEY_REFRESH = "refresh";
+    public static final String KEY_PENDING = "pending";
     public static final int CONNECT_REQUEST_CODE = 1001;
 }

@@ -92,4 +92,10 @@ public interface ApiInterface {
                                                @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                                @Query(SEConstants.KEY_ACCOUNT_ID) String accountId,
                                                @Query(SEConstants.KEY_FROM_ID) String fromId);
+
+    @GET(ApiConstants.API_PENDING_TRANSACTIONS_PATH)
+    Call<TransactionsResponse> getPendingTransactions(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                                      @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+                                                      @Query(SEConstants.KEY_ACCOUNT_ID) String accountId,
+                                                      @Query(SEConstants.KEY_FROM_ID) String fromId);
 }

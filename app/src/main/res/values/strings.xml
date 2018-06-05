@@ -23,6 +23,9 @@
     <string name="fetching_transactions">Fetching Transactions</string>
     <string name="clear_all">Clear all</string>
     <string name="no_logins">No logins, connect provider.</string>
-    <string name="transactions">Transactions</string>
     <string name="accounts">Accounts</string>
+    <string name="transactions">Transactions</string>
+    <string name="pending_transactions">Pending Transactions</string>
+    <string name="no_transactions">No transactions.</string>
+    <string name="no_pending_transactions">No pending transactions.</string>
 </resources>

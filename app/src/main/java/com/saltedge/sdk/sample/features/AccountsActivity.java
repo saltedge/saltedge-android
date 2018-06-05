@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -37,7 +38,6 @@ import android.widget.ListView;
 
 import com.saltedge.sdk.interfaces.DeleteLoginResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
-import com.saltedge.sdk.interfaces.TokenConnectionResult;
 import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -49,12 +49,13 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
-public class AccountsActivity extends AppCompatActivity {
+public class AccountsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ProgressDialog progressDialog;
     private ArrayList<AccountData> accounts;
     private String providerCode;
     private String loginSecret;
+    private BottomSheetDialog mBottomSheetDialog;
 
     public static Intent newIntent(Activity activity, String loginSecret, String providerCode) {
         Intent intent = new Intent(activity, AccountsActivity.class);
@@ -113,6 +114,18 @@ public class AccountsActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.transactionsOption:
+                showTransactionsList((String) view.getTag(), false);
+                break;
+            case R.id.pendingTransactionsOption:
+                showTransactionsList((String) view.getTag(), true);
+                break;
+        }
     }
 
     private void deleteLogin() {
@@ -188,14 +201,32 @@ public class AccountsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AccountData account= accounts.get(position);
-                goToTransactions(account.getId());
+                showAccountOptions(account.getId());
             }
         });
     }
 
-    private void goToTransactions(String accountId) {
-        Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, providerCode);
-        startActivity(transactionsIntent);
+    private void showAccountOptions(String accountId) {
+        mBottomSheetDialog = new BottomSheetDialog(this);
+        View sheetView = getLayoutInflater().inflate(R.layout.dialog_account_options, null);
+        View transactionsOption = sheetView.findViewById(R.id.transactionsOption);
+        transactionsOption.setTag(accountId);
+        transactionsOption.setOnClickListener(this);
+        View pendingTransactionsOption = sheetView.findViewById(R.id.pendingTransactionsOption);
+        pendingTransactionsOption.setTag(accountId);
+        pendingTransactionsOption.setOnClickListener(this);
+        mBottomSheetDialog.setContentView(sheetView);
+        mBottomSheetDialog.show();
+    }
+
+    private void showTransactionsList(String accountId, boolean showPendingTransactions) {
+        if (mBottomSheetDialog != null) {
+            mBottomSheetDialog.dismiss();
+        }
+        if (accountId != null && !accountId.isEmpty()) {
+            Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, providerCode, showPendingTransactions);
+            startActivity(transactionsIntent);
+        }
     }
 
     private void showConnectActivity(Boolean tryToRefresh) {

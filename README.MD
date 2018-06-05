@@ -203,6 +203,24 @@ or call createToken(...) with custom map of params
                         });
 ```        
 
+* For each accounts, you can obtain the list of all pending transactions.
+
+```java
+        SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId,
+                        new FetchTransactionsResult() {
+                            @Override
+                            public void onSuccess(ArrayList<TransactionData> transactionsList) {
+                                //show transactions
+                            }
+        
+                            @Override
+                            public void onFailure(String errorResponse) {
+                                //process error
+                            }
+                        });
+```
+
+
 * You can refresh the data for each login.
 To refresh, you can obtain a token.
 To create a `SERefreshToken`, you need:
