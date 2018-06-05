@@ -111,13 +111,23 @@ public class SERequestManager {
     /**
      * Transactions
      * */
-    public void fetchTransactionsOfAccount(String customerSecret, String loginSecret, String accountId,
-                                           FetchTransactionsResult callback) {
+    public void fetchTransactionsOfAccount(String customerSecret, String loginSecret,
+                                           String accountId, FetchTransactionsResult callback) {
         fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, "", callback);
     }
 
-    public void fetchTransactionsOfAccount(String customerSecret, String loginSecret, String accountId,
-                                           String fromId, FetchTransactionsResult callback) {
-        new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId, fromId);
+    public void fetchTransactionsOfAccount(String customerSecret, String loginSecret,
+                                           String accountId, String fromId, FetchTransactionsResult callback) {
+        new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId, fromId, false);
+    }
+
+    public void fetchPendingTransactionsOfAccount(String customerSecret, String loginSecret,
+                                                  String accountId, FetchTransactionsResult callback) {
+        fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId, "", callback);
+    }
+
+    public void fetchPendingTransactionsOfAccount(String customerSecret, String loginSecret,
+                                                  String accountId, String fromId, FetchTransactionsResult callback) {
+        new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId, fromId, true);
     }
 }

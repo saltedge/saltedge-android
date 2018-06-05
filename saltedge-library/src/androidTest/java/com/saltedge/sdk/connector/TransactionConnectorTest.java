@@ -30,7 +30,6 @@ import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.model.TransactionData;
 import com.saltedge.sdk.network.ApiInterface;
 import com.saltedge.sdk.network.SERestClient;
-import com.saltedge.sdk.preferences.SEPreferencesRepository;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -39,7 +38,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -60,7 +58,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
     public void fetchTransactionsTest() throws Exception {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
-        new TransactionsConnector(this).fetchTransactions("test customer secret", "1", "2");
+        new TransactionsConnector(this).fetchTransactions("customer_secret", "logon_secret","2", "", false);
         doneSignal.await(5, TimeUnit.SECONDS);
         TransactionData transaction = transactionsList.get(0);
 
@@ -83,6 +81,35 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
 
         Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
         assertThat(request.getPath(), equalTo("/api/v4/transactions?account_id=2&from_id="));
+    }
+
+    @Test
+    public void fetchPendingTransactionsTest() throws Exception {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
+
+        new TransactionsConnector(this).fetchTransactions("customer_secret", "logon_secret", "2", "3", true);
+        doneSignal.await(5, TimeUnit.SECONDS);
+        TransactionData transaction = transactionsList.get(0);
+
+        Assert.assertNull(errorMessage);
+        assertThat(transactionsList.size(), equalTo(1));
+        assertThat(transaction.getId(), equalTo("3"));
+        assertThat(transaction.getAccountId(), equalTo("2"));
+        Assert.assertFalse(transaction.isDuplicated());
+        assertThat(transaction.getMode(), equalTo("normal"));
+        assertThat(transaction.getStatus(), equalTo("posted"));
+        assertThat(transaction.getMadeOn(), equalTo("2018-04-01"));
+        assertThat(transaction.getAmount(), equalTo(100.0));
+        assertThat(transaction.getCurrencyCode(), equalTo("EUR"));
+        assertThat(transaction.getDescription(), equalTo("Income for MasterCard"));
+        assertThat(transaction.getCategory(), equalTo("transfer"));
+        assertThat(transaction.getExtra().length(), equalTo(1));
+        assertThat(transaction.getExtra().getDouble("categorization_confidence"), equalTo(1.0));
+
+        RecordedRequest request = mockWebServer.takeRequest();
+
+        Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
+        assertThat(request.getPath(), equalTo("/api/v4/transactions/pending?account_id=2&from_id=3"));
     }
 
     private CountDownLatch doneSignal;

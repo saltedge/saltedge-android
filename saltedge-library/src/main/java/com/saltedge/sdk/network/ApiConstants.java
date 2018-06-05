@@ -47,7 +47,7 @@ public class ApiConstants {
     static final String API_LOGIN_PATH = API_VERSION_PATH + "/login";
     static final String API_ACCOUNTS_PATH = API_VERSION_PATH + "/accounts";
     static final String API_TRANSACTIONS_PATH = API_VERSION_PATH + "/transactions";
-    static final String API_PENDING_TRANSACTIONS_PATH = API_VERSION_PATH + "/pending";
+    static final String API_PENDING_TRANSACTIONS_PATH = API_TRANSACTIONS_PATH + "/pending";
     static final String API_TOKEN_RECONNECT_PATH = ApiConstants.API_TOKENS_PATH + "/reconnect";
     static final String API_TOKEN_CREATE_PATH = ApiConstants.API_TOKENS_PATH + "/create";
     static final String API_TOKEN_REFRESH_PATH = ApiConstants.API_TOKENS_PATH + "/refresh";

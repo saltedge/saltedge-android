@@ -39,27 +39,35 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
 
     private final FetchTransactionsResult callback;
     private ArrayList<TransactionData> transactionsList = new ArrayList<>();
-    private String loginSecret = "";
     private String customerSecret = "";
+    private String loginSecret = "";
     private String accountId = "";
     private String fromId = "";
+    private boolean fetchPendingTransactions = false;
 
     public TransactionsConnector(FetchTransactionsResult callback) {
         this.callback = callback;
     }
 
-    public void fetchTransactions(String customerSecret, String loginSecret, String accountId, String fromId) {
-        this.loginSecret = loginSecret;
+    public void fetchTransactions(String customerSecret, String loginSecret, String accountId, String fromId,
+                                  boolean fetchPendingTransactions) {
         this.customerSecret = customerSecret;
+        this.loginSecret = loginSecret;
         this.accountId = accountId;
         this.fromId = fromId;
+        this.fetchPendingTransactions = fetchPendingTransactions;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.getTransactions(customerSecret, loginSecret, accountId, fromId)
-                .enqueue(this);
+        if (fetchPendingTransactions) {
+            SERestClient.getInstance().service.getPendingTransactions(customerSecret, loginSecret, accountId, fromId)
+                    .enqueue(this);
+        } else {
+            SERestClient.getInstance().service.getTransactions(customerSecret, loginSecret, accountId, fromId)
+                    .enqueue(this);
+        }
     }
 
     @Override

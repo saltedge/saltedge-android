@@ -25,11 +25,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
@@ -50,11 +52,14 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     private ArrayList<TransactionData> transactions;
     private String accountId;
     private String providerCode;
+    private boolean pendingTransactionsMode = false;
 
-    public static Intent newIntent(Activity activity, String accountId, String providerCode) {
+    public static Intent newIntent(Activity activity, String accountId, String providerCode,
+                                   boolean showPendingTransactions) {
         Intent intent = new Intent(activity, TransactionsActivity.class);
         intent.putExtra(SEConstants.KEY_ACCOUNT_ID, accountId);
         intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        intent.putExtra(Constants.KEY_PENDING, showPendingTransactions);
         return intent;
     }
 
@@ -62,8 +67,11 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_list_view);
-        getSupportActionBar().setTitle(R.string.transactions);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.transactions);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         setInitialData();
     }
 
@@ -71,6 +79,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         Intent intent = this.getIntent();
         accountId = intent.getStringExtra(SEConstants.KEY_ACCOUNT_ID);
         providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
+        pendingTransactionsMode = intent.getBooleanExtra(Constants.KEY_PENDING, false);
     }
 
     @Override
@@ -106,7 +115,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     public void onSuccess(ArrayList<TransactionData> transactionsList) {
         UITools.destroyAlertDialog(progressDialog);
         transactions = transactionsList;
-        populateTransactions();
+        updateTransactionsList();
     }
 
     @Override
@@ -115,12 +124,16 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void fetchTransactions() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         transactions = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
-        SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
+        if (pendingTransactionsMode) {
+            SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
+        } else {
+            SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
+        }
     }
 
     private void onConnectFail(String errorResponse) {
@@ -128,11 +141,18 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         UITools.showAlertDialog(this, errorResponse);
     }
 
-    private void populateTransactions() {
+    private void updateTransactionsList() {
         try {
             ListView listView = findViewById(R.id.listView);
-            listView.setAdapter(new TransactionAdapter(this, transactions));
-            listView.setOnItemClickListener(this);
+            TextView emptyView = findViewById(R.id.emptyView);
+            if (transactions.isEmpty()) {
+                emptyView.setVisibility(View.VISIBLE);
+                emptyView.setText(pendingTransactionsMode ? R.string.no_pending_transactions : R.string.no_transactions);
+            } else {
+                emptyView.setVisibility(View.GONE);
+                listView.setAdapter(new TransactionAdapter(this, transactions));
+                listView.setOnItemClickListener(this);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
