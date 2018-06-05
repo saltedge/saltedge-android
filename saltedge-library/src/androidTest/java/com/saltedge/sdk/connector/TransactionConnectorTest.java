@@ -58,7 +58,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
     public void fetchTransactionsTest() throws Exception {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
-        new TransactionsConnector(this).fetchTransactions("2", "", false);
+        new TransactionsConnector(this).fetchTransactions("customer_secret", "logon_secret","2", "", false);
         doneSignal.await(5, TimeUnit.SECONDS);
         TransactionData transaction = transactionsList.get(0);
 
@@ -87,7 +87,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
     public void fetchPendingTransactionsTest() throws Exception {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
-        new TransactionsConnector(this).fetchTransactions("2", "3", true);
+        new TransactionsConnector(this).fetchTransactions("customer_secret", "logon_secret", "2", "3", true);
         doneSignal.await(5, TimeUnit.SECONDS);
         TransactionData transaction = transactionsList.get(0);
 
