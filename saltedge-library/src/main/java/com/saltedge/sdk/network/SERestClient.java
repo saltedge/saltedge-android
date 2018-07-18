@@ -24,6 +24,7 @@ package com.saltedge.sdk.network;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,6 +32,7 @@ import com.saltedge.sdk.BuildConfig;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.preferences.SEPreferencesRepository;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import okhttp3.CertificatePinner;
@@ -41,6 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SERestClient {
 
+    private static final String TAG = "SERestClient";
     private static final int DEFAULT_MAX_RETRIES = 2;
     private static final int DEFAULT_TIMEOUT = 2000;
     private static final int DEFAULT_HTTP_PORT = 80;
@@ -60,6 +63,7 @@ public class SERestClient {
         service = createRetrofit().create(ApiInterface.class);
     }
 
+    @NotNull
     private Retrofit createRetrofit() {
         return new Retrofit.Builder()
                 .baseUrl(getApiBaseUrl())
@@ -68,20 +72,24 @@ public class SERestClient {
                 .build();
     }
 
+    @NotNull
     private Gson createDefaultGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(JSONObject.class, new ExtraJsonDataAdapter())
                 .create();
     }
 
+    @NotNull
     private OkHttpClient createOkHttpClient() {
-        return new OkHttpClient.Builder()
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .addInterceptor(new HeaderInterceptor())
                 .addInterceptor(prepareLoginInterceptor())
-                .certificatePinner(createCertificatePinner())
-                .build();
+                .certificatePinner(createCertificatePinner());
+        addSSLSocketFactory(clientBuilder);
+        return clientBuilder.build();
     }
 
+    @NotNull
     private CertificatePinner createCertificatePinner() {
         CertificatePinner.Builder pinnerBuilder = new CertificatePinner.Builder();
         try {
@@ -95,12 +103,23 @@ public class SERestClient {
         return pinnerBuilder.build();
     }
 
+    private void addSSLSocketFactory(OkHttpClient.Builder builder) {
+        try {
+            SSLConfig.init(SaltEdgeSDK.getInstance().getContext());
+            builder.sslSocketFactory(SSLConfig.getSSLSocketFactory(), SSLConfig.getTrustManager());
+        } catch (Exception e) {
+            Log.e(TAG, "Can't add SSL Socket factory");
+            e.printStackTrace();
+        }
+    }
+
     private HttpLoggingInterceptor prepareLoginInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         return interceptor;
     }
 
+    @NotNull
     private String getApiBaseUrl() {
         int port = isHttpsPrefixInRootUrl() ? DEFAULT_HTTPS_PORT : DEFAULT_HTTP_PORT;
         return ApiConstants.ROOT_URL + ":" + String.valueOf(port);
