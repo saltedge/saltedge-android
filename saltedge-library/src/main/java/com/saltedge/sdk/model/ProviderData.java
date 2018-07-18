@@ -41,13 +41,13 @@ public class ProviderData extends BaseModel implements Serializable {
     private String status;
 
     @SerializedName(SEConstants.KEY_AUTOMATIC_FETCH)
-    private boolean automaticFetch;
+    private Boolean automaticFetch;
 
     @SerializedName(SEConstants.KEY_CUSTOMER_NOTIFIED_ON_SIGN_IN)
-    private boolean customerNotifiedOnSignIn;
+    private Boolean customerNotifiedOnSignIn;
 
     @SerializedName(SEConstants.KEY_INTERACTIVE)
-    private boolean interactive;
+    private Boolean interactive;
 
     @SerializedName(SEConstants.KEY_IDENTIFICATION_MODE)
     private String identificationMode;
@@ -77,7 +77,7 @@ public class ProviderData extends BaseModel implements Serializable {
     private String[] holderInfo;
 
     @SerializedName(SEConstants.KEY_MAX_CONSENT_DAYS)
-    private int maxConsentDays;
+    private Integer maxConsentDays;
 
     public String getCode() {
         return code;
@@ -111,27 +111,27 @@ public class ProviderData extends BaseModel implements Serializable {
         this.status = status;
     }
 
-    public boolean isAutomaticFetch() {
+    public Boolean getAutomaticFetch() {
         return automaticFetch;
     }
 
-    public void setAutomaticFetch(boolean automaticFetch) {
+    public void setAutomaticFetch(Boolean automaticFetch) {
         this.automaticFetch = automaticFetch;
     }
 
-    public boolean isCustomerNotifiedOnSignIn() {
+    public Boolean getCustomerNotifiedOnSignIn() {
         return customerNotifiedOnSignIn;
     }
 
-    public void setCustomerNotifiedOnSignIn(boolean customerNotifiedOnSignIn) {
+    public void setCustomerNotifiedOnSignIn(Boolean customerNotifiedOnSignIn) {
         this.customerNotifiedOnSignIn = customerNotifiedOnSignIn;
     }
 
-    public boolean isInteractive() {
+    public Boolean getInteractive() {
         return interactive;
     }
 
-    public void setInteractive(boolean interactive) {
+    public void setInteractive(Boolean interactive) {
         this.interactive = interactive;
     }
 
@@ -207,11 +207,11 @@ public class ProviderData extends BaseModel implements Serializable {
         this.holderInfo = holderInfo;
     }
 
-    public int getMaxConsentDays() {
+    public Integer getMaxConsentDays() {
         return maxConsentDays;
     }
 
-    public void setMaxConsentDays(int maxConsentDays) {
+    public void setMaxConsentDays(Integer maxConsentDays) {
         this.maxConsentDays = maxConsentDays;
     }
 }
