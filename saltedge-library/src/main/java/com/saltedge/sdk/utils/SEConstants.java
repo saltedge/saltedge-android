@@ -23,6 +23,11 @@ package com.saltedge.sdk.utils;
 
 public class SEConstants {
 
+    //Base model keys
+    public static final String KEY_ID = "id";
+    public static final String KEY_CREATED_AT = "created_at";
+    public static final String KEY_UPDATED_AT = "updated_at";
+
     //WebView statuses
     public static final String KEY_STAGE = "stage";
     public static final String STATUS_FETCHING = "fetching";
@@ -61,21 +66,23 @@ public class SEConstants {
     public static final String KEY_MODE = "mode";
     public static final String KEY_STATUS = "status";
     public static final String KEY_CODE = "code";
+    public static final String KEY_CUSTOMER_NOTIFIED_ON_SIGN_IN = "customer_notified_on_sign_in";
     public static final String KEY_AUTOMATIC_FETCH = "automatic_fetch";
     public static final String KEY_INTERACTIVE = "interactive";
+    public static final String KEY_IDENTIFICATION_MODE = "identification_mode";
     public static final String KEY_INSTRUCTION = "instruction";
     public static final String KEY_HOME_URL = "home_url";
     public static final String KEY_LOGIN_URL = "login_url";
     public static final String KEY_FORUM_URL = "forum_url";
+    public static final String KEY_LOGO_URL = "logo_url";
     public static final String KEY_COUNTRY_CODE = "country_code";
     public static final String KEY_ALLOWED_COUNTRIES = "allowed_countries";
     public static final String KEY_REFRESH_TIMEOUT = "refresh_timeout";
-    public static final String KEY_CREATED_AT = "created_at";
-    public static final String KEY_UPDATED_AT = "updated_at";
+    public static final String KEY_HOLDER_INFO = "holder_info";
+    public static final String KEY_MAX_CONSENT_DAYS = "max_consent_days";
     public static final String KEY_INCLUDE_FAKE_PROVIDERS = "include_fake_providers";
 
     //Login keys
-    public static final String KEY_ID = "id";
     public static final String KEY_SECRET = "secret";
     public static final String KEY_FINISHED = "finished";
     public static final String KEY_FINISHED_RECENT = "finished_recent";
