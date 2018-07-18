@@ -41,10 +41,16 @@ public class ProviderData extends BaseModel implements Serializable {
     private String status;
 
     @SerializedName(SEConstants.KEY_AUTOMATIC_FETCH)
-    private boolean automaticFetch;
+    private Boolean automaticFetch;
+
+    @SerializedName(SEConstants.KEY_CUSTOMER_NOTIFIED_ON_SIGN_IN)
+    private Boolean customerNotifiedOnSignIn;
 
     @SerializedName(SEConstants.KEY_INTERACTIVE)
-    private boolean interactive;
+    private Boolean interactive;
+
+    @SerializedName(SEConstants.KEY_IDENTIFICATION_MODE)
+    private String identificationMode;
 
     @SerializedName(SEConstants.KEY_INSTRUCTION)
     private String instruction;
@@ -58,19 +64,20 @@ public class ProviderData extends BaseModel implements Serializable {
     @SerializedName(SEConstants.KEY_FORUM_URL)
     private String forumUrl;
 
+    @SerializedName(SEConstants.KEY_LOGO_URL)
+    private String logoUrl;
+
     @SerializedName(SEConstants.KEY_COUNTRY_CODE)
     private String countryCode;
 
     @SerializedName(SEConstants.KEY_REFRESH_TIMEOUT)
     private int refreshTimeout;
 
-    public boolean isAutomaticFetch() {
-        return automaticFetch;
-    }
+    @SerializedName(SEConstants.KEY_HOLDER_INFO)
+    private String[] holderInfo;
 
-    public void setAutomaticFetch(boolean automaticFetch) {
-        this.automaticFetch = automaticFetch;
-    }
+    @SerializedName(SEConstants.KEY_MAX_CONSENT_DAYS)
+    private Integer maxConsentDays;
 
     public String getCode() {
         return code;
@@ -78,62 +85,6 @@ public class ProviderData extends BaseModel implements Serializable {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public String getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
-    public String getForumUrl() {
-        return forumUrl;
-    }
-
-    public void setForumUrl(String forumUrl) {
-        this.forumUrl = forumUrl;
-    }
-
-    public String getHomeUrl() {
-        return homeUrl;
-    }
-
-    public void setHomeUrl(String homeUrl) {
-        this.homeUrl = homeUrl;
-    }
-
-    public String getInstruction() {
-        return instruction;
-    }
-
-    public void setInstruction(String instruction) {
-        this.instruction = instruction;
-    }
-
-    public boolean isInteractive() {
-        return interactive;
-    }
-
-    public void setInteractive(boolean interactive) {
-        this.interactive = interactive;
-    }
-
-    public String getLoginUrl() {
-        return loginUrl;
-    }
-
-    public void setLoginUrl(String loginUrl) {
-        this.loginUrl = loginUrl;
-    }
-
-    public String getMode() {
-        return mode;
-    }
-
-    public void setMode(String mode) {
-        this.mode = mode;
     }
 
     public String getName() {
@@ -144,12 +95,100 @@ public class ProviderData extends BaseModel implements Serializable {
         this.name = name;
     }
 
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Boolean getAutomaticFetch() {
+        return automaticFetch;
+    }
+
+    public void setAutomaticFetch(Boolean automaticFetch) {
+        this.automaticFetch = automaticFetch;
+    }
+
+    public Boolean getCustomerNotifiedOnSignIn() {
+        return customerNotifiedOnSignIn;
+    }
+
+    public void setCustomerNotifiedOnSignIn(Boolean customerNotifiedOnSignIn) {
+        this.customerNotifiedOnSignIn = customerNotifiedOnSignIn;
+    }
+
+    public Boolean getInteractive() {
+        return interactive;
+    }
+
+    public void setInteractive(Boolean interactive) {
+        this.interactive = interactive;
+    }
+
+    public String getIdentificationMode() {
+        return identificationMode;
+    }
+
+    public void setIdentificationMode(String identificationMode) {
+        this.identificationMode = identificationMode;
+    }
+
+    public String getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(String instruction) {
+        this.instruction = instruction;
+    }
+
+    public String getHomeUrl() {
+        return homeUrl;
+    }
+
+    public void setHomeUrl(String homeUrl) {
+        this.homeUrl = homeUrl;
+    }
+
+    public String getLoginUrl() {
+        return loginUrl;
+    }
+
+    public void setLoginUrl(String loginUrl) {
+        this.loginUrl = loginUrl;
+    }
+
+    public String getForumUrl() {
+        return forumUrl;
+    }
+
+    public void setForumUrl(String forumUrl) {
+        this.forumUrl = forumUrl;
+    }
+
+    public String getLogoUrl() {
+        return logoUrl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public int getRefreshTimeout() {
@@ -160,4 +199,19 @@ public class ProviderData extends BaseModel implements Serializable {
         this.refreshTimeout = refreshTimeout;
     }
 
+    public String[] getHolderInfo() {
+        return holderInfo;
+    }
+
+    public void setHolderInfo(String[] holderInfo) {
+        this.holderInfo = holderInfo;
+    }
+
+    public Integer getMaxConsentDays() {
+        return maxConsentDays;
+    }
+
+    public void setMaxConsentDays(Integer maxConsentDays) {
+        this.maxConsentDays = maxConsentDays;
+    }
 }

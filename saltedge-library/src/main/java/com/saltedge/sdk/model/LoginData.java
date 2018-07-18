@@ -23,24 +23,14 @@ package com.saltedge.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
-import com.saltedge.sdk.utils.SEDateTools;
-
-import java.util.ArrayList;
-import java.util.Date;
 
 public class LoginData extends BaseModel {
 
     @SerializedName(SEConstants.KEY_SECRET)
     private String secret;
 
-    @SerializedName(SEConstants.KEY_FINISHED)
-    private boolean finished;
-
-    @SerializedName(SEConstants.KEY_FINISHED_RECENT)
-    private boolean finishedRecent;
-
-    @SerializedName(SEConstants.KEY_PARTIAL)
-    private boolean partial;
+    @SerializedName(SEConstants.KEY_PROVIDER_ID)
+    private String providerId;
 
     @SerializedName(SEConstants.KEY_PROVIDER_CODE)
     private String providerCode;
@@ -48,29 +38,8 @@ public class LoginData extends BaseModel {
     @SerializedName(SEConstants.KEY_PROVIDER_NAME)
     private String providerName;
 
-    @SerializedName(SEConstants.KEY_AUTOMATIC_FETCH)
-    private boolean automaticFetch;
-
-    @SerializedName(SEConstants.KEY_INTERACTIVE)
-    private boolean interactive;
-
-    @SerializedName(SEConstants.KEY_INTERACTIVE_HTML)
-    private String interactiveHtml;
-
-    @SerializedName(SEConstants.KEY_INTERACTIVE_FIELDS_NAMES)
-    private ArrayList<String> interactiveFieldsNames;
-
-    @SerializedName(SEConstants.KEY_CUSTOMER_EMAIL)
-    private String customerEmail;
-
-    @SerializedName(SEConstants.KEY_LAST_FAIL_AT)
-    private String lastFailAt;
-
-    @SerializedName(SEConstants.KEY_LAST_REQUEST_AT)
-    private String lastRequestAt;
-
-    @SerializedName(SEConstants.KEY_LAST_FAIL_MESSAGE)
-    private String lastFailMessage;
+    @SerializedName(SEConstants.KEY_DAILY_REFRESH)
+    private Boolean dailyRefresh;
 
     @SerializedName(SEConstants.KEY_LAST_SUCCESS_AT)
     private String lastSuccessAt;
@@ -78,11 +47,35 @@ public class LoginData extends BaseModel {
     @SerializedName(SEConstants.KEY_STATUS)
     private String status;
 
-    @SerializedName(SEConstants.KEY_STAGE)
-    private String stage;
-
     @SerializedName(SEConstants.KEY_COUNTRY_CODE)
     private String countryCode;
+
+    @SerializedName(SEConstants.KEY_NEXT_REFRESH_POSSIBLE_AT)
+    private String nextRefreshPossibleAt;
+
+    @SerializedName(SEConstants.KEY_STORE_CREDENTIALS)
+    private Boolean storeCredentials;
+
+    @SerializedName(SEConstants.KEY_LAST_ATTEMPT)
+    private AttemptData lastAttempt;
+
+    @SerializedName(SEConstants.KEY_HOLDER_INFO)
+    private HolderData holderInfo;
+
+    @SerializedName(SEConstants.KEY_SHOW_CONSENT_CONFIRMATION)
+    private Boolean showConsentConfirmation;
+
+    @SerializedName(SEConstants.KEY_CONSENT_TYPES)
+    private String[] consentTypes;
+
+    @SerializedName(SEConstants.KEY_CONSENT_PERIOD_DAYS)
+    private Integer consentPeriodDays;
+
+    @SerializedName(SEConstants.KEY_CONSENT_GIVEN_AT)
+    private String consentGivenAt;
+
+    @SerializedName(SEConstants.KEY_CONSENT_EXPIRES_AT)
+    private String consentExpiresAt;
 
     public String getSecret() {
         return secret;
@@ -92,28 +85,12 @@ public class LoginData extends BaseModel {
         this.secret = secret;
     }
 
-    public boolean isFinished() {
-        return finished;
+    public String getProviderId() {
+        return providerId;
     }
 
-    public void setFinished(boolean finished) {
-        this.finished = finished;
-    }
-
-    public boolean isFinishedRecent() {
-        return finishedRecent;
-    }
-
-    public void setFinishedRecent(boolean finishedRecent) {
-        this.finishedRecent = finishedRecent;
-    }
-
-    public boolean getPartial() {
-        return partial;
-    }
-
-    public void setPartial(boolean partial) {
-        this.partial = partial;
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     public String getProviderCode() {
@@ -132,72 +109,16 @@ public class LoginData extends BaseModel {
         this.providerName = providerName;
     }
 
-    public boolean isAutomaticFetch() {
-        return automaticFetch;
+    public Boolean getDailyRefresh() {
+        return dailyRefresh;
     }
 
-    public void setAutomaticFetch(boolean automaticFetch) {
-        this.automaticFetch = automaticFetch;
+    public void setDailyRefresh(Boolean dailyRefresh) {
+        this.dailyRefresh = dailyRefresh;
     }
 
-    public boolean isInteractive() {
-        return interactive;
-    }
-
-    public void setInteractive(boolean interactive) {
-        this.interactive = interactive;
-    }
-
-    public String getInteractiveHtml() {
-        return interactiveHtml;
-    }
-
-    public void setInteractiveHtml(String interactiveHtml) {
-        this.interactiveHtml = interactiveHtml;
-    }
-
-    public ArrayList<String> getInteractiveFieldsNames() {
-        return interactiveFieldsNames;
-    }
-
-    public void setInteractiveFieldsNames(ArrayList<String> interactiveFieldsNames) {
-        this.interactiveFieldsNames = interactiveFieldsNames;
-    }
-
-    public String getCustomerEmail() {
-        return customerEmail;
-    }
-
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
-    }
-
-    public Date getLastFailAt() {
-        return SEDateTools.parseStringToDate(lastFailAt);
-    }
-
-    public void setLastFailAt(String lastFailAt) {
-        this.lastFailAt = lastFailAt;
-    }
-
-    public Date getLastRequestAt() {
-        return SEDateTools.parseStringToDate(lastRequestAt);
-    }
-
-    public void setLastRequestAt(String lastRequestAt) {
-        this.lastRequestAt = lastRequestAt;
-    }
-
-    public String getLastFailMessage() {
-        return lastFailMessage;
-    }
-
-    public void setLastFailMessage(String lastFailMessage) {
-        this.lastFailMessage = lastFailMessage;
-    }
-
-    public Date getLastSuccessAt() {
-        return SEDateTools.parseStringToDate(lastSuccessAt);
+    public String getLastSuccessAt() {
+        return lastSuccessAt;
     }
 
     public void setLastSuccessAt(String lastSuccessAt) {
@@ -212,14 +133,6 @@ public class LoginData extends BaseModel {
         this.status = status;
     }
 
-    public String getStage() {
-        return stage;
-    }
-
-    public void setStage(String stage) {
-        this.stage = stage;
-    }
-
     public String getCountryCode() {
         return countryCode;
     }
@@ -228,4 +141,75 @@ public class LoginData extends BaseModel {
         this.countryCode = countryCode;
     }
 
+    public String getNextRefreshPossibleAt() {
+        return nextRefreshPossibleAt;
+    }
+
+    public void setNextRefreshPossibleAt(String nextRefreshPossibleAt) {
+        this.nextRefreshPossibleAt = nextRefreshPossibleAt;
+    }
+
+    public Boolean getStoreCredentials() {
+        return storeCredentials;
+    }
+
+    public void setStoreCredentials(Boolean storeCredentials) {
+        this.storeCredentials = storeCredentials;
+    }
+
+    public AttemptData getLastAttempt() {
+        return lastAttempt;
+    }
+
+    public void setLastAttempt(AttemptData lastAttempt) {
+        this.lastAttempt = lastAttempt;
+    }
+
+    public HolderData getHolderInfo() {
+        return holderInfo;
+    }
+
+    public void setHolderInfo(HolderData holderInfo) {
+        this.holderInfo = holderInfo;
+    }
+
+    public Boolean getShowConsentConfirmation() {
+        return showConsentConfirmation;
+    }
+
+    public void setShowConsentConfirmation(Boolean showConsentConfirmation) {
+        this.showConsentConfirmation = showConsentConfirmation;
+    }
+
+    public String[] getConsentTypes() {
+        return consentTypes;
+    }
+
+    public void setConsentTypes(String[] consentTypes) {
+        this.consentTypes = consentTypes;
+    }
+
+    public Integer getConsentPeriodDays() {
+        return consentPeriodDays;
+    }
+
+    public void setConsentPeriodDays(Integer consentPeriodDays) {
+        this.consentPeriodDays = consentPeriodDays;
+    }
+
+    public String getConsentGivenAt() {
+        return consentGivenAt;
+    }
+
+    public void setConsentGivenAt(String consentGivenAt) {
+        this.consentGivenAt = consentGivenAt;
+    }
+
+    public String getConsentExpiresAt() {
+        return consentExpiresAt;
+    }
+
+    public void setConsentExpiresAt(String consentExpiresAt) {
+        this.consentExpiresAt = consentExpiresAt;
+    }
 }
