@@ -8,4 +8,4 @@ SaltEdgeSDK.iml
 /app/proguard-rules.pro
 saltedge-android.iml
 /saltedge-library/saltedge-library.iml
-*.bks
+app/src/main/res/drawable/
