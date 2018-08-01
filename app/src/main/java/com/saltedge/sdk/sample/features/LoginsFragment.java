@@ -22,10 +22,13 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.features;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,8 +80,8 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listView = (ListView) getView().findViewById(R.id.listView);
-        emptyView = (TextView) getView().findViewById(R.id.emptyView);
+        listView = getView().findViewById(R.id.listView);
+        emptyView = getView().findViewById(R.id.emptyView);
         listView.setOnItemClickListener(this);
         emptyView.setOnClickListener(this);
     }
@@ -120,7 +123,7 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
 
     @Override
     public void onClick(View view) {
-        String[] loginSecretArray = PreferencesTools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
+        String[] loginSecretArray = PreferencesTools.getLoginSecrets(getActivity());
         if (loginSecretArray.length == 0) {
             fetchAndShowProviders();
         }
@@ -129,11 +132,11 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
         LoginData login = loginsList.get(position);
-        showLoginAccounts(login.getProviderCode(), login.getSecret());
+        showLoginAccounts(login);
     }
 
     private void updateViewData() {
-        String[] loginSecretArray = PreferencesTools.getArrayFromPreferences(getActivity(), Constants.LOGIN_SECRET_ARRAY);
+        String[] loginSecretArray = PreferencesTools.getLoginSecrets(getActivity());
 
         loginsList = new ArrayList<>();
         emptyView.setVisibility(View.VISIBLE);
@@ -166,12 +169,16 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
     }
 
     private void updateProvidersList() {
-        emptyView.setVisibility(View.GONE);
-        listView.setAdapter(new LoginsAdapter(getActivity(), loginsList));
+        Context context = getActivity();
+        if (context != null) {
+            emptyView.setVisibility(View.GONE);
+            listView.setAdapter(new LoginsAdapter(context, loginsList));
+        }
     }
 
-    private void showLoginAccounts(String providerCode, String loginSecret) {
-        startActivity(AccountsActivity.newIntent(getActivity(), loginSecret, providerCode));
+    private void showLoginAccounts(LoginData loginData) {
+        Intent intent = AccountsActivity.newIntent(getActivity(), loginData);
+        startActivity(intent);
     }
 
     private void fetchAndShowProviders() {
@@ -220,8 +227,10 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
 
     private void showConnectActivity(String providerCode) {
         try {
-            getActivity().startActivityForResult(ConnectActivity.newIntent(getActivity(), providerCode, null, null),
-                    Constants.CONNECT_REQUEST_CODE);
+            FragmentActivity activity = getActivity();
+            if (activity != null) {
+                activity.startActivityForResult(ConnectActivity.newIntent(getActivity(), providerCode), Constants.CONNECT_REQUEST_CODE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

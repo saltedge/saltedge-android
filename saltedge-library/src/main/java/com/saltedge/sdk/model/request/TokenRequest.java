@@ -33,6 +33,10 @@ public class TokenRequest {
         data = new SECreateTokenData(locale, returnTo);
     }
 
+    public TokenRequest(String locale, String returnTo, String overrideCredentialsStrategy) {
+        data = new SECreateTokenData(locale, returnTo, overrideCredentialsStrategy);
+    }
+
     private class SECreateTokenData {
 
         @SerializedName(SEConstants.KEY_LOCALE)
@@ -41,9 +45,17 @@ public class TokenRequest {
         @SerializedName(SEConstants.KEY_RETURN_TO)
         private String returnTo;
 
+        @SerializedName(SEConstants.KEY_OVERRIDE_CREDENTIALS_STRATEGY)
+        private String overrideCredentialsStrategy;
+
         private SECreateTokenData(String locale, String returnTo) {
             this.locale = locale;
             this.returnTo = returnTo;
+        }
+
+        private SECreateTokenData(String locale, String returnTo, String overrideCredentialsStrategy) {
+            this(locale, returnTo);
+            this.overrideCredentialsStrategy = overrideCredentialsStrategy;
         }
     }
 

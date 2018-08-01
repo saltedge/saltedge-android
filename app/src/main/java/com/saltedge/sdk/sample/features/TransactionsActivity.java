@@ -38,7 +38,7 @@ import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.model.TransactionData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.sample.adapters.TransactionAdapter;
+import com.saltedge.sdk.sample.adapters.TransactionsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
@@ -150,7 +150,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
                 emptyView.setText(pendingTransactionsMode ? R.string.no_pending_transactions : R.string.no_transactions);
             } else {
                 emptyView.setVisibility(View.GONE);
-                listView.setAdapter(new TransactionAdapter(this, transactions));
+                listView.setAdapter(new TransactionsAdapter(this, transactions));
                 listView.setOnItemClickListener(this);
             }
         } catch (Exception e) {

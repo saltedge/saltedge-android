@@ -25,10 +25,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.google.gson.Gson;
+
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 public class PreferencesTools {
@@ -45,35 +45,30 @@ public class PreferencesTools {
         getDefaultSharedPreferences(context).edit().remove(key).apply();
     }
 
-    public static String[] getArrayFromPreferences(Context context, String key) {
-        Set set = getDefaultSharedPreferences(context).getStringSet(key, new HashSet<String>());
-        return (String[]) set.toArray(new String[set.size()]);
+    public static void putLoginSecret(Context context, String loginId, String loginSecret) {
+        putStringToPreferences(context, loginId, loginSecret);
+        putStringToArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
     }
 
-    public static String parseDateToString(Date date) {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
-        try {
-            return sdf.format(date);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public static String[] getLoginSecrets(Context context) {
+        return getArrayFromPreferences(context, Constants.LOGIN_SECRET_ARRAY);
     }
 
-    public static void addLoginSecret(Context context, String providerCode, String loginSecret) {
-        putStringToPreferences(context, providerCode, loginSecret);
-        addStringToArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
-    }
-
-    public static void removeLoginSecret(Context context, String providerCode) {
-        String loginSecret = getStringFromPreferences(context, providerCode);
+    public static void removeLoginSecret(Context context, String loginId) {
+        String loginSecret = getStringFromPreferences(context, loginId);
         if (!loginSecret.isEmpty()) {
             removeStringFromArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
         }
-        removeRecordFromPreferences(context, providerCode);
+        removeRecordFromPreferences(context, loginId);
     }
 
-    private static void addStringToArrayPreferences(Context context, String arrayKey, String value) {
+    public static boolean loginSecretIsSaved(Context context, String loginId, String loginSecret) {
+        return !loginId.isEmpty() && !loginSecret.isEmpty()
+                && getStringFromPreferences(context, loginId).equals(loginSecret)
+                && Arrays.asList(getLoginSecrets(context)).contains(loginSecret);
+    }
+
+    private static void putStringToArrayPreferences(Context context, String arrayKey, String value) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
         Set<String> set = preferences.getStringSet(arrayKey, new HashSet<String>());
         set.add(value);
@@ -89,6 +84,11 @@ public class PreferencesTools {
 
     private static SharedPreferences getDefaultSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+    }
+
+    private static String[] getArrayFromPreferences(Context context, String key) {
+        Set set = getDefaultSharedPreferences(context).getStringSet(key, new HashSet<String>());
+        return (String[]) set.toArray(new String[set.size()]);
     }
 }
 

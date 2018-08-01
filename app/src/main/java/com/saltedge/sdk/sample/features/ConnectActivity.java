@@ -52,11 +52,33 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     private String locale = "";
     private String callbackUrl = Constants.CALLBACK_URL;
 
-    public static Intent newIntent(Activity activity, String providerCode, String loginSecret, Boolean tryToRefresh) {
+    /**
+     * ConnectActivity intent creator for the provider reconnect or refresh procedure
+     * @param activity - host activity
+     * @param providerCode - provider code which should be connected
+     * @return new Intent
+     */
+    public static Intent newIntent(Activity activity, String providerCode) {
+        Intent intent = new Intent(activity, ConnectActivity.class);
+        intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        return intent;
+    }
+
+    /**
+     * ConnectActivity intent creator for the new provider connection
+     * @param activity - host activity
+     * @param providerCode - provider code which should be connected
+     * @param loginSecret - login secret which should reconnected
+     * @param tryToRefresh - if it is possible connector should try to refresh the login data else reconnect the login
+     * @param overrideCredentials - indicates that the new credentials will automatically override the old ones on reconnect
+     * @return new Intent
+     */
+    public static Intent newIntent(Activity activity, String providerCode, String loginSecret, Boolean tryToRefresh, Boolean overrideCredentials) {
         Intent intent = new Intent(activity, ConnectActivity.class);
         intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
         intent.putExtra(Constants.KEY_LOGIN_SECRET, loginSecret);
         intent.putExtra(Constants.KEY_REFRESH, tryToRefresh);
+        intent.putExtra(Constants.KEY_OVERRIDE_CREDENTIALS, overrideCredentials);
         return intent;
     }
 
@@ -78,9 +100,12 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         }
     }
 
+    /**
+     * Success callback after Token create request. Url is used to redirect the user
+     * @param connectUrl - url of Saltedge Connect Page.
+     */
     @Override
     public void onSuccess(String connectUrl) {
-        // here is a URL you can use to redirect the user
         try {
             UITools.destroyAlertDialog(progressDialog);
             loadConnectUrl(connectUrl);
@@ -89,31 +114,63 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         }
     }
 
+    /**
+     * Fail callback after Token create request
+     * @param errorMessage - error message
+     */
     @Override
     public void onFailure(String errorMessage) {
         handleConnectionError(errorMessage);
     }
 
+    /**
+     * Success callback of provider connect flow
+     * @param stage - last connect flow stage
+     * @param loginSecret - login secret code
+     */
     @Override
-    public void onLoginSecretFetchSuccess(String statusResponse, String loginSecret) {
-        PreferencesTools.addLoginSecret(this, providerCode, loginSecret);
-        Toast.makeText(this, "Login connected", Toast.LENGTH_SHORT).show();
+    public void onLoginSecretFetchSuccess(String stage, String loginId, String loginSecret) {
+        PreferencesTools.putLoginSecret(this, loginId, loginSecret);
+        Toast.makeText(this, "Login successfully connected", Toast.LENGTH_SHORT).show();
         closeActivity(true);
     }
 
+    /**
+     * Login data updated callback.
+     */
     @Override
     public void onLoginRefreshSuccess() {
-        Toast.makeText(this, "Login refreshed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Login updated", Toast.LENGTH_SHORT).show();
         closeActivity(true);
     }
 
+    @Override
+    public void onLoginFetchingStage(String loginId, String loginSecret) {
+        if (loginId == null || loginSecret == null) return;
+        if (this.loginSecret == null || !this.loginSecret.equals(loginSecret)) {
+            this.loginSecret = loginSecret;
+            if (!PreferencesTools.loginSecretIsSaved(this, loginId, loginSecret)) {
+                PreferencesTools.putLoginSecret(this, loginId, loginSecret);
+            }
+        }
+    }
+
+    /**
+     * Error callback of provider connect flow
+     * @param statusResponse - error message from connect page
+     */
     @Override
     public void onLoginSecretFetchError(String statusResponse) {
         UITools.showAlertDialog(this, statusResponse, this);
     }
 
+    /**
+     * Error dialog click listener
+     * @param dialogInterface - dialog interface
+     * @param id - dialog action id
+     */
     @Override
-    public void onClick(DialogInterface dialogInterface, int i) {//On Error Dialog click
+    public void onClick(DialogInterface dialogInterface, int id) {
         closeActivity(false);
     }
 
@@ -134,7 +191,9 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         if (isRefreshMode()) {
             fetchRefreshConnectionToken();
         } else if (isReconnectViewMode()) {
-            fetchReconnectConnectionToken();
+            boolean overrideCredentials = this.getIntent()
+                    .getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
+            fetchReconnectConnectionToken(overrideCredentials);
         } else {
             fetchCreateConnectionToken();
         }
@@ -157,19 +216,18 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     }
 
     private void fetchRefreshConnectionToken() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.refresh_provider));
         SERequestManager.getInstance().refreshToken(locale, callbackUrl, loginSecret, customerSecret, this);
     }
 
-    private void fetchReconnectConnectionToken() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
+    private void fetchReconnectConnectionToken(boolean overrideCredentials) {
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.reconnect_provider));
-        SERequestManager.getInstance().reconnectToken(locale, callbackUrl, loginSecret, customerSecret, this);
+        SERequestManager.getInstance().reconnectToken(locale, callbackUrl, loginSecret, customerSecret,
+                overrideCredentials, this);
     }
 
     private void handleConnectionError(String errorMessage) {
@@ -185,6 +243,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
 
     private void closeActivity(boolean result) {
         try {
+            SEWebViewTools.getInstance().clear();
             setResult(result ? Activity.RESULT_OK : Activity.RESULT_CANCELED);
             finish();
         } catch (Exception e) {

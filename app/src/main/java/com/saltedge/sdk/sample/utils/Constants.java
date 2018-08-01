@@ -25,12 +25,12 @@ public class Constants {
 
     public static String LOGIN_SECRET_ARRAY = "login_secret_array";
     public static String CALLBACK_URL = "http://img2.timeinc.net/health/img/web/2012/10/blogs/fat-cat-overweight-400x400.jpg";
-    public static final String KEY_REFRESH_URL = "refresh_url";
     public static final String KEY_CUSTOMER_SECRET = "secret";
     public static final String KEY_CUSTOMER_IDENTIFIER = "identifier";
-    public static final String KEY_PROVIDER = "provider";
+    public static final String KEY_LOGIN = "login";
     public static final String KEY_LOGIN_SECRET = "login_secret";
     public static final String KEY_REFRESH = "refresh";
+    public static final String KEY_OVERRIDE_CREDENTIALS = "override_credentials";
     public static final String KEY_PENDING = "pending";
     public static final int CONNECT_REQUEST_CODE = 1001;
 }

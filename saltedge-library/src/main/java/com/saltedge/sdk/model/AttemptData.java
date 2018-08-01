@@ -24,7 +24,9 @@ package com.saltedge.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class AttemptData extends BaseModel {
+import java.io.Serializable;
+
+public class AttemptData extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_API_MODE)
     private String apiMode;

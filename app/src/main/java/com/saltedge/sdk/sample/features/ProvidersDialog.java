@@ -37,14 +37,14 @@ import android.widget.ListView;
 
 import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.sample.adapters.ProviderAdapter;
+import com.saltedge.sdk.sample.adapters.ProvidersAdapter;
 
 import java.util.ArrayList;
 
 public class ProvidersDialog extends DialogFragment implements DialogInterface.OnClickListener, TextWatcher, AdapterView.OnItemClickListener {
 
     private static final String KEY_DATA = "KEY_DATA";
-    private ProviderAdapter adapter;
+    private ProvidersAdapter adapter;
     private EditText inputView;
     private ListView listView;
     private ArrayList<ProviderData> providers;
@@ -70,7 +70,7 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
 
         listView = dialogView.findViewById(R.id.listView);
 
-        adapter = new ProviderAdapter(getActivity());
+        adapter = new ProvidersAdapter(getActivity());
         adapter.setListItems(providers);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);

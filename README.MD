@@ -128,11 +128,18 @@ or call createToken(...) with custom map of params
         SEWebViewTools.getInstance().initializeWithUrl(getActivity(), webView, url, new SEWebViewTools.WebViewRedirectListener() {
             @Override
             public void onLoginSecretFetchSuccess(String responseStatus, String loginSecret) {
-                String loginSecret = loginSecret;
+                //login connection finished sucessfully. save loginId and loginSecret.
             }
 
             @Override
-            public void onLoginSecretFetchError(String errorResponse) {...}
+            public void onLoginSecretFetchError(String errorResponse) {
+                //login connection finished with error. Show the error. 
+            }
+            
+            @Override
+            public void onLoginFetchingStage(String loginId, String loginSecret) {
+                //login is fetching. save loginId and loginSecret for connection process resume.
+            }
         });
     }
 ```

@@ -35,32 +35,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.saltedge.sdk.interfaces.DeleteLoginResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.model.AccountData;
+import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.AccountAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
-import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
-public class AccountsActivity extends AppCompatActivity implements View.OnClickListener {
+public class AccountsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
     private ProgressDialog progressDialog;
     private ArrayList<AccountData> accounts;
-    private String providerCode;
-    private String loginSecret;
+    private LoginData login;
     private BottomSheetDialog mBottomSheetDialog;
+    private ListView listView;
+    private TextView emptyView;
+    private MenuItem refreshMenuItem;
 
-    public static Intent newIntent(Activity activity, String loginSecret, String providerCode) {
+    public static Intent newIntent(Activity activity, LoginData login) {
         Intent intent = new Intent(activity, AccountsActivity.class);
-        intent.putExtra(Constants.KEY_LOGIN_SECRET, loginSecret);
-        intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        intent.putExtra(Constants.KEY_LOGIN, login);
         return intent;
     }
 
@@ -73,6 +75,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
             getSupportActionBar().setTitle(R.string.accounts);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        setupViews();
         setInitialData();
     }
 
@@ -92,6 +95,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_accounts, menu);
+        refreshMenuItem = menu.findItem(R.id.action_refresh);
         return true;
     }
 
@@ -128,12 +132,17 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        AccountData account= accounts.get(position);
+        showAccountOptions(account.getId());
+    }
+
     private void deleteLogin() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_login));
-        SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret,
+        SERequestManager.getInstance().deleteLogin(login.getSecret(), customerSecret,
                 new DeleteLoginResult() {
                     @Override
                     public void onSuccess(Boolean isRemoved) {
@@ -151,7 +160,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     private void onDeleteLoginSuccess() {
         try {
-            PreferencesTools.removeLoginSecret(this, providerCode);
+            PreferencesTools.removeLoginSecret(this, login.getId());
             UITools.destroyAlertDialog(progressDialog);
             this.finish();
         } catch (Exception e) {
@@ -160,15 +169,14 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void fetchAccounts() {
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
-        if (TextUtils.isEmpty(loginSecret) || TextUtils.isEmpty(customerSecret)) {
+        if (TextUtils.isEmpty(login.getSecret()) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         accounts = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
-        SERequestManager.getInstance().fetchAccounts(customerSecret, loginSecret,
+        SERequestManager.getInstance().fetchAccounts(customerSecret, login.getSecret(),
                 new FetchAccountsResult() {
                     @Override
                     public void onSuccess(ArrayList<AccountData> accountsList) {
@@ -185,25 +193,30 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     private void onFetchAccountsSuccess(ArrayList<AccountData> accountsList) {
         UITools.destroyAlertDialog(progressDialog);
         accounts = accountsList;
-        populateAccounts();
+        updateViewsContent();
     }
 
     private void onConnectionError(String errorResponse) {
         UITools.destroyAlertDialog(progressDialog);
+        updateViewsContent();
         UITools.showAlertDialog(this, errorResponse);
     }
 
-    private void populateAccounts() {
-        ListView listView = findViewById(R.id.listView);
-        if (listView == null) return;
-        listView.setAdapter(new AccountAdapter(this, accounts));
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AccountData account= accounts.get(position);
-                showAccountOptions(account.getId());
-            }
-        });
+    private void updateViewsContent() {
+        refreshMenuItem.setVisible(!accounts.isEmpty());
+        emptyView.setVisibility(accounts.isEmpty() ? View.VISIBLE : View.GONE);
+        if (accounts.isEmpty()) {
+            emptyView.setText(R.string.no_accounts);
+        } else {
+            listView.setAdapter(new AccountAdapter(this, accounts));
+        }
+    }
+
+    private void setupViews() {
+        listView = findViewById(R.id.listView);
+        emptyView = findViewById(R.id.emptyView);
+        emptyView.setText(R.string.fetching_accounts);
+        listView.setOnItemClickListener(this);
     }
 
     private void showAccountOptions(String accountId) {
@@ -224,23 +237,22 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
             mBottomSheetDialog.dismiss();
         }
         if (accountId != null && !accountId.isEmpty()) {
-            Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, providerCode, showPendingTransactions);
+            Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, login.getProviderCode(), showPendingTransactions);
             startActivity(transactionsIntent);
         }
     }
 
     private void showConnectActivity(Boolean tryToRefresh) {
         try {
-            startActivityForResult(ConnectActivity.newIntent(this, providerCode, loginSecret, tryToRefresh),
-                    Constants.CONNECT_REQUEST_CODE);
+            boolean overrideCredentials = !tryToRefresh && login.getLastSuccessAt() == null;
+            startActivityForResult(ConnectActivity.newIntent(this, login.getProviderCode(),
+                    login.getSecret(), tryToRefresh, overrideCredentials), Constants.CONNECT_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void setInitialData() {
-        Intent intent = this.getIntent();
-        providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
-        loginSecret = intent.getStringExtra(Constants.KEY_LOGIN_SECRET);
+        login = (LoginData) this.getIntent().getSerializableExtra(Constants.KEY_LOGIN);
     }
 }
