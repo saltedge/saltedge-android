@@ -19,45 +19,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.model;
+package com.saltedge.sdk.sample.utils;
 
-import com.google.gson.annotations.SerializedName;
-import com.saltedge.sdk.utils.SEConstants;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-import java.io.Serializable;
+public class DateTools {
 
-public class StageData extends BaseModel implements Serializable {
-
-    @SerializedName(SEConstants.KEY_INTERACTIVE_FIELDS_NAMES)
-    private String[] interactiveFieldsNames;
-
-    @SerializedName(SEConstants.KEY_INTERACTIVE_HTML)
-    private String interactive_html;
-
-    @SerializedName(SEConstants.KEY_NAME)
-    private String name;
-
-    public String[] getInteractiveFieldsNames() {
-        return interactiveFieldsNames;
-    }
-
-    public void setInteractiveFieldsNames(String[] interactiveFieldsNames) {
-        this.interactiveFieldsNames = interactiveFieldsNames;
-    }
-
-    public String getInteractive_html() {
-        return interactive_html;
-    }
-
-    public void setInteractive_html(String interactive_html) {
-        this.interactive_html = interactive_html;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public static String formatDateToString(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        try {
+            return sdf.format(date);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

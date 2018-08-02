@@ -28,31 +28,32 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.sample.utils.PreferencesTools;
 
-import java.util.ArrayList;
+import java.util.List;
 
-public class TransactionAdapter extends BaseAdapter {
+public class ProvidersAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
-    private ArrayList<TransactionData> transactionsList;
+    private List<ProviderData> providersList;
 
-    public TransactionAdapter(Context context, ArrayList<TransactionData> transactionsList) {
-        layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.transactionsList = transactionsList;
+    public ProvidersAdapter(Context context) {
+         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public void setListItems(List<ProviderData> providersList) {
+        this.providersList = providersList;
     }
 
     @Override
     public int getCount() {
-        return transactionsList.size();
+        return providersList.size();
     }
 
     @Override
-    public TransactionData getItem(int position) {
-        return transactionsList.get(position);
+    public ProviderData getItem(int position) {
+        return (position < 0 || position >= providersList.size()) ? null : providersList.get(position);
     }
 
     @Override
@@ -62,15 +63,12 @@ public class TransactionAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = layoutInflater.inflate(R.layout.list_item_transaction, parent, false);
-        TextView title = rowView.findViewById(R.id.title);
-        TextView subtitleLeft = rowView.findViewById(R.id.subtitleLeft);
-        TextView subtitleRight = rowView.findViewById(R.id.subtitleRight);
-        TransactionData transaction = getItem(position);
-        title.setText(transaction.getDescription());
-        subtitleLeft.setText(PreferencesTools.parseDateToString(transaction.getMadeOnData()));
-        String subTitle = transaction.getCurrencyCode() + " " + transaction.getAmount();
-        subtitleRight.setText(subTitle);
+        View rowView = layoutInflater.inflate(R.layout.list_item_provider, parent, false);
+        TextView textView = rowView.findViewById(R.id.providerTitle);
+        ProviderData item = getItem(position);
+        if (item != null) {
+            textView.setText(getItem(position).getName());
+        }
         return rowView;
     }
 }

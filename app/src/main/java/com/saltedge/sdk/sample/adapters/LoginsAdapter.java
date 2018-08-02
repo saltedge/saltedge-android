@@ -35,8 +35,9 @@ import java.util.ArrayList;
 
 public class LoginsAdapter extends BaseAdapter {
 
-    LayoutInflater layoutInflater;
-    ArrayList<LoginData> loginsList;
+    private LayoutInflater layoutInflater;
+    private ArrayList<LoginData> loginsList;
+
     public LoginsAdapter(Context context, ArrayList<LoginData> loginsList) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,7 +62,7 @@ public class LoginsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = layoutInflater.inflate(R.layout.list_item_login, parent, false);
-        TextView title = (TextView) rowView.findViewById(R.id.title);
+        TextView title = rowView.findViewById(R.id.title);
         LoginData login = getItem(position);
         title.setText(login.getProviderName());
         return rowView;

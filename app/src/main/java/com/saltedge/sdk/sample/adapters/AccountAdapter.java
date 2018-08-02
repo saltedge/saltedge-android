@@ -35,8 +35,9 @@ import java.util.ArrayList;
 
 public class AccountAdapter extends BaseAdapter {
 
-    LayoutInflater layoutInflater;
-    ArrayList<AccountData> accountList;
+    private LayoutInflater layoutInflater;
+    private ArrayList<AccountData> accountList;
+
     public AccountAdapter(Context context, ArrayList<AccountData> accountList) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,8 +62,8 @@ public class AccountAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = layoutInflater.inflate(R.layout.list_item_account, parent, false);
-        TextView title = (TextView) rowView.findViewById(R.id.title);
-        TextView subtitle = (TextView) rowView.findViewById(R.id.subtitle);
+        TextView title = rowView.findViewById(R.id.title);
+        TextView subtitle = rowView.findViewById(R.id.subtitle);
         AccountData account = getItem(position);
         title.setText(account.getName());
         subtitle.setText(String.valueOf(account.getBalance()) + " " +account.getCurrencyCode());

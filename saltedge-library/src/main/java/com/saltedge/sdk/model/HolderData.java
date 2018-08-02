@@ -24,7 +24,9 @@ package com.saltedge.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class HolderData {
+import java.io.Serializable;
+
+public class HolderData implements Serializable {
 
     @SerializedName(SEConstants.KEY_NAMES)
     private String[] names;

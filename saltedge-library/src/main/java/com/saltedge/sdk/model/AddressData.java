@@ -24,7 +24,9 @@ package com.saltedge.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class AddressData {
+import java.io.Serializable;
+
+public class AddressData implements Serializable {
 
     @SerializedName(SEConstants.KEY_CITY)
     private String city;

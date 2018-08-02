@@ -44,13 +44,14 @@ public class SEWebViewTools {
     private static SEWebViewTools instance;
     private ProgressDialog progressDialog;
     private Activity activity;
-    private WebViewRedirectListener webViewRedirectListener;
+    private WebViewRedirectListener webViewListener;
     private String returnUrl;
 
     public interface WebViewRedirectListener {
-        void onLoginSecretFetchSuccess(String statusResponse, String loginSecret);
-        void onLoginRefreshSuccess();
+        void onLoginSecretFetchSuccess(String statusResponse, String loginId, String loginSecret);
         void onLoginSecretFetchError(String statusResponse);
+        void onLoginRefreshSuccess();
+        void onLoginFetchingStage(String loginId, String loginSecret);
     }
 
     public static SEWebViewTools getInstance() {
@@ -60,22 +61,22 @@ public class SEWebViewTools {
         return instance;
     }
 
-    public void initializeWithUrl(Activity activity, final WebView webView, String url, String returnUrl, WebViewRedirectListener listener) {
+    public void initializeWithUrl(Activity activity, WebView webView, String url, String returnUrl,
+                                  WebViewRedirectListener listener) {
         this.activity = activity;
-        this.webViewRedirectListener = listener;
+        this.webViewListener = listener;
         this.returnUrl = returnUrl;
-        progressDialog = UITools.createProgressDialog(this.activity);
+        progressDialog = UITools.createProgressDialog(activity);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setAllowFileAccess(true);
         webView.setWebViewClient(new CustomWebViewClient());
         webView.setWebChromeClient(new WebChromeClient() {
-
             @Override
             public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
                                              FileChooserParams fileChooserParams) {
                 uploadMessage = filePathCallback;
-                pickFile();
+                startFilePicker();
                 return true;
             }
 
@@ -83,10 +84,15 @@ public class SEWebViewTools {
         webView.loadUrl(url);
     }
 
-    private void pickFile() {
+    public void clear() {
+        activity = null;
+        webViewListener = null;
+    }
+
+    private void startFilePicker() {
         Intent chooserIntent = new Intent(Intent.ACTION_GET_CONTENT);
         chooserIntent.setType("file/*");
-        activity.startActivityForResult(chooserIntent, SEConstants.FILECHOOSER_RESULT_CODE);
+        if (activity != null) activity.startActivityForResult(chooserIntent, SEConstants.FILECHOOSER_RESULT_CODE);
     }
 
     private class CustomWebViewClient extends WebViewClient {
@@ -118,16 +124,26 @@ public class SEWebViewTools {
 
     private boolean urlIsSaltedgeRedirection(String url) {
         if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
-            webViewRedirectListener.onLoginRefreshSuccess();
+            if (webViewListener != null) webViewListener.onLoginRefreshSuccess();
         } else if (url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
-            String redirectURL = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
-            JSONObject dataJsonObject = SEJsonTools.getObject(SEJsonTools.stringToJSON(redirectURL), SEConstants.KEY_DATA);
+            String jsonData = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
+            JSONObject jsonObject = SEJsonTools.stringToJSON(jsonData);
+            JSONObject dataJsonObject = SEJsonTools.getObject(jsonObject, SEConstants.KEY_DATA);
             String stage = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
+            String loginId = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_LOGIN_ID);
             String loginSecret = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_SECRET);
-            if (stage.equals(SEConstants.STATUS_SUCCESS)) {
-                webViewRedirectListener.onLoginSecretFetchSuccess(stage, loginSecret);
-            } else if (stage.equals(SEConstants.STATUS_ERROR)) {
-                webViewRedirectListener.onLoginSecretFetchError(stage);
+
+            switch (stage) {
+                case SEConstants.STATUS_SUCCESS:
+                    if (webViewListener != null)
+                        webViewListener.onLoginSecretFetchSuccess(stage, loginId, loginSecret);
+                    break;
+                case SEConstants.STATUS_ERROR:
+                    if (webViewListener != null) webViewListener.onLoginSecretFetchError(stage);
+                    break;
+                case SEConstants.STATUS_FETCHING:
+                    if (webViewListener != null) webViewListener.onLoginFetchingStage(loginId, loginSecret);
+                    break;
             }
             return false;
         }
