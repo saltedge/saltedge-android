@@ -68,7 +68,7 @@ public class TransactionsAdapter extends BaseAdapter {
         TextView subtitleRight = rowView.findViewById(R.id.subtitleRight);
         TransactionData transaction = getItem(position);
         title.setText(transaction.getDescription());
-        subtitleLeft.setText(DateTools.formatDateToString(transaction.getMadeOnData()));
+        subtitleLeft.setText(DateTools.formatDateToString(transaction.getMadeOnDate()));
         String subTitle = transaction.getCurrencyCode() + " " + transaction.getAmount();
         subtitleRight.setText(subTitle);
         return rowView;

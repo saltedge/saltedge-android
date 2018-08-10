@@ -31,6 +31,7 @@ public class SEDateTools {
 
     public static Date parseStringToDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             return sdf.parse(date);
         } catch (ParseException e) {

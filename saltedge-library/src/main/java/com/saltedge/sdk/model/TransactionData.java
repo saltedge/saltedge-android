@@ -89,7 +89,7 @@ public class TransactionData extends BaseModel {
         return madeOn;
     }
 
-    public Date getMadeOnData() {
+    public Date getMadeOnDate() {
         return SEDateTools.parseShortStringToDate(madeOn);
     }
 

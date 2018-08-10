@@ -23,7 +23,7 @@ import android.text.TextUtils;
 import com.saltedge.sdk.connector.AccountsConnector;
 import com.saltedge.sdk.connector.CustomerConnector;
 import com.saltedge.sdk.connector.DeleteLoginConnector;
-import com.saltedge.sdk.connector.LoginConnector;
+import com.saltedge.sdk.connector.LoginsShowConnector;
 import com.saltedge.sdk.connector.ProvidersConnector;
 import com.saltedge.sdk.connector.TokenConnector;
 import com.saltedge.sdk.connector.TransactionsConnector;
@@ -33,7 +33,9 @@ import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.interfaces.FetchLoginsResult;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
+import com.saltedge.sdk.interfaces.RefreshLoginResult;
 import com.saltedge.sdk.interfaces.TokenConnectionResult;
+import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.Map;
@@ -130,6 +132,11 @@ public class SERequestManager {
         new TokenConnector(callback).refreshToken(localeCode, returnTo, loginSecret, customerSecret);
     }
 
+    public SERefreshService refreshLoginWithSecret(String customerSecret, LoginData loginData,
+                                                   String[] refreshScopes, RefreshLoginResult callback) {
+        return new SERefreshService(callback).startRefresh(customerSecret, loginData, refreshScopes);
+    }
+
     /**
      * Returns a single login object.
      * @param loginSecret - secret of the login which should be returned if exist
@@ -148,7 +155,7 @@ public class SERequestManager {
      * @param callback - callback for request result
      */
     public void fetchLogins(String[] loginSecretsArray, String customerSecret, FetchLoginsResult callback) {
-        new LoginConnector(callback).fetchLogins(loginSecretsArray, customerSecret);
+        new LoginsShowConnector(callback).fetchLogins(loginSecretsArray, customerSecret);
     }
 
     /**

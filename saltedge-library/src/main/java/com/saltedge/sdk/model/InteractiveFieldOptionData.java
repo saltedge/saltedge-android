@@ -25,21 +25,23 @@ import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
-import java.util.Map;
 
-public class StageData extends BaseModel implements Serializable {
+public class InteractiveFieldOptionData implements Serializable {
 
     @SerializedName(SEConstants.KEY_NAME)
     private String name;
 
-    @SerializedName(SEConstants.KEY_INTERACTIVE_HTML)
-    private String interactiveHtml;
+    @SerializedName(SEConstants.KEY_ENGLISH_NAME)
+    private String englishName;
 
-    @SerializedName(SEConstants.KEY_INTERACTIVE_FIELDS_NAMES)
-    private String[] interactiveFieldsNames;
+    @SerializedName(SEConstants.KEY_LOCALIZED_NAME)
+    private String localizedName;
 
-    @SerializedName(SEConstants.KEY_INTERACTIVE_FIELDS_OPTIONS)
-    private Map<String, InteractiveFieldOptionData> interactiveFieldsOptions;
+    @SerializedName(SEConstants.KEY_OPTION_VALUE)
+    private String optionValue;
+
+    @SerializedName(SEConstants.KEY_SELECTED)
+    private Boolean selected;
 
     public String getName() {
         return name;
@@ -49,27 +51,35 @@ public class StageData extends BaseModel implements Serializable {
         this.name = name;
     }
 
-    public String getInteractiveHtml() {
-        return interactiveHtml;
+    public String getEnglishName() {
+        return englishName;
     }
 
-    public void setInteractiveHtml(String interactiveHtml) {
-        this.interactiveHtml = interactiveHtml;
+    public void setEnglishName(String englishName) {
+        this.englishName = englishName;
     }
 
-    public String[] getInteractiveFieldsNames() {
-        return interactiveFieldsNames;
+    public String getLocalizedName() {
+        return localizedName;
     }
 
-    public void setInteractiveFieldsNames(String[] interactiveFieldsNames) {
-        this.interactiveFieldsNames = interactiveFieldsNames;
+    public void setLocalizedName(String localizedName) {
+        this.localizedName = localizedName;
     }
 
-    public Map<String, InteractiveFieldOptionData> getInteractiveFieldsOptions() {
-        return interactiveFieldsOptions;
+    public String getOptionValue() {
+        return optionValue;
     }
 
-    public void setInteractiveFieldsOptions(Map<String, InteractiveFieldOptionData> interactiveFieldsOptions) {
-        this.interactiveFieldsOptions = interactiveFieldsOptions;
+    public void setOptionValue(String optionValue) {
+        this.optionValue = optionValue;
+    }
+
+    public Boolean getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Boolean selected) {
+        this.selected = selected;
     }
 }

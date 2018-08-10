@@ -44,13 +44,15 @@ public class ApiConstants {
     static final String API_PROVIDERS_PATH = API_VERSION_PATH + "/providers";
     static final String PER_PAGE = API_VERSION_PATH + "/per";
     private static final String API_TOKENS_PATH = API_VERSION_PATH + "/tokens";
-    static final String API_LOGIN_PATH = API_VERSION_PATH + "/login";
-    static final String API_ACCOUNTS_PATH = API_VERSION_PATH + "/accounts";
-    static final String API_TRANSACTIONS_PATH = API_VERSION_PATH + "/transactions";
-    static final String API_PENDING_TRANSACTIONS_PATH = API_TRANSACTIONS_PATH + "/pending";
     static final String API_TOKEN_RECONNECT_PATH = ApiConstants.API_TOKENS_PATH + "/reconnect";
     static final String API_TOKEN_CREATE_PATH = ApiConstants.API_TOKENS_PATH + "/create";
     static final String API_TOKEN_REFRESH_PATH = ApiConstants.API_TOKENS_PATH + "/refresh";
+    static final String API_LOGIN_PATH = API_VERSION_PATH + "/login";
+    static final String API_LOGIN_REFRESH_PATH = API_LOGIN_PATH + "/refresh";
+    static final String API_LOGIN_INTERACTIVE_PATH = API_LOGIN_PATH + "/interactive";
+    static final String API_ACCOUNTS_PATH = API_VERSION_PATH + "/accounts";
+    static final String API_TRANSACTIONS_PATH = API_VERSION_PATH + "/transactions";
+    static final String API_PENDING_TRANSACTIONS_PATH = API_TRANSACTIONS_PATH + "/pending";
 
     //SCOPES
     public static final String[] SCOPE_ACCOUNT_TRANSACTIONS = {"accounts", "transactions"};

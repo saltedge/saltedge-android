@@ -36,11 +36,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.DeleteLoginResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
+import com.saltedge.sdk.interfaces.RefreshLoginResult;
 import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.model.LoginData;
+import com.saltedge.sdk.model.StageData;
+import com.saltedge.sdk.network.ApiConstants;
+import com.saltedge.sdk.network.SERefreshService;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.AccountAdapter;
@@ -49,8 +54,11 @@ import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 
-public class AccountsActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class AccountsActivity extends AppCompatActivity implements View.OnClickListener,
+        AdapterView.OnItemClickListener, RefreshLoginResult, InputValueResult {
 
     private ProgressDialog progressDialog;
     private ArrayList<AccountData> accounts;
@@ -59,6 +67,9 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     private ListView listView;
     private TextView emptyView;
     private MenuItem refreshMenuItem;
+    private String customerSecret = "";
+    private SERefreshService refreshService;
+    private boolean fetchingAccounts = false;
 
     public static Intent newIntent(Activity activity, LoginData login) {
         Intent intent = new Intent(activity, AccountsActivity.class);
@@ -88,6 +99,9 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onDestroy() {
         UITools.destroyProgressDialog(progressDialog);
+        if (refreshService != null) {
+            refreshService.cancel();
+        }
         super.onDestroy();
     }
 
@@ -102,20 +116,21 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
+            case android.R.id.home:// Respond to the action bar's Up/Home button
                 finish();
-                return true;
-            case R.id.action_refresh:
-                showConnectActivity(true);
-                return true;
-            case R.id.action_reconnect:
-                showConnectActivity(false);
                 return true;
             case R.id.action_delete:
                 deleteLogin();
                 return true;
-
+            case R.id.action_reconnect:
+                showConnectActivity(false);
+                return true;
+            case R.id.action_refresh:
+                showConnectActivity(true);
+                return true;
+            case R.id.action_refresh_background:
+                startRefreshInBackground();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -138,8 +153,47 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         showAccountOptions(account.getId());
     }
 
+    @Override
+    public void onRefreshSuccess() {
+        Toast.makeText(this, "Login refreshed.", Toast.LENGTH_SHORT).show();
+        refreshMenuItem.setVisible(!accounts.isEmpty());
+        if (!fetchingAccounts) {
+            fetchAccounts();
+        }
+    }
+
+    @Override
+    public void onRefreshFailure(String errorMessage) {
+        refreshMenuItem.setVisible(!accounts.isEmpty());
+        Toast.makeText(this, "Refresh error: " + errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLoginStateFetchError(String errorMessage) {
+        //we can ignore intermediate states
+    }
+
+    @Override
+    public void provideInteractiveData(StageData lastStage) {
+        if (lastStage.getInteractiveFieldsNames().length == 0) {
+            refreshService.sendInteractiveData(new HashMap<String, Object>());
+        } else {
+            String inputFieldKey = lastStage.getInteractiveFieldsNames()[0];
+            InputValueDialogHelper.showInputValueDialog(this, inputFieldKey, this);
+        }
+    }
+
+    @Override
+    public void inputValueResult(String inputFieldKey, String inputFieldValue) {
+        if (TextUtils.isEmpty(inputFieldValue)) {
+            Toast.makeText(this, "Empty value not allowed", Toast.LENGTH_SHORT).show();
+        }
+        HashMap<String, Object> credentials = new HashMap<>();
+        credentials.put(inputFieldKey, inputFieldValue);
+        refreshService.sendInteractiveData(credentials);
+    }
+
     private void deleteLogin() {
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_login));
         SERequestManager.getInstance().deleteLogin(login.getSecret(), customerSecret,
@@ -169,22 +223,24 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void fetchAccounts() {
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         if (TextUtils.isEmpty(login.getSecret()) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         accounts = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
+        fetchingAccounts = true;
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
         SERequestManager.getInstance().fetchAccounts(customerSecret, login.getSecret(),
                 new FetchAccountsResult() {
                     @Override
                     public void onSuccess(ArrayList<AccountData> accountsList) {
+                        fetchingAccounts = false;
                         onFetchAccountsSuccess(accountsList);
                     }
 
                     @Override
                     public void onFailure(String errorResponse) {
+                        fetchingAccounts = false;
                         onConnectionError(errorResponse);
                     }
         });
@@ -237,7 +293,8 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
             mBottomSheetDialog.dismiss();
         }
         if (accountId != null && !accountId.isEmpty()) {
-            Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId, login.getProviderCode(), showPendingTransactions);
+            Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId,
+                    login.getSecret(), showPendingTransactions);
             startActivity(transactionsIntent);
         }
     }
@@ -252,7 +309,22 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    private void startRefreshInBackground() {
+        if (TextUtils.isEmpty(login.getSecret()) || TextUtils.isEmpty(customerSecret)) {
+            Toast.makeText(this, "Internal error. Invalid refresh secrets", Toast.LENGTH_SHORT).show();
+        } else if (login.getNextRefreshPossibleAtDate().before(new Date())) {
+            String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
+            refreshMenuItem.setVisible(false);
+            refreshService = SERequestManager.getInstance().refreshLoginWithSecret(customerSecret,
+                    login, scopes, this);
+        } else {
+            Toast.makeText(this, "Refresh is not allowed. Wait until "
+                    + login.getNextRefreshPossibleAtDate(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void setInitialData() {
         login = (LoginData) this.getIntent().getSerializableExtra(Constants.KEY_LOGIN);
+        customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
     }
 }
