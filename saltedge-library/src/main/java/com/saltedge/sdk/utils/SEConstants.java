@@ -102,12 +102,13 @@ public class SEConstants {
     public static final String KEY_SUCCESS_AT = "success_at";
     public static final String KEY_NEXT_REFRESH_POSSIBLE_AT = "next_refresh_possible_at";
     public static final String KEY_STORE_CREDENTIALS = "store_credentials";
-    public static final String KEY_LAST_ATTEMPT = "last_attempt";
     public static final String KEY_SHOW_CONSENT_CONFIRMATION = "show_consent_confirmation";
     public static final String KEY_CONSENT_TYPES = "consent_types";
     public static final String KEY_CONSENT_PERIOD_DAYS = "consent_period_days";
     public static final String KEY_CONSENT_GIVEN_AT = "consent_given_at";
     public static final String KEY_CONSENT_EXPIRES_AT = "consent_expires_at";
+    public static final String KEY_LAST_ATTEMPT = "last_attempt";
+    public static final String KEY_LAST_STAGE = "last_stage";
 
     //Account keys
     public static final String KEY_NATURE = "nature";
@@ -135,6 +136,7 @@ public class SEConstants {
     public static final String KEY_USER_PRESENT = "user_present";
     public static final String KEY_INTERACTIVE_HTML = "interactive_html";
     public static final String KEY_INTERACTIVE_FIELDS_NAMES = "interactive_fields_names";
+    public static final String KEY_INTERACTIVE_FIELDS_OPTIONS = "interactive_fields_options";
     public static final String KEY_NAMES = "names";
     public static final String KEY_EMAILS = "emails";
     public static final String KEY_PHONE_NUMBERS = "phone_numbers";
@@ -144,7 +146,11 @@ public class SEConstants {
     public static final String KEY_STREET = "street";
     public static final String KEY_COUNTRY_CODE = "country_code";
     public static final String KEY_POST_CODE = "post_code";
-
+    public static final String KEY_ENGLISH_NAME = "english_name";
+    public static final String KEY_LOCALIZED_NAME = "localized_name";
+    public static final String KEY_OPTION_VALUE = "option_value";
+    public static final String KEY_SELECTED = "selected";
+    public static final String KEY_CREDENTIALS = "credentials";
     public static final String KEY_OVERRIDE_CREDENTIALS_STRATEGY = "override_credentials_strategy";
     public static final String KEY_RETURN_TO = "return_to";
     public static final String KEY_LOCALE = "locale";
@@ -156,5 +162,11 @@ public class SEConstants {
     public static final String URL_EMPTY = "URL is empty";
     public static final String JAVASCRIPT_CALLBACK = "javascript_callback_type";
     public static final String IFRAME = "iframe";
+
+    //ERRORS
+    public static final String ERROR_INVALID_REFRESH_SECRETS = "Invalid refresh secrets";
+
     public static final int FILECHOOSER_RESULT_CODE = 666;
+
+
 }

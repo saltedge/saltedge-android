@@ -24,6 +24,8 @@ package com.saltedge.sdk.network;
 import com.saltedge.sdk.model.request.CreateCustomerRequest;
 import com.saltedge.sdk.model.request.CreateTokenRequest;
 import com.saltedge.sdk.model.request.MappedRequest;
+import com.saltedge.sdk.model.request.PutLoginCredentialsRequest;
+import com.saltedge.sdk.model.request.RefreshLoginRequest;
 import com.saltedge.sdk.model.request.TokenRequest;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.model.response.CreateCustomerResponse;
@@ -41,6 +43,7 @@ import retrofit2.http.GET;
 import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Query;
 
 public interface ApiInterface {
@@ -75,12 +78,22 @@ public interface ApiInterface {
                                          @Query(SEConstants.KEY_FROM_ID) String fromId);
 
     @GET(ApiConstants.API_LOGIN_PATH)
-    Call<LoginResponse> getLogin(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                 @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret);
+    Call<LoginResponse> showLogin(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                  @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret);
+
+    @PUT(ApiConstants.API_LOGIN_REFRESH_PATH)
+    Call<LoginResponse> refreshLogin(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                     @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+                                     @Body RefreshLoginRequest body);
 
     @DELETE(ApiConstants.API_LOGIN_PATH)
     Call<DeleteLoginResponse> deleteLogin(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
                                           @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret);
+
+    @PUT(ApiConstants.API_LOGIN_INTERACTIVE_PATH)
+    Call<LoginResponse> putInteractiveCredentials(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                                  @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+                                                  @Body PutLoginCredentialsRequest body);
 
     @GET(ApiConstants.API_ACCOUNTS_PATH)
     Call<AccountsResponse> getAccounts(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,

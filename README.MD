@@ -283,7 +283,57 @@ To create a `SERefreshToken`, you need:
                                 //process error
                             }
                 });
-```    
+```   
+
+#### Refresh login through API connect
+If you do not wish to refresh logins using Salt Edge Connect Form, you can perform using `SERefreshService`.
+* Start refresh
+```java
+    SERefreshService refreshService = SERequestManager.getInstance().refreshLoginWithSecret(customerSecret,
+                        loginModel, scopesArray, refreshResultCallback);
+```  
+
+* Canceling refresh due to Android components life cycle changes
+```java
+    refreshService.cancel();
+```
+
+* RefreshService result callback
+```java
+    private RefreshLoginResult callback = new RefreshLoginResult() {
+
+        @Override
+        public void onRefreshSuccess() {
+            //refresh finished with success
+        }
+
+        @Override
+        public void onRefreshFailure(String errorMessage) {
+            //refresh finished with error
+        }
+
+        @Override
+        public void onLoginStateFetchError(String errorMessage) {
+            //login state updte finishe with error. you can ignore it
+        }
+
+        @Override
+        public void provideInteractiveData(StageData lastStage) {
+            //This callback is called when the currently fetching login requires any interactive credentials for fetching.
+            // call `refreshService.sendInteractiveData(credentials)` when credentials are ready
+            
+        }
+    }
+```
+
+[StageData](https://docs.saltedge.com/v4_apps/reference/#payment_attempts-stages) contains interactive fields name and options which should be used for credentials input  
+  
+* [Sending interactive credentials](https://docs.saltedge.com/v4_apps/reference/#logins-interactive)
+```java
+    refreshService.sendInteractiveData(credentials);
+```
+Credentials is `Map<String, Object>` type with content like `"interactive field name from StageData": "input value"`.
+##### Saltedge API Connect requires high security standards for data handling on client’s side. This method is only available for the certified and/or selected partners. For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)
 
 #### Please consult the Demo app to see how it works
 
@@ -291,12 +341,12 @@ To create a `SERefreshToken`, you need:
 
 There are some provided models for serializing the objects received in the API responses. These represent the providers, logins, accounts, transactions, provider fields and their options. Whenever you request a resource that returns one of these types, they will always get serialized into Java classes. (For instance, the `listingTransactionsOfAccount(...)` method has a `ArrayList<>` containing `SETransaction` instances in its success callback.)
 
-Models contained within the components:
+Base models contained within the components:
 
-* `SEAccount`
-* `SELogin`
-* `SEProvider`
-* `SETransaction`
+* `AccountData`
+* `LoginData`
+* `ProviderData`
+* `TransactionData`
 
 For a supplementary description of the models listed above that is not included in the sources' docs, feel free to visit the [API Reference](https://docs.saltedge.com/reference/).
 

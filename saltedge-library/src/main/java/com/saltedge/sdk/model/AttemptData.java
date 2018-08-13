@@ -115,6 +115,9 @@ public class AttemptData extends BaseModel implements Serializable {
     @SerializedName(SEConstants.KEY_STAGES)
     private StageData[] stages;
 
+    @SerializedName(SEConstants.KEY_LAST_STAGE)
+    private StageData lastStage;
+
     public String getApiMode() {
         return apiMode;
     }
@@ -227,7 +230,7 @@ public class AttemptData extends BaseModel implements Serializable {
         this.fetchScopes = fetchScopes;
     }
 
-    public Boolean getFinished() {
+    public Boolean isFinished() {
         return finished;
     }
 
@@ -345,5 +348,13 @@ public class AttemptData extends BaseModel implements Serializable {
 
     public void setStages(StageData[] stages) {
         this.stages = stages;
+    }
+
+    public StageData getLastStage() {
+        return lastStage;
+    }
+
+    public void setLastStage(StageData lastStage) {
+        this.lastStage = lastStage;
     }
 }

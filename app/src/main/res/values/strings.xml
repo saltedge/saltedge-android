@@ -12,6 +12,7 @@
     <string name="providers_empty">Provider list is empty</string>
     <string name="provider_list">Providers</string>
     <string name="refresh_provider">Refresh</string>
+    <string name="refresh_provider_background">Refresh in background</string>
     <string name="reconnect_provider">Reconnect</string>
     <string name="delete_provider">Delete</string>
     <string name="creating_customer">Creating customer</string>

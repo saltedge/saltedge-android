@@ -34,29 +34,31 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginConnector extends BasePinnedConnector implements Callback<LoginResponse> {
+public class LoginsShowConnector extends BasePinnedConnector implements Callback<LoginResponse> {
 
-    private final FetchLoginsResult callback;
-    private String customerSecret = "";
-    private String[] loginSecretsArray = new String[0];
+    private FetchLoginsResult callback;
+    private ArrayList<Call<LoginResponse>> callsList;
     private ArrayList<LoginData> loginsList = new ArrayList<>();
     private int resultCount;
 
-    public LoginConnector(FetchLoginsResult callback) {
+    public LoginsShowConnector(FetchLoginsResult callback) {
         this.callback = callback;
     }
 
     public void fetchLogins(String[] loginSecretsArray, String customerSecret) {
-        this.customerSecret = customerSecret;
-        this.loginSecretsArray = loginSecretsArray;
+        loginsList = new ArrayList<>();
+        callsList = new ArrayList<>();
+        for (String loginSecret : loginSecretsArray) {
+            callsList.add(SERestClient.getInstance().service.showLogin(customerSecret, loginSecret));
+        }
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        resultCount = loginSecretsArray.length;
-        for (String loginSecret : loginSecretsArray) {
-            SERestClient.getInstance().service.getLogin(customerSecret, loginSecret).enqueue(this);
+        resultCount = callsList.size();
+        for (Call<LoginResponse> call : callsList) {
+            call.enqueue(this);
         }
     }
 
@@ -72,15 +74,27 @@ public class LoginConnector extends BasePinnedConnector implements Callback<Logi
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
+    @Override
+    public void onFailure(Call<LoginResponse> call, Throwable t) {
+        onFailure(SEErrorTools.processConnectionError(t));
+    }
+
+    public void cancel() {
+        callback = null;
+        if (callsList != null) {
+            for (Call<LoginResponse> call : callsList) {
+                if (callsList != null && !call.isCanceled()) {
+                    call.cancel();
+                }
+            }
+        }
+        callsList = null;
+    }
+
     private void onSuccess(LoginData data) {
         loginsList.add(data);
         if (loginsList.size() >= resultCount) {
             callback.onSuccess(loginsList);
         }
-    }
-
-    @Override
-    public void onFailure(Call<LoginResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
     }
 }

@@ -23,8 +23,11 @@ package com.saltedge.sdk.model;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
+import com.saltedge.sdk.utils.SEDateTools;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Date;
 
 public class LoginData extends BaseModel implements Serializable {
 
@@ -147,6 +150,10 @@ public class LoginData extends BaseModel implements Serializable {
         return nextRefreshPossibleAt;
     }
 
+    public Date getNextRefreshPossibleAtDate() {
+        return SEDateTools.parseStringToDate(nextRefreshPossibleAt);
+    }
+
     public void setNextRefreshPossibleAt(String nextRefreshPossibleAt) {
         this.nextRefreshPossibleAt = nextRefreshPossibleAt;
     }
@@ -213,5 +220,15 @@ public class LoginData extends BaseModel implements Serializable {
 
     public void setConsentExpiresAt(String consentExpiresAt) {
         this.consentExpiresAt = consentExpiresAt;
+    }
+
+    public boolean attemptIsFinished() {
+        return lastAttempt != null && lastAttempt.getLastStage() != null
+                && "finish".equals(lastAttempt.getLastStage().getName());
+    }
+
+    public boolean attemptIsInteractive() {
+        return lastAttempt != null && lastAttempt.getLastStage() != null
+                && "interactive".equals(lastAttempt.getLastStage().getName());
     }
 }

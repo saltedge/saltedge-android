@@ -51,14 +51,14 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     private ProgressDialog progressDialog;
     private ArrayList<TransactionData> transactions;
     private String accountId;
-    private String providerCode;
+    private String loginSecret;
     private boolean pendingTransactionsMode = false;
 
-    public static Intent newIntent(Activity activity, String accountId, String providerCode,
+    public static Intent newIntent(Activity activity, String accountId, String loginSecret,
                                    boolean showPendingTransactions) {
         Intent intent = new Intent(activity, TransactionsActivity.class);
         intent.putExtra(SEConstants.KEY_ACCOUNT_ID, accountId);
-        intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        intent.putExtra(Constants.KEY_LOGIN_SECRET, loginSecret);
         intent.putExtra(Constants.KEY_PENDING, showPendingTransactions);
         return intent;
     }
@@ -78,7 +78,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     private void setInitialData() {
         Intent intent = this.getIntent();
         accountId = intent.getStringExtra(SEConstants.KEY_ACCOUNT_ID);
-        providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
+        loginSecret = intent.getStringExtra(Constants.KEY_LOGIN_SECRET);
         pendingTransactionsMode = intent.getBooleanExtra(Constants.KEY_PENDING, false);
     }
 
@@ -125,7 +125,6 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
 
     private void fetchTransactions() {
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
-        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         transactions = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
