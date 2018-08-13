@@ -125,7 +125,6 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
 
     private void fetchTransactions() {
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
-//        String loginSecret = PreferencesTools.getStringFromPreferences(this, providerCode);
         transactions = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
