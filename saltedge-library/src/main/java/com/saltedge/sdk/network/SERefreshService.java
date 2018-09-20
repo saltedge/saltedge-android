@@ -63,6 +63,19 @@ public class SERefreshService {
         }
     };
 
+    private FetchLoginResult interactiveLoginResult = new FetchLoginResult() {
+
+        @Override
+        public void onSuccess(LoginData login) {
+            checkLoginStage(login);
+        }
+
+        @Override
+        public void onFailure(String errorMessage) {
+            onInteractiveStepError(errorMessage);
+        }
+    };
+
     private FetchLoginsResult showLoginResult = new FetchLoginsResult() {
 
         @Override
@@ -116,7 +129,7 @@ public class SERefreshService {
 
     /**
      * Sends requested interactive credentials or empty map
-     * @param credentials - credentials map. e.g.: `{ "data": { "credentials": { "sms": "123456" } } }`
+     * @param credentials - credentials map. e.g.: `{ "sms": "123456" }`
      */
     public void sendInteractiveData(Map<String, Object> credentials) {
         if (secretsNotValid()) {
@@ -125,7 +138,7 @@ public class SERefreshService {
             if (interactiveConnector != null) {
                 interactiveConnector.cancel();
             }
-            interactiveConnector = new LoginInteractiveCredentialsConnector(refreshLoginResult);
+            interactiveConnector = new LoginInteractiveCredentialsConnector(interactiveLoginResult);
             interactiveConnector.sendLoginCredentials(customerSecret, login.getSecret(), credentials);
         }
     }
@@ -167,13 +180,13 @@ public class SERefreshService {
 
     private void pollingAction() {
         if (showLoginConnector != null) {
-            showLoginConnector.fetchLogins(new String[]{ login.getSecret() }, customerSecret);
+            showLoginConnector.fetchLogins(customerSecret, new String[]{ login.getSecret() });
         }
     }
 
     private void checkLoginStage(LoginData login) {
         if (login.attemptIsFinished()) {
-            onRefreshSuccess();
+            onRefreshSuccess(login);
         } else if (login.attemptIsInteractive()) {
             askInteractiveData(login.getLastAttempt().getLastStage());
         } else {
@@ -188,14 +201,21 @@ public class SERefreshService {
         if (callback != null) callback.provideInteractiveData(lastStage);
     }
 
-    private void onRefreshSuccess() {
+    private void onRefreshSuccess(LoginData login) {
         stopLoginPolling();
-        if (callback != null) callback.onRefreshSuccess();
+        if (callback != null) callback.onRefreshSuccess(login);
     }
 
     private void onRefreshError(String errorMessage) {
         stopLoginPolling();
         if (callback != null) callback.onRefreshFailure(errorMessage);
+    }
+
+    private void onInteractiveStepError(String errorMessage) {
+        if (callback != null) callback.onInteractiveStepFailure(errorMessage);
+        if (!pollingIsRunning()) {
+            startLoginPolling();
+        }
     }
 
     private boolean secretsNotValid() {

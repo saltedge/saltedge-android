@@ -152,7 +152,8 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_logins));
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        SERequestManager.getInstance().fetchLogins(loginSecretsArray, customerSecret, new FetchLoginsResult() {
+        SERequestManager.getInstance().fetchLogins(customerSecret, loginSecretsArray,
+                new FetchLoginsResult() {
                     @Override
                     public void onSuccess(List<LoginData> logins) {
                         UITools.destroyAlertDialog(progressDialog);

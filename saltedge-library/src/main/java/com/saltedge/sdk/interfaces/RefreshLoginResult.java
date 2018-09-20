@@ -21,11 +21,13 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
+import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.model.StageData;
 
 public interface RefreshLoginResult {
-    void onRefreshSuccess();
+    void onRefreshSuccess(LoginData login);
     void onRefreshFailure(String errorMessage);
+    void onInteractiveStepFailure(String errorMessage);
     void onLoginStateFetchError(String errorMessage);
     void provideInteractiveData(StageData lastStage);
 }

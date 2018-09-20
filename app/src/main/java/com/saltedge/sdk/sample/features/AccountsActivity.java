@@ -62,7 +62,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     private ProgressDialog progressDialog;
     private ArrayList<AccountData> accounts;
-    private LoginData login;
+    private LoginData currentLogin;
     private BottomSheetDialog mBottomSheetDialog;
     private ListView listView;
     private TextView emptyView;
@@ -154,9 +154,12 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onRefreshSuccess() {
-        Toast.makeText(this, "Login refreshed.", Toast.LENGTH_SHORT).show();
+    public void onRefreshSuccess(LoginData login) {
+        showShortToast("Login refreshed.");
         refreshMenuItem.setVisible(!accounts.isEmpty());
+        if (login != null) {
+            this.currentLogin = login;
+        }
         if (!fetchingAccounts) {
             fetchAccounts();
         }
@@ -165,12 +168,18 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onRefreshFailure(String errorMessage) {
         refreshMenuItem.setVisible(!accounts.isEmpty());
-        Toast.makeText(this, "Refresh error: " + errorMessage, Toast.LENGTH_SHORT).show();
+        showShortToast("Refresh error: " + errorMessage);
+    }
+
+    @Override
+    public void onInteractiveStepFailure(String errorMessage) {
+        //we can ignore interactive step error
+        showShortToast(errorMessage);
     }
 
     @Override
     public void onLoginStateFetchError(String errorMessage) {
-        //we can ignore intermediate states
+        //we can ignore intermediate login's fetch error
     }
 
     @Override
@@ -186,7 +195,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void inputValueResult(String inputFieldKey, String inputFieldValue) {
         if (TextUtils.isEmpty(inputFieldValue)) {
-            Toast.makeText(this, "Empty value not allowed", Toast.LENGTH_SHORT).show();
+            showShortToast("Empty value not allowed");
         }
         HashMap<String, Object> credentials = new HashMap<>();
         credentials.put(inputFieldKey, inputFieldValue);
@@ -196,7 +205,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     private void deleteLogin() {
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_login));
-        SERequestManager.getInstance().deleteLogin(login.getSecret(), customerSecret,
+        SERequestManager.getInstance().deleteLogin(customerSecret, currentLogin.getSecret(),
                 new DeleteLoginResult() {
                     @Override
                     public void onSuccess(Boolean isRemoved) {
@@ -214,7 +223,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     private void onDeleteLoginSuccess() {
         try {
-            PreferencesTools.removeLoginSecret(this, login.getId());
+            PreferencesTools.removeLoginSecret(this, currentLogin.getId());
             UITools.destroyAlertDialog(progressDialog);
             this.finish();
         } catch (Exception e) {
@@ -223,14 +232,14 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void fetchAccounts() {
-        if (TextUtils.isEmpty(login.getSecret()) || TextUtils.isEmpty(customerSecret)) {
+        if (TextUtils.isEmpty(currentLogin.getSecret()) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         accounts = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         fetchingAccounts = true;
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
-        SERequestManager.getInstance().fetchAccounts(customerSecret, login.getSecret(),
+        SERequestManager.getInstance().fetchAccounts(customerSecret, currentLogin.getSecret(),
                 new FetchAccountsResult() {
                     @Override
                     public void onSuccess(ArrayList<AccountData> accountsList) {
@@ -294,37 +303,46 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         }
         if (accountId != null && !accountId.isEmpty()) {
             Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId,
-                    login.getSecret(), showPendingTransactions);
+                    currentLogin.getSecret(), showPendingTransactions);
             startActivity(transactionsIntent);
         }
     }
 
     private void showConnectActivity(Boolean tryToRefresh) {
         try {
-            boolean overrideCredentials = !tryToRefresh && login.getLastSuccessAt() == null;
-            startActivityForResult(ConnectActivity.newIntent(this, login.getProviderCode(),
-                    login.getSecret(), tryToRefresh, overrideCredentials), Constants.CONNECT_REQUEST_CODE);
+            boolean overrideCredentials = !tryToRefresh && currentLogin.getLastSuccessAt() == null;
+            startActivityForResult(ConnectActivity.newIntent(this, currentLogin.getProviderCode(),
+                    currentLogin.getSecret(), tryToRefresh, overrideCredentials), Constants.CONNECT_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void startRefreshInBackground() {
-        if (TextUtils.isEmpty(login.getSecret()) || TextUtils.isEmpty(customerSecret)) {
-            Toast.makeText(this, "Internal error. Invalid refresh secrets", Toast.LENGTH_SHORT).show();
-        } else if (login.getNextRefreshPossibleAtDate().before(new Date())) {
+        if (TextUtils.isEmpty(currentLogin.getSecret()) || TextUtils.isEmpty(customerSecret)) {
+            showShortToast("Internal error. Invalid refresh secrets");
+        } else if (currentLogin.getNextRefreshPossibleAt() == null) {
+            showLongToast("Refresh is not allowed. Please Reconnect");
+        } else if (currentLogin.getNextRefreshPossibleAtDate().before(new Date())) {
             String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
             refreshMenuItem.setVisible(false);
             refreshService = SERequestManager.getInstance().refreshLoginWithSecret(customerSecret,
-                    login, scopes, this);
+                    currentLogin, scopes, this);
         } else {
-            Toast.makeText(this, "Refresh is not allowed. Wait until "
-                    + login.getNextRefreshPossibleAtDate(), Toast.LENGTH_SHORT).show();
+            showLongToast("Refresh is not allowed. Wait until " + currentLogin.getNextRefreshPossibleAtDate());
         }
     }
 
+    private void showLongToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    private void showShortToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
     private void setInitialData() {
-        login = (LoginData) this.getIntent().getSerializableExtra(Constants.KEY_LOGIN);
+        currentLogin = (LoginData) this.getIntent().getSerializableExtra(Constants.KEY_LOGIN);
         customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
     }
 }

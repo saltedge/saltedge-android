@@ -26,7 +26,6 @@ import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEDateTools;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 
 public class LoginData extends BaseModel implements Serializable {

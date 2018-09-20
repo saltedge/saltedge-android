@@ -45,8 +45,6 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
 
     private static final String KEY_DATA = "KEY_DATA";
     private ProvidersAdapter adapter;
-    private EditText inputView;
-    private ListView listView;
     private ArrayList<ProviderData> providers;
     public ProviderSelectListener selectListener;
 
@@ -65,10 +63,10 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
         providers = (ArrayList<ProviderData>) getArguments().getSerializable(KEY_DATA);
 
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_providers, null);
-        inputView = dialogView.findViewById(R.id.inputView);
+        EditText inputView = dialogView.findViewById(R.id.inputView);
         inputView.addTextChangedListener(this);
 
-        listView = dialogView.findViewById(R.id.listView);
+        ListView listView = dialogView.findViewById(R.id.listView);
 
         adapter = new ProvidersAdapter(getActivity());
         adapter.setListItems(providers);
