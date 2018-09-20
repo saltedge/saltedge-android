@@ -143,9 +143,9 @@ public class SERequestManager {
      * @param customerSecret - current customer secret code
      * @param callback - callback for request result
      */
-    public void fetchLogin(String loginSecret, String customerSecret, FetchLoginsResult callback) {
-        String[] secrets = { loginSecret };
-        fetchLogins(secrets, customerSecret, callback);
+    public void fetchLogin(String customerSecret, String loginSecret, FetchLoginsResult callback) {
+        String[] loginSecrets = { loginSecret };
+        fetchLogins(customerSecret, loginSecrets, callback);
     }
 
     /**
@@ -154,8 +154,8 @@ public class SERequestManager {
      * @param customerSecret - current customer secret code
      * @param callback - callback for request result
      */
-    public void fetchLogins(String[] loginSecretsArray, String customerSecret, FetchLoginsResult callback) {
-        new LoginsShowConnector(callback).fetchLogins(loginSecretsArray, customerSecret);
+    public void fetchLogins(String customerSecret, String[] loginSecretsArray, FetchLoginsResult callback) {
+        new LoginsShowConnector(callback).fetchLogins(customerSecret, loginSecretsArray);
     }
 
     /**
@@ -164,7 +164,7 @@ public class SERequestManager {
      * @param customerSecret - current customer secret code
      * @param callback - callback for request result
      */
-    public void deleteLogin(String loginSecret, String customerSecret, DeleteLoginResult callback) {
+    public void deleteLogin(String customerSecret, String loginSecret, DeleteLoginResult callback) {
         new DeleteLoginConnector(callback).deleteLogin(loginSecret, customerSecret);
     }
 

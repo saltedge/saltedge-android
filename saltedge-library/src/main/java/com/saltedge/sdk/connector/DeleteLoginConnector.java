@@ -41,7 +41,7 @@ public class DeleteLoginConnector extends BasePinnedConnector implements Callbac
         this.callback = callback;
     }
 
-    public void deleteLogin(String loginSecret, String customerSecret) {
+    public void deleteLogin(String customerSecret, String loginSecret) {
         this.loginSecret = loginSecret;
         this.customerSecret = customerSecret;
         checkAndLoadPinsOrDoRequest();

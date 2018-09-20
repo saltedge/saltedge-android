@@ -45,7 +45,7 @@ public class LoginsShowConnector extends BasePinnedConnector implements Callback
         this.callback = callback;
     }
 
-    public void fetchLogins(String[] loginSecretsArray, String customerSecret) {
+    public void fetchLogins(String customerSecret, String[] loginSecretsArray) {
         loginsList = new ArrayList<>();
         callsList = new ArrayList<>();
         for (String loginSecret : loginSecretsArray) {

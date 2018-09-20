@@ -26,6 +26,9 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.Map;
 
+/*
+    PUT Interactive Credentials API model
+ */
 public class PutLoginCredentialsRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
