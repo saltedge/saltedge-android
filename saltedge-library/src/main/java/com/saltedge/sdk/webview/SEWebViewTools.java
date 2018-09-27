@@ -26,7 +26,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -125,7 +124,6 @@ public class SEWebViewTools {
     }
 
     private boolean urlIsSaltedgeRedirection(String url) {
-        Log.d("SEWebViewTools", "urlIsSaltedgeRedirection: "  + url);
         if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
             if (webViewListener != null) webViewListener.onLoginRefreshSuccess();
         } else if (url != null && url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
