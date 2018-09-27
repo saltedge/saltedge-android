@@ -26,6 +26,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -36,6 +37,7 @@ import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEJsonTools;
 import com.saltedge.sdk.utils.UITools;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 public class SEWebViewTools {
@@ -123,30 +125,34 @@ public class SEWebViewTools {
     }
 
     private boolean urlIsSaltedgeRedirection(String url) {
+        Log.d("SEWebViewTools", "urlIsSaltedgeRedirection: "  + url);
         if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
             if (webViewListener != null) webViewListener.onLoginRefreshSuccess();
-        } else if (url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
-            String jsonData = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
-            JSONObject jsonObject = SEJsonTools.stringToJSON(jsonData);
-            JSONObject dataJsonObject = SEJsonTools.getObject(jsonObject, SEConstants.KEY_DATA);
+        } else if (url != null && url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
+            JSONObject dataJsonObject = extractDataObjectFromUrl(url);
             String stage = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
             String loginId = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_LOGIN_ID);
             String loginSecret = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_SECRET);
-
-            switch (stage) {
-                case SEConstants.STATUS_SUCCESS:
-                    if (webViewListener != null)
-                        webViewListener.onLoginSecretFetchSuccess(stage, loginId, loginSecret);
-                    break;
-                case SEConstants.STATUS_ERROR:
-                    if (webViewListener != null) webViewListener.onLoginSecretFetchError(stage);
-                    break;
-                case SEConstants.STATUS_FETCHING:
-                    if (webViewListener != null) webViewListener.onLoginFetchingStage(loginId, loginSecret);
-                    break;
-            }
+            notifyAboutStage(stage, loginId, loginSecret);
             return false;
         }
         return true;
+    }
+
+    private JSONObject extractDataObjectFromUrl(@NotNull String url) {
+        String jsonData = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
+        JSONObject jsonObject = SEJsonTools.stringToJSON(jsonData);
+        return SEJsonTools.getObject(jsonObject, SEConstants.KEY_DATA);
+    }
+
+    private void notifyAboutStage(@NotNull String stage, @NotNull String loginId, @NotNull String loginSecret) {
+        if (webViewListener == null) return;
+        if (stage.equals(SEConstants.STATUS_SUCCESS)) {
+            webViewListener.onLoginSecretFetchSuccess(stage, loginId, loginSecret);
+        } else if (stage.equals(SEConstants.STATUS_ERROR)) {
+            webViewListener.onLoginSecretFetchError(stage);
+        } else if (stage.equals(SEConstants.STATUS_FETCHING)) {
+            webViewListener.onLoginFetchingStage(loginId, loginSecret);
+        }
     }
 }
