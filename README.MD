@@ -12,6 +12,20 @@ Clone this repository
 
 `$ git clone git@github.com:saltedge/saltedge-android.git`
 
+### Setting up the dependency
+```groovy
+repositories {
+    maven {
+        url 'https://raw.github.com/saltedge/saltedge-android/master/repo/'
+    }
+}
+
+implementation 'com.saltedge.sdk:saltedge-library:X.X.X@aar'
+
+```
+
+Last version: 1.3.2  
+
 ## Connecting logins using the sample app
 
 1. Replace the `clientAppId`, `clientAppSecret` constants in [StartActivity:43-44](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/features/StartActivity.java) with your Client ID and corresponding App secret.
