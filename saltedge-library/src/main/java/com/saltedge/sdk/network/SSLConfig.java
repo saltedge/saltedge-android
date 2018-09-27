@@ -23,9 +23,6 @@ package com.saltedge.sdk.network;
 
 import android.content.Context;
 
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
-import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.security.ProviderInstaller;
 import com.saltedge.sdk.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -45,21 +42,13 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
-public class SSLConfig {
+class SSLConfig {
 
-    private static final String TAG = "SSLConfig";
     private static X509TrustManager TRUST_MANAGER;
     private static SSLSocketFactory SSL_SOCKET_FACTORY;
 
     static void init(@NotNull Context context) throws CertificateException, IOException,
             KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
-        try {
-            ProviderInstaller.installIfNeeded(context);
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
         KeyStore mTrustStore = KeyStore.getInstance("BKS");
         InputStream in = context.getResources().openRawResource(R.raw.debiancacerts);
         mTrustStore.load(in, "changeit".toCharArray());
@@ -81,11 +70,11 @@ public class SSLConfig {
         SSL_SOCKET_FACTORY = sslContext.getSocketFactory();
     }
 
-    public static SSLSocketFactory getSSLSocketFactory() {
+    static SSLSocketFactory getSSLSocketFactory() {
         return SSL_SOCKET_FACTORY;
     }
 
-    public static X509TrustManager getTrustManager() {
+    static X509TrustManager getTrustManager() {
         return TRUST_MANAGER;
     }
 }
