@@ -20,11 +20,15 @@ repositories {
     }
 }
 
-implementation 'com.saltedge.sdk:saltedge-library:X.X.X@aar'
-
+implementation 'com.saltedge.sdk:saltedge-library:1.3.3@aar'
 ```
 
-Last version: 1.3.2  
+Saltedge SDK library require extra dependencies:
+```groovy
+implementation 'com.squareup.retrofit2:retrofit:2.4.0'//Network communication
+implementation 'com.squareup.retrofit2:converter-gson:2.4.0'//model serializer/deserializer
+implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'//Network communication logging
+```
 
 ## Connecting logins using the sample app
 
