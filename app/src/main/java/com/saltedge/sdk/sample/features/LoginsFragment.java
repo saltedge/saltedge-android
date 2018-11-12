@@ -45,7 +45,6 @@ import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.model.ProviderData;
 import com.saltedge.sdk.network.SERequestManager;
-import com.saltedge.sdk.sample.BuildConfig;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.LoginsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
@@ -186,7 +185,7 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
         if (providers == null || providers.isEmpty()) {
             UITools.destroyProgressDialog(progressDialog);
             progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_providers));
-            String countryCode = (BuildConfig.DEBUG) ? "XF" : applicationLanguage;
+            String countryCode = applicationLanguage;//"XF" for fake providers
             SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersResult() {
                 @Override
                 public void onSuccess(ArrayList<ProviderData> providersList) {
