@@ -127,16 +127,16 @@ public class SEPinsManager implements Callback<Void> {
                 SERestClient.getInstance().initService();
                 if (pinLoaderCallback != null) pinLoaderCallback.onPinLoadSuccess();
             } else {
-                onPinLoadFailure(SEErrorTools.ERROR_INVALID_HPKP);
+                onPinLoadFailure(SEErrorTools.ERROR_MSG_INVALID_HPKP_DATA);
             }
         } else {
-            onPinLoadFailure(SEErrorTools.ERROR_INVALID_HPKP);
+            onPinLoadFailure(SEErrorTools.ERROR_MSG_CANT_GET_HPKP_DATA);
         }
     }
 
     @Override
     public void onFailure(Call<Void> call, Throwable t) {
-        onPinLoadFailure(t.getLocalizedMessage());
+        onPinLoadFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void onPinLoadFailure(String message) {
