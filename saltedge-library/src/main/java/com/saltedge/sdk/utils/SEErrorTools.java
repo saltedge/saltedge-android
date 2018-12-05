@@ -21,12 +21,24 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.utils;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.ConnectException;
+import java.net.NoRouteToHostException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
 import javax.net.ssl.SSLPeerUnverifiedException;
 
 public class SEErrorTools {
 
-    public final static String ERROR_INVALID_HPKP = "Invalid HPKP data";
-    public final static String ERROR_SSL_CERT_FAIL = "SSL Certificate failure!";
+    public final static String ERROR_MSG_INVALID_HPKP_DATA = "Invalid HPKP data";
+    public final static String ERROR_MSG_CANT_GET_HPKP_DATA = "Can not get HPKP data";
+    public final static String ERROR_MSG_SSL_CERT_FAIL = "SSL Handshake Error!";
+    public final static String ERROR_MSG_HOST_UNREACHABLE = "No Internet connection.Please try again later.";
 
     /**
      * Returns localized message from exception or custom message
@@ -35,7 +47,24 @@ public class SEErrorTools {
      * @return string value of error message
      */
     public static String processConnectionError(Throwable t) {
-        if (t instanceof SSLPeerUnverifiedException) return ERROR_SSL_CERT_FAIL;
+        if (isNoConnectionException(t)) return ERROR_MSG_HOST_UNREACHABLE;
+        else if (isSSLException(t)) return ERROR_MSG_SSL_CERT_FAIL;
         else return t.getLocalizedMessage();
+    }
+
+    private static Boolean isNoConnectionException(Throwable t) {
+        return (t instanceof ConnectException)
+                || (t instanceof NoRouteToHostException)
+                || (t instanceof SocketTimeoutException)
+                || (t instanceof SocketException)
+                || (t instanceof InterruptedIOException)
+                || (t instanceof UnknownHostException)
+                || (t instanceof IOException);
+    }
+
+    private static Boolean isSSLException(Throwable t) {
+        return (t instanceof SSLPeerUnverifiedException)
+                || (t instanceof SSLHandshakeException)
+                || (t instanceof SSLException);
     }
 }

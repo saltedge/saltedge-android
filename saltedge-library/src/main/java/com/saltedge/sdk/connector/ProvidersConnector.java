@@ -41,7 +41,6 @@ public class ProvidersConnector extends BasePinnedConnector implements Callback<
 
     private final ProvidersResult callback;
     private ArrayList<ProviderData> providersList = new ArrayList<>();
-    private boolean includeFakeProviders = BuildConfig.DEBUG;
     private String countryCode = "";
     private String nextPageId = "";
 
@@ -56,7 +55,8 @@ public class ProvidersConnector extends BasePinnedConnector implements Callback<
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.getProviders(countryCode, includeFakeProviders, nextPageId).enqueue(this);
+        SERestClient.getInstance().service
+                .getProviders(countryCode, shouldIncludeFakeProviders(), nextPageId).enqueue(this);
     }
 
     @Override
@@ -85,6 +85,10 @@ public class ProvidersConnector extends BasePinnedConnector implements Callback<
             Collections.sort(providersList, new ProviderDataComparator());
             if (callback != null) callback.onSuccess(providersList);
         } else enqueueCall();
+    }
+
+    private boolean shouldIncludeFakeProviders() {
+        return BuildConfig.DEBUG || "XF".equals(countryCode);
     }
 
     private class ProviderDataComparator implements Comparator<ProviderData> {
