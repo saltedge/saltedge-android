@@ -2,9 +2,14 @@
 
 A handful of classes to help you interact with the Salt Edge API from your Android app.
 
+**Warning!** The SDK doesn't work without Client ID and App Secret!
+
+*Note*: You can find your Client ID and App Secret on your [profile](https://www.saltedge.com/keys_and_secrets) page.
+
 ## Requirements
 
-Android 4.0.2+ (minimum 15 sdk version)
+* Android 4.0.2+ (minimum 15 sdk version)
+* Account on saltedge.com
 
 ### Source
 
@@ -20,7 +25,7 @@ repositories {
     }
 }
 
-implementation 'com.saltedge.sdk:saltedge-library:1.3.3@aar'
+implementation 'com.saltedge.sdk:saltedge-library:1.3.5@aar'
 ```
 
 Saltedge SDK library require extra dependencies:
@@ -38,16 +43,26 @@ implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'//Network commun
 
 *Note*: You can find your Client ID and App secret on your [profile](https://www.saltedge.com/keys_and_secrets) page.
 
-### Usage
+## Library Usage
 
 * Open Android Studio and create a new app
-* Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import
-* Add the clientAppId and clientAppSecret keys to the StartActivity
 
-**Warning!** The SDK doesn't work without clientAppId and clientAppSecret!
+* Add module (Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import) or add external dependency (`implementation 'com.saltedge.sdk:saltedge-library:1.3.3@aar'`)
 
-* The customerIdentifier is used to [create customers](https://docs.saltedge.com/v4_apps/reference/#customers-create). 
+* Init SaltedgeSDK. Before any usage of SDK you should provide clientAppId and clientAppSecret.  
 
+```java
+    SaltEdgeSDK.getInstance().init(applicationContext, clientAppId, clientAppSecret);
+```
+
+or provide clientAppId and clientAppSecret and set http logging is enabled or not
+
+```java
+    SaltEdgeSDK.getInstance().init(applicationContext, clientAppId, clientAppSecret, loggingIsEnabled);
+```
+  
+* Create customer and get secret token. 
+  The customerIdentifier is used to [create customers](https://docs.saltedge.com/v4_apps/reference/#customers-create). 
 ```java
     private void createCustomer() {
         String customerIdentifier = "customerIdentifier"; // Random num, each installation - new
@@ -66,7 +81,6 @@ implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'//Network commun
 ```
 
 * You can also get the list of providers:
-
 
 ```java
     public static void fetchProviders() {
