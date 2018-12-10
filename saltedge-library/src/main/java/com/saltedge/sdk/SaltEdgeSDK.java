@@ -28,9 +28,10 @@ import com.saltedge.sdk.utils.SEConstants;
 public class SaltEdgeSDK {
 
     private static SaltEdgeSDK instance;
+    private static Context context;
     private static String clientId;
     private static String appSecret;
-    private static Context context;
+    private static boolean loggingEnabled;
 
     public static SaltEdgeSDK getInstance() {
         if (instance == null) {
@@ -47,7 +48,15 @@ public class SaltEdgeSDK {
         return clientId;
     }
 
+    public static boolean isLoggingEnabled() {
+        return loggingEnabled;
+    }
+
     public void init(Context context, String clientId, String appSecret) {
+        init(context, clientId, appSecret, false);
+    }
+
+    public void init(Context context, String clientId, String appSecret, boolean enableLogging) {
         if (clientId == null || clientId.isEmpty()) {
             throw new RuntimeException(SEConstants.ERROR_CLIENT_ID_IS_NULL);
         }
@@ -57,6 +66,7 @@ public class SaltEdgeSDK {
         SaltEdgeSDK.context = context;
         setAppSecret(appSecret);
         setClientId(clientId);
+        setLoggingEnabled(enableLogging);
     }
 
     public Context getContext() {
@@ -69,5 +79,9 @@ public class SaltEdgeSDK {
 
     private void setClientId(String clientId) {
         SaltEdgeSDK.clientId = clientId;
+    }
+
+    private static void setLoggingEnabled(boolean loggingEnabled) {
+        SaltEdgeSDK.loggingEnabled = loggingEnabled;
     }
 }

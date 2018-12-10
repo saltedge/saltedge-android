@@ -28,7 +28,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.saltedge.sdk.BuildConfig;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.preferences.SEPreferencesRepository;
 
@@ -115,7 +114,7 @@ public class SERestClient {
 
     private HttpLoggingInterceptor prepareLoginInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+        interceptor.setLevel(SaltEdgeSDK.isLoggingEnabled() ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         return interceptor;
     }
 
