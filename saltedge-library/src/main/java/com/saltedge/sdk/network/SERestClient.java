@@ -81,25 +81,30 @@ public class SERestClient {
     @NotNull
     private OkHttpClient createOkHttpClient() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .addInterceptor(new HeaderInterceptor())
-                .addInterceptor(prepareLoginInterceptor())
-                .certificatePinner(createCertificatePinner());
+                .addInterceptor(prepareLoginInterceptor());
+        boolean pinsAdded = addCertificatePinner(clientBuilder);
         addSSLSocketFactory(clientBuilder);
+        addHeaderInterceptor(clientBuilder, pinsAdded);
         return clientBuilder.build();
     }
 
-    @NotNull
-    private CertificatePinner createCertificatePinner() {
-        CertificatePinner.Builder pinnerBuilder = new CertificatePinner.Builder();
+    private void addHeaderInterceptor(OkHttpClient.Builder clientBuilder, boolean acceptJson) {
+        clientBuilder.addInterceptor(new HeaderInterceptor(acceptJson ? ApiConstants.MIME_TYPE_JSON : null));
+    }
+
+    private boolean addCertificatePinner(OkHttpClient.Builder clientBuilder) {
         try {
             String[] pins = SEPreferencesRepository.getInstance().getPins();
             if (pins != null && pins.length > 0) {
+                CertificatePinner.Builder pinnerBuilder = new CertificatePinner.Builder();
                 pinnerBuilder.add(ApiConstants.ROOT_HOST_NAME, pins);
+                clientBuilder.certificatePinner(pinnerBuilder.build());
+                return true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return pinnerBuilder.build();
+        return false;
     }
 
     private void addSSLSocketFactory(OkHttpClient.Builder builder) {

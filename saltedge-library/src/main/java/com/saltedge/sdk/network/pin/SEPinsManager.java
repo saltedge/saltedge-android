@@ -25,6 +25,7 @@ import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.preferences.SEPreferencesRepository;
 import com.saltedge.sdk.utils.SEDateTools;
 import com.saltedge.sdk.utils.SEErrorTools;
+import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
 
@@ -117,20 +118,31 @@ public class SEPinsManager implements Callback<Void> {
 
     @Override
     public void onResponse(Call<Void> call, Response<Void> response) {
-        String pinsHeader = response.headers().get(KEY_PUBLIC_KEY_PINS);
-        if (pinsHeader != null && !pinsHeader.isEmpty()) {
-            String[] pinsArray = SEPinsManager.extractPins(pinsHeader);
-            int maxAge = SEPinsManager.extractMaxAge(pinsHeader);
-            long expireAt = SEDateTools.convertMaxAgeToExpireAt(maxAge);
-            if (SEPinsManager.pinsAreValid(pinsArray, expireAt)) {
-                SEPreferencesRepository.getInstance().updatePinsAndMaxAge(pinsArray, expireAt);
-                SERestClient.getInstance().initService();
-                if (pinLoaderCallback != null) pinLoaderCallback.onPinLoadSuccess();
+        try {
+            if (response.isSuccessful()) {
+                String pinsHeader = response.headers().get(KEY_PUBLIC_KEY_PINS);
+                if (pinsHeader != null && !pinsHeader.isEmpty()) {
+                    String[] pinsArray = SEPinsManager.extractPins(pinsHeader);
+                    int maxAge = SEPinsManager.extractMaxAge(pinsHeader);
+                    long expireAt = SEDateTools.convertMaxAgeToExpireAt(maxAge);
+                    if (SEPinsManager.pinsAreValid(pinsArray, expireAt)) {
+                        SEPreferencesRepository.getInstance().updatePinsAndMaxAge(pinsArray, expireAt);
+                        SERestClient.getInstance().initService();
+                        if (pinLoaderCallback != null) pinLoaderCallback.onPinLoadSuccess();
+                    } else {
+                        onPinLoadFailure(SEErrorTools.ERROR_MSG_INVALID_HPKP_DATA);
+                    }
+                } else {
+                    onPinLoadFailure(SEErrorTools.ERROR_MSG_CANT_GET_HPKP_DATA);
+                }
             } else {
-                onPinLoadFailure(SEErrorTools.ERROR_MSG_INVALID_HPKP_DATA);
+                String errorMessage = SEJsonTools.getErrorMessage(response.errorBody(),
+                        SEErrorTools.ERROR_MSG_SECURITY_REQUEST_ERROR);
+                onPinLoadFailure(errorMessage);
             }
-        } else {
-            onPinLoadFailure(SEErrorTools.ERROR_MSG_CANT_GET_HPKP_DATA);
+        } catch (Exception e) {
+            e.printStackTrace();
+            onPinLoadFailure(e.getLocalizedMessage());
         }
     }
 

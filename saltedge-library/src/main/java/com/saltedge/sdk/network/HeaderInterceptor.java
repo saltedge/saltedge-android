@@ -31,14 +31,21 @@ import okhttp3.Response;
 
 public class HeaderInterceptor implements Interceptor {
 
+    private String acceptType;
+
+    public HeaderInterceptor(String acceptType) {
+        this.acceptType = acceptType;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
-        Request request = chain.request().newBuilder()
-                .header(ApiConstants.KEY_HEADER_ACCEPT, ApiConstants.MIME_TYPE_JSON)
+        Request.Builder requestBuilder = chain.request().newBuilder()
                 .header(ApiConstants.KEY_HEADER_CONTENT_TYPE, ApiConstants.MIME_TYPE_JSON)
                 .header(ApiConstants.KEY_HEADER_CLIENT_APP_ID, SaltEdgeSDK.getInstance().getClientId())
-                .header(ApiConstants.KEY_HEADER_CLIENT_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret())
-                .build();
-        return chain.proceed(request);
+                .header(ApiConstants.KEY_HEADER_CLIENT_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
+        if (acceptType != null) {
+            requestBuilder.header(ApiConstants.KEY_HEADER_ACCEPT, acceptType);
+        }
+        return chain.proceed(requestBuilder.build());
     }
 }
