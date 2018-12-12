@@ -37,7 +37,7 @@ public class ApiConstants {
 
     //API urls
     static final String ROOT_HOST_NAME = "www.saltedge.com";
-    static final String ROOT_URL = "https://" + ROOT_HOST_NAME;
+    public static final String ROOT_URL = "https://" + ROOT_HOST_NAME;
     private static final String API_VERSION_PATH = "/api/v4";
     static final String API_COUNTRIES_PATH = API_VERSION_PATH + "/countries";
     static final String API_CUSTOMERS_PATH = API_VERSION_PATH + "/customers";

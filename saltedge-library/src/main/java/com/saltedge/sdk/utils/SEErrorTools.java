@@ -37,6 +37,7 @@ public class SEErrorTools {
 
     public final static String ERROR_MSG_INVALID_HPKP_DATA = "Invalid HPKP data";
     public final static String ERROR_MSG_CANT_GET_HPKP_DATA = "Can not get HPKP data";
+    public final static String ERROR_MSG_SECURITY_REQUEST_ERROR = "Security request error";
     public final static String ERROR_MSG_SSL_CERT_FAIL = "SSL Handshake Error!";
     public final static String ERROR_MSG_HOST_UNREACHABLE = "No Internet connection.Please try again later.";
 

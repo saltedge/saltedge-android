@@ -48,7 +48,7 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
 
-    @HEAD(ApiConstants.API_COUNTRIES_PATH)
+    @HEAD("/")
     Call<Void> getPins();
 
     @POST(ApiConstants.API_CUSTOMERS_PATH)

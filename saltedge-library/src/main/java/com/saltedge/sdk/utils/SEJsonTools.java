@@ -89,13 +89,17 @@ public class SEJsonTools {
     }
 
     public static String getErrorMessage(ResponseBody error) {
+        return getErrorMessage(error, SEConstants.REQUEST_ERROR);
+    }
+
+    public static String getErrorMessage(ResponseBody error, String defaultMessage) {
         try {
             ApiError apiError = new Gson().fromJson(error.string(), ApiError.class);
-            String result = apiError.getErrorMessage();
-            return (result != null) ? result : SEConstants.REQUEST_ERROR;
+            String result = (apiError != null) ? apiError.getErrorMessage() : defaultMessage;
+            return (result != null) ? result : defaultMessage;
         } catch (Exception e) {
             e.printStackTrace();
-            return SEConstants.REQUEST_ERROR;
+            return defaultMessage;
         }
     }
 
