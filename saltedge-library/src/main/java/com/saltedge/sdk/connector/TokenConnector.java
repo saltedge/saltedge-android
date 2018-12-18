@@ -57,16 +57,17 @@ public class TokenConnector extends BasePinnedConnector implements Callback<Crea
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void reconnectToken(String locale, String returnTo, String loginSecret, String customerSecret, boolean overrideCredentials) {
+    public void reconnectToken(String localeCode, String returnTo, String loginSecret,
+                               String customerSecret, boolean overrideCredentials) {
         TokenRequest requestData = overrideCredentials
-                ? new TokenRequest(locale, returnTo, "override")
-                : new TokenRequest(locale, returnTo);
+                ? new TokenRequest(localeCode, returnTo, "override")
+                : new TokenRequest(localeCode, returnTo);
         call = SERestClient.getInstance().service.reconnectToken(customerSecret, loginSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void refreshToken(String locale, String returnTo, String loginSecret, String customerSecret) {
-        TokenRequest requestData = new TokenRequest(locale, returnTo);
+    public void refreshToken(String localeCode, String returnTo, String loginSecret, String customerSecret) {
+        TokenRequest requestData = new TokenRequest(localeCode, returnTo);
         call = SERestClient.getInstance().service.refreshToken(customerSecret, loginSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }

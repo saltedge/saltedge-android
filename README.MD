@@ -303,7 +303,7 @@ To create a `SERefreshToken`, you need:
 * To delete a login you'll need a LoginSecret            
     
 ```java    
-        SERequestManager.getInstance().deleteLogin(loginSecret, customerSecret,
+        SERequestManager.getInstance().deleteLogin(customerSecret, loginSecret,
                         new DeleteLoginResult() {
                             @Override
                             public void onSuccess(Boolean isRemoved) {
@@ -320,9 +320,13 @@ To create a `SERefreshToken`, you need:
 #### Refresh login through API connect
 If you do not wish to refresh logins using Salt Edge Connect Form, you can perform using `SERefreshService`.
 * Start refresh
+
 ```java
-    SERefreshService refreshService = SERequestManager.getInstance().refreshLoginWithSecret(customerSecret,
-                        loginModel, scopesArray, refreshResultCallback);
+    SERefreshService refreshService = SERequestManager.getInstance().refreshLoginWithSecret(
+            customerSecret, 
+            loginModel, 
+            scopesArray, 
+            refreshResultCallback);
 ```  
 
 * Canceling refresh due to Android components life cycle changes
