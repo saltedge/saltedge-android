@@ -165,7 +165,7 @@ public class SERequestManager {
      * @param callback - callback for request result
      */
     public void deleteLogin(String customerSecret, String loginSecret, DeleteLoginResult callback) {
-        new DeleteLoginConnector(callback).deleteLogin(loginSecret, customerSecret);
+        new DeleteLoginConnector(callback).deleteLogin(customerSecret, loginSecret);
     }
 
     /**
@@ -226,6 +226,7 @@ public class SERequestManager {
      */
     public void fetchPendingTransactionsOfAccount(String customerSecret, String loginSecret,
                                                   String accountId, String fromId, FetchTransactionsResult callback) {
-        new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret, accountId, fromId, true);
+        new TransactionsConnector(callback).fetchTransactions(customerSecret, loginSecret,
+                accountId, fromId, true);
     }
 }
