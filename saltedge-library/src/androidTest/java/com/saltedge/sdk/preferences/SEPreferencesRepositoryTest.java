@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.preferences;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
 
 import junit.framework.TestCase;
 
