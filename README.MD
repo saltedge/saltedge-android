@@ -25,7 +25,7 @@ repositories {
     }
 }
 
-implementation 'com.saltedge.sdk:saltedge-library:1.3.6@aar'
+implementation 'com.saltedge.sdk:saltedge-library:1.3.8@aar'
 ```
 
 Saltedge SDK library require extra dependencies:

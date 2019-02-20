@@ -131,7 +131,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         if (pendingTransactionsMode) {
             SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
         } else {
-            SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
+            SERequestManager.getInstance().fetchAllTransactions(customerSecret, loginSecret, accountId, this);
         }
     }
 
