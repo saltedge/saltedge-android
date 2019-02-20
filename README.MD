@@ -32,7 +32,7 @@ Saltedge SDK library require extra dependencies:
 ```groovy
 implementation 'com.squareup.retrofit2:retrofit:2.5.0'//Network communication
 implementation 'com.squareup.retrofit2:converter-gson:2.5.0'//model serializer/deserializer
-implementation 'com.squareup.okhttp3:logging-interceptor:3.13.1'//Network communication logging
+implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'//Network communication logging
 ```
 
 ## Connecting logins using the sample app
