@@ -238,6 +238,24 @@ public class SERequestManager {
     }
 
     /**
+     * Return the list of all transactions for an account from transaction id.
+     * Result is returned through callback.
+     *
+     * @param customerSecret - current customer secret code
+     * @param loginSecret - secret of the login
+     * @param accountId - account ID
+     * @param fromTransactionId - the id from which the result list should starts
+     * @param callback - callback for request result
+     */
+    public void fetchAllTransactions(String customerSecret,
+                                     String loginSecret,
+                                     String accountId,
+                                     String fromTransactionId,
+                                     FetchTransactionsResult callback) {
+        fetchTransactions(customerSecret, loginSecret, accountId, fromTransactionId, false, true, callback);
+    }
+
+    /**
      * Return the page of transactions for an account from transaction id.
      * Transaction page contains maximum 100 items.
      * Result is returned through callback.
@@ -309,7 +327,7 @@ public class SERequestManager {
      * Return the list of all transactions for an account from transaction id.
      * Result is returned through callback.
      *
-     * @deprecated  Replaced by {@link #fetchAllTransactions}
+     * @deprecated  Replaced by {@link #fetchTransactions}
      *
      * @param customerSecret - current customer secret code
      * @param loginSecret - secret of the login
@@ -330,14 +348,11 @@ public class SERequestManager {
      * Return the list of all pending transactions for an account.
      * Result is returned through callback.
      *
-     * @deprecated  Replaced by {@link #fetchAllTransactions}
-     *
      * @param customerSecret - current customer secret code
      * @param loginSecret - secret of the login
      * @param accountId - account ID
      * @param callback - callback for request result
      */
-    @Deprecated
     public void fetchPendingTransactionsOfAccount(String customerSecret,
                                                   String loginSecret,
                                                   String accountId,
@@ -349,15 +364,12 @@ public class SERequestManager {
      * Return the list of all pending transactions for an account.
      * Result is returned through callback.
      *
-     * @deprecated  Replaced by {@link #fetchAllTransactions}
-     *
      * @param customerSecret - current customer secret code
      * @param loginSecret - secret of the login
      * @param accountId - account ID
      * @param fromTransactionId - the id from which the result list should starts
      * @param callback - callback for request result
      */
-    @Deprecated
     public void fetchPendingTransactionsOfAccount(String customerSecret,
                                                   String loginSecret,
                                                   String accountId,
