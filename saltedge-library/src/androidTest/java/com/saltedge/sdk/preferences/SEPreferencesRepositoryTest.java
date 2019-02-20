@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Salt Edge. https://saltedge.com
+Copyright © 2019 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.preferences;
 
-import android.test.suitebuilder.annotation.SmallTest;
+import android.support.test.filters.SmallTest;
 
 import junit.framework.TestCase;
 

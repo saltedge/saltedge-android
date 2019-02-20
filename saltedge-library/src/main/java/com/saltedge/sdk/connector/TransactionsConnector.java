@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Salt Edge. https://saltedge.com
+Copyright © 2019 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -44,28 +44,36 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     private String accountId = "";
     private String fromId = "";
     private boolean fetchPendingTransactions = false;
+    private boolean fetchAllTransactionsFromId = false;
 
     public TransactionsConnector(FetchTransactionsResult callback) {
         this.callback = callback;
     }
 
-    public void fetchTransactions(String customerSecret, String loginSecret, String accountId, String fromId,
-                                  boolean fetchPendingTransactions) {
+    public void fetchTransactions(String customerSecret,
+                                  String loginSecret,
+                                  String accountId,
+                                  String fromId,
+                                  boolean fetchPendingTransactions,
+                                  boolean fetchAllTransactionsFromId) {
         this.customerSecret = customerSecret;
         this.loginSecret = loginSecret;
         this.accountId = accountId;
         this.fromId = fromId;
         this.fetchPendingTransactions = fetchPendingTransactions;
+        this.fetchAllTransactionsFromId = fetchAllTransactionsFromId;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
         if (fetchPendingTransactions) {
-            SERestClient.getInstance().service.getPendingTransactions(customerSecret, loginSecret, accountId, fromId)
+            SERestClient.getInstance().service
+                    .getPendingTransactions(customerSecret, loginSecret, accountId, fromId)
                     .enqueue(this);
         } else {
-            SERestClient.getInstance().service.getTransactions(customerSecret, loginSecret, accountId, fromId)
+            SERestClient.getInstance().service
+                    .getTransactions(customerSecret, loginSecret, accountId, fromId)
                     .enqueue(this);
         }
     }

@@ -1,5 +1,5 @@
 /*
-Copyright © 2018 Salt Edge. https://saltedge.com
+Copyright © 2019 Salt Edge. https://saltedge.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -131,7 +131,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         if (pendingTransactionsMode) {
             SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
         } else {
-            SERequestManager.getInstance().fetchTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
+            SERequestManager.getInstance().fetchAllTransactions(customerSecret, loginSecret, accountId, this);
         }
     }
 
