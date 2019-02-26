@@ -41,8 +41,8 @@ public class HeaderInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request.Builder requestBuilder = chain.request().newBuilder()
                 .header(ApiConstants.KEY_HEADER_CONTENT_TYPE, ApiConstants.MIME_TYPE_JSON)
-                .header(ApiConstants.KEY_HEADER_CLIENT_APP_ID, SaltEdgeSDK.getInstance().getClientId())
-                .header(ApiConstants.KEY_HEADER_CLIENT_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
+                .header(ApiConstants.KEY_HEADER_APP_ID, SaltEdgeSDK.getInstance().getAppId())
+                .header(ApiConstants.KEY_HEADER_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
         if (acceptType != null) {
             requestBuilder.header(ApiConstants.KEY_HEADER_ACCEPT, acceptType);
         }

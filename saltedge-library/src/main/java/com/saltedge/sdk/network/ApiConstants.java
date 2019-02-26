@@ -26,8 +26,8 @@ public class ApiConstants {
     //Headers
     static final String KEY_HEADER_ACCEPT = "Accept";
     static final String KEY_HEADER_CONTENT_TYPE = "Content-type";
-    static final String KEY_HEADER_CLIENT_APP_ID = "App-id";
-    static final String KEY_HEADER_CLIENT_APP_SECRET = "Secret";
+    static final String KEY_HEADER_APP_ID = "App-id";
+    static final String KEY_HEADER_APP_SECRET = "Secret";
     static final String KEY_HEADER_CUSTOMER_SECRET = "Customer-Secret";
     static final String KEY_HEADER_LOGIN_SECRET = "Login-secret";
     static final String MIME_TYPE_JSON = "application/json";

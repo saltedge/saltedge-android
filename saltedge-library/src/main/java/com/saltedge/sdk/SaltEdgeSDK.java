@@ -29,7 +29,7 @@ public class SaltEdgeSDK {
 
     private static SaltEdgeSDK instance;
     private static Context context;
-    private static String clientId;
+    private static String appId;
     private static String appSecret;
     private static boolean loggingEnabled;
 
@@ -44,28 +44,28 @@ public class SaltEdgeSDK {
         return appSecret;
     }
 
-    public String getClientId() {
-        return clientId;
+    public String getAppId() {
+        return appId;
     }
 
     public static boolean isLoggingEnabled() {
         return loggingEnabled;
     }
 
-    public void init(Context context, String clientId, String appSecret) {
-        init(context, clientId, appSecret, false);
+    public void init(Context context, String clientAppId, String clientAppSecret) {
+        init(context, clientAppId, clientAppSecret, false);
     }
 
-    public void init(Context context, String clientId, String appSecret, boolean enableLogging) {
-        if (clientId == null || clientId.isEmpty()) {
-            throw new RuntimeException(SEConstants.ERROR_CLIENT_ID_IS_NULL);
+    public void init(Context context, String clientAppId, String clientAppSecret, boolean enableLogging) {
+        if (clientAppId == null || clientAppId.isEmpty()) {
+            throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_ID_IS_NULL);
         }
-        if (appSecret == null || appSecret.isEmpty()) {
-            throw new RuntimeException(SEConstants.ERROR_APP_SECRET_IS_NULL);
+        if (clientAppSecret == null || clientAppSecret.isEmpty()) {
+            throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_SECRET_IS_NULL);
         }
         SaltEdgeSDK.context = context;
-        setAppSecret(appSecret);
-        setClientId(clientId);
+        setAppSecret(clientAppSecret);
+        setAppId(clientAppId);
         setLoggingEnabled(enableLogging);
     }
 
@@ -73,12 +73,12 @@ public class SaltEdgeSDK {
         return context;
     }
 
-    private void setAppSecret(String appSecret) {
-        SaltEdgeSDK.appSecret = appSecret;
+    private void setAppSecret(String clientAppSecret) {
+        SaltEdgeSDK.appSecret = clientAppSecret;
     }
 
-    private void setClientId(String clientId) {
-        SaltEdgeSDK.clientId = clientId;
+    private void setAppId(String clientAppId) {
+        SaltEdgeSDK.appId = clientAppId;
     }
 
     private static void setLoggingEnabled(boolean loggingEnabled) {

@@ -59,8 +59,8 @@ public class SEConstants {
     public static final String WARNING = "Warning";
     public static final String CANNOT_BE_NULL = "cannot be null";
     public static final String COULD_NOT_CONNECT_ACCOUNT = "Could not connect account";
-    public static final String ERROR_CLIENT_ID_IS_NULL = "Client id cannot be null or empty";
-    public static final String ERROR_APP_SECRET_IS_NULL = "App secret cannot be null or empty";
+    public static final String ERROR_CLIENT_APP_ID_IS_NULL = "Client App Id cannot be null or empty";
+    public static final String ERROR_CLIENT_APP_SECRET_IS_NULL = "Client App Secret cannot be null or empty";
 
     //Providers keys
     public static final String KEY_NAME = "name";
