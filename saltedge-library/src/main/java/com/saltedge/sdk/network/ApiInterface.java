@@ -45,70 +45,71 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface ApiInterface {
 
-    @HEAD("/")
-    Call<Void> getPins();
+    @HEAD
+    Call<Void> getPins(@Url String url);
 
-    @POST(ApiConstants.API_CUSTOMERS_PATH)
+    @POST(SEApiConstants.API_CUSTOMERS_PATH)
     Call<CreateCustomerResponse> createCustomer(@Body CreateCustomerRequest body);
 
-    @POST(ApiConstants.API_TOKEN_CREATE_PATH)
-    Call<CreateTokenResponse> createToken(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+    @POST(SEApiConstants.API_TOKEN_CREATE_PATH)
+    Call<CreateTokenResponse> createToken(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
                                           @Body CreateTokenRequest body);
 
-    @POST(ApiConstants.API_TOKEN_CREATE_PATH)
-    Call<CreateTokenResponse> createToken(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+    @POST(SEApiConstants.API_TOKEN_CREATE_PATH)
+    Call<CreateTokenResponse> createToken(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
                                           @Body MappedRequest body);
 
-    @POST(ApiConstants.API_TOKEN_RECONNECT_PATH)
-    Call<CreateTokenResponse> reconnectToken(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                             @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+    @POST(SEApiConstants.API_TOKEN_RECONNECT_PATH)
+    Call<CreateTokenResponse> reconnectToken(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                             @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                              @Body TokenRequest body);
 
-    @POST(ApiConstants.API_TOKEN_REFRESH_PATH)
-    Call<CreateTokenResponse> refreshToken(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                           @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+    @POST(SEApiConstants.API_TOKEN_REFRESH_PATH)
+    Call<CreateTokenResponse> refreshToken(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                           @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                            @Body TokenRequest body);
 
-    @GET(ApiConstants.API_PROVIDERS_PATH)
+    @GET(SEApiConstants.API_PROVIDERS_PATH)
     Call<ProvidersResponse> getProviders(@Query(SEConstants.KEY_COUNTRY_CODE) String countryCode,
                                          @Query(SEConstants.KEY_INCLUDE_FAKE_PROVIDERS) boolean includeFakeProviders,
                                          @Query(SEConstants.KEY_FROM_ID) String fromId);
 
-    @GET(ApiConstants.API_LOGIN_PATH)
-    Call<LoginResponse> showLogin(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                  @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret);
+    @GET(SEApiConstants.API_LOGIN_PATH)
+    Call<LoginResponse> showLogin(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                  @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret);
 
-    @PUT(ApiConstants.API_LOGIN_REFRESH_PATH)
-    Call<LoginResponse> refreshLogin(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                     @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+    @PUT(SEApiConstants.API_LOGIN_REFRESH_PATH)
+    Call<LoginResponse> refreshLogin(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                     @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                      @Body RefreshLoginRequest body);
 
-    @DELETE(ApiConstants.API_LOGIN_PATH)
-    Call<DeleteLoginResponse> deleteLogin(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                          @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret);
+    @DELETE(SEApiConstants.API_LOGIN_PATH)
+    Call<DeleteLoginResponse> deleteLogin(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                          @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret);
 
-    @PUT(ApiConstants.API_LOGIN_INTERACTIVE_PATH)
-    Call<LoginResponse> putInteractiveCredentials(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                                  @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+    @PUT(SEApiConstants.API_LOGIN_INTERACTIVE_PATH)
+    Call<LoginResponse> putInteractiveCredentials(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                                  @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                                   @Body PutLoginCredentialsRequest body);
 
-    @GET(ApiConstants.API_ACCOUNTS_PATH)
-    Call<AccountsResponse> getAccounts(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                       @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+    @GET(SEApiConstants.API_ACCOUNTS_PATH)
+    Call<AccountsResponse> getAccounts(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                       @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                        @Query(SEConstants.KEY_FROM_ID) String fromId);
 
-    @GET(ApiConstants.API_TRANSACTIONS_PATH)
-    Call<TransactionsResponse> getTransactions(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                               @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+    @GET(SEApiConstants.API_TRANSACTIONS_PATH)
+    Call<TransactionsResponse> getTransactions(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                               @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                                @Query(SEConstants.KEY_ACCOUNT_ID) String accountId,
                                                @Query(SEConstants.KEY_FROM_ID) String fromId);
 
-    @GET(ApiConstants.API_PENDING_TRANSACTIONS_PATH)
-    Call<TransactionsResponse> getPendingTransactions(@Header(ApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-                                                      @Header(ApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
+    @GET(SEApiConstants.API_PENDING_TRANSACTIONS_PATH)
+    Call<TransactionsResponse> getPendingTransactions(@Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+                                                      @Header(SEApiConstants.KEY_HEADER_LOGIN_SECRET) String loginSecret,
                                                       @Query(SEConstants.KEY_ACCOUNT_ID) String accountId,
                                                       @Query(SEConstants.KEY_FROM_ID) String fromId);
 }

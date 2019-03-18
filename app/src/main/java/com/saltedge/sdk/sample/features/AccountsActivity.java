@@ -44,7 +44,7 @@ import com.saltedge.sdk.interfaces.RefreshLoginResult;
 import com.saltedge.sdk.model.AccountData;
 import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.model.StageData;
-import com.saltedge.sdk.network.ApiConstants;
+import com.saltedge.sdk.network.SEApiConstants;
 import com.saltedge.sdk.network.SERefreshService;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -324,7 +324,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         } else if (currentLogin.getNextRefreshPossibleAt() == null) {
             showLongToast("Refresh is not allowed. Please Reconnect");
         } else if (currentLogin.getNextRefreshPossibleAtDate().before(new Date())) {
-            String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
+            String[] scopes = SEApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
             refreshMenuItem.setVisible(false);
             refreshService = SERequestManager.getInstance().refreshLoginWithSecret(customerSecret,
                     currentLogin, scopes, this);

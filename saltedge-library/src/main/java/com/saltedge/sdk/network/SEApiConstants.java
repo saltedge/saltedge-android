@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
 
-public class ApiConstants {
+public class SEApiConstants {
 
     //Headers
     static final String KEY_HEADER_ACCEPT = "Accept";
@@ -36,17 +36,17 @@ public class ApiConstants {
     public static final String PREFIX_SALTBRIDGE = "saltbridge://connect/";
 
     //API urls
-    static final String ROOT_HOST_NAME = "www.saltedge.com";
-    public static final String ROOT_URL = "https://" + ROOT_HOST_NAME;
-    private static final String API_VERSION_PATH = "/api/v4";
+    static final String API_HOST_NAME = "www.saltedge.com";
+    public static final String API_BASE_URL = "https://www.saltedge.com/";
+    private static final String API_VERSION_PATH = "api/v4";
     static final String API_COUNTRIES_PATH = API_VERSION_PATH + "/countries";
     static final String API_CUSTOMERS_PATH = API_VERSION_PATH + "/customers";
     static final String API_PROVIDERS_PATH = API_VERSION_PATH + "/providers";
     static final String PER_PAGE = API_VERSION_PATH + "/per";
     private static final String API_TOKENS_PATH = API_VERSION_PATH + "/tokens";
-    static final String API_TOKEN_RECONNECT_PATH = ApiConstants.API_TOKENS_PATH + "/reconnect";
-    static final String API_TOKEN_CREATE_PATH = ApiConstants.API_TOKENS_PATH + "/create";
-    static final String API_TOKEN_REFRESH_PATH = ApiConstants.API_TOKENS_PATH + "/refresh";
+    static final String API_TOKEN_RECONNECT_PATH = SEApiConstants.API_TOKENS_PATH + "/reconnect";
+    static final String API_TOKEN_CREATE_PATH = SEApiConstants.API_TOKENS_PATH + "/create";
+    static final String API_TOKEN_REFRESH_PATH = SEApiConstants.API_TOKENS_PATH + "/refresh";
     static final String API_LOGIN_PATH = API_VERSION_PATH + "/login";
     static final String API_LOGIN_REFRESH_PATH = API_LOGIN_PATH + "/refresh";
     static final String API_LOGIN_INTERACTIVE_PATH = API_LOGIN_PATH + "/interactive";
