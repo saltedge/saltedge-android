@@ -1,4 +1,4 @@
-## SaltEdge Android
+# SaltEdge Android SDK & Sample application
 
 A handful of classes to help you interact with the Salt Edge API from your Android app.
 
@@ -8,34 +8,50 @@ A handful of classes to help you interact with the Salt Edge API from your Andro
 
 ## Requirements
 
-* Android 4.0.2+ (minimum 15 sdk version)
+* Android 4.0.2+ (minimum 15 sdk version) with Play Services installed
 * Account on saltedge.com
 
-### Source
+## Source
 
 Clone this repository
 
 `$ git clone git@github.com:saltedge/saltedge-android.git`
 
-### Setting up the dependency
+## Setting up the `build.gradle`
+
+Add Java 8 support  
+```groovy
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+```
+  
+Add maven repository    
 ```groovy
 repositories {
     maven {
         url 'https://raw.github.com/saltedge/saltedge-android/master/repo/'
     }
 }
+```
 
-implementation 'com.saltedge.sdk:saltedge-library:1.3.9@aar'
+Add SDK dependency  
+```groovy
+implementation 'com.saltedge.sdk:saltedge-library:1.3.10@aar'
 ```
 
 Saltedge SDK library require extra dependencies:
 ```groovy
+implementation 'com.google.android.gms:play-services-safetynet:16.0.0'//Security utils
 implementation 'com.squareup.retrofit2:retrofit:2.5.0'//Network communication
 implementation 'com.squareup.retrofit2:converter-gson:2.5.0'//model serializer/deserializer
-implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'//Network communication logging
+implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'//Network communication logging
 ```
 
-## Connecting logins using the sample app
+## Using the Sample application
 
 1. Replace the `clientAppId`, `clientAppSecret` constants in [StartActivity:43-44](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/features/StartActivity.java) with your Client ID and corresponding App secret.
 2. Add the `customerIdentifier` (that uniquely identifies a customer) to [StartActivity.java:42](https://github.com/saltedge/saltedge-android/blob/master/app/src/main/java/com/saltedge/sdk/sample/features/StartActivity.java)
@@ -47,7 +63,8 @@ implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'//Network commun
 
 * Open Android Studio and create a new app
 
-* Add module (Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import) or add external dependency (`implementation 'com.saltedge.sdk:saltedge-library:1.3.3@aar'`)
+* Add module (Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import) 
+or add external dependency (`implementation 'com.saltedge.sdk:saltedge-library:x.x.x@aar'`)
 
 * Init SaltedgeSDK. Before any usage of SDK you should provide clientAppId and clientAppSecret.  
 
