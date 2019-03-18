@@ -40,11 +40,11 @@ public class HeaderInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder requestBuilder = chain.request().newBuilder()
-                .header(ApiConstants.KEY_HEADER_CONTENT_TYPE, ApiConstants.MIME_TYPE_JSON)
-                .header(ApiConstants.KEY_HEADER_APP_ID, SaltEdgeSDK.getInstance().getAppId())
-                .header(ApiConstants.KEY_HEADER_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
+                .header(SEApiConstants.KEY_HEADER_CONTENT_TYPE, SEApiConstants.MIME_TYPE_JSON)
+                .header(SEApiConstants.KEY_HEADER_APP_ID, SaltEdgeSDK.getInstance().getAppId())
+                .header(SEApiConstants.KEY_HEADER_APP_SECRET, SaltEdgeSDK.getInstance().getAppSecret());
         if (acceptType != null) {
-            requestBuilder.header(ApiConstants.KEY_HEADER_ACCEPT, acceptType);
+            requestBuilder.header(SEApiConstants.KEY_HEADER_ACCEPT, acceptType);
         }
         return chain.proceed(requestBuilder.build());
     }

@@ -32,7 +32,7 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.TokenConnectionResult;
-import com.saltedge.sdk.network.ApiConstants;
+import com.saltedge.sdk.network.SEApiConstants;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
@@ -210,7 +210,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     private void fetchCreateConnectionToken() {
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, getString(R.string.creating_token));
-        String[] scopes = ApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
+        String[] scopes = SEApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().createToken(providerCode, scopes, callbackUrl, customerSecret, this);
     }

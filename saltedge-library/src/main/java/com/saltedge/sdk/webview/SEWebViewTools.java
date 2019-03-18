@@ -31,7 +31,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.saltedge.sdk.network.ApiConstants;
+import com.saltedge.sdk.network.SEApiConstants;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEJsonTools;
 import com.saltedge.sdk.utils.UITools;
@@ -126,7 +126,7 @@ public class SEWebViewTools {
     private boolean urlIsSaltedgeRedirection(String url) {
         if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
             if (webViewListener != null) webViewListener.onLoginRefreshSuccess();
-        } else if (url != null && url.contains(ApiConstants.PREFIX_SALTBRIDGE)) {
+        } else if (url != null && url.contains(SEApiConstants.PREFIX_SALTBRIDGE)) {
             JSONObject dataJsonObject = extractDataObjectFromUrl(url);
             String stage = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
             String loginId = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_LOGIN_ID);
@@ -138,7 +138,7 @@ public class SEWebViewTools {
     }
 
     private JSONObject extractDataObjectFromUrl(@NotNull String url) {
-        String jsonData = url.substring(ApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
+        String jsonData = url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
         JSONObject jsonObject = SEJsonTools.stringToJSON(jsonData);
         return SEJsonTools.getObject(jsonObject, SEConstants.KEY_DATA);
     }
