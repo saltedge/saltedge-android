@@ -25,7 +25,7 @@ import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.model.request.CreateConnectSessionRequest;
 import com.saltedge.sdk.model.request.MappedRequest;
 import com.saltedge.sdk.model.request.ConnectSessionRequest;
-import com.saltedge.sdk.model.response.CreateConnectSessionResponse;
+import com.saltedge.sdk.model.response.ConnectSessionResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
@@ -36,45 +36,45 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectSessionConnector extends BasePinnedConnector implements Callback<CreateConnectSessionResponse> {
+public class ConnectSessionConnector extends BasePinnedConnector implements Callback<ConnectSessionResponse> {
 
     private final ConnectSessionResult callback;
-    private Call<CreateConnectSessionResponse> call;
+    private Call<ConnectSessionResponse> call;
 
     public ConnectSessionConnector(ConnectSessionResult callback) {
         this.callback = callback;
     }
 
-    public void createToken(String providerCode, String[] scopes, String returnTo, String customerSecret) {
-        CreateConnectSessionRequest requestData = new CreateConnectSessionRequest(new String[0], providerCode, scopes, returnTo);
+    public void createConnectSession(String customerSecret, String providerCode, String[] scopes, String returnToUrl) {
+        CreateConnectSessionRequest requestData = new CreateConnectSessionRequest(new String[0], providerCode, scopes, returnToUrl);
         call = SERestClient.getInstance().service.createConnectSession(customerSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void createToken(Map<String, Object> dataMap, String customerSecret) {
+    public void createConnectSession(String customerSecret, Map<String, Object> dataMap) {
         MappedRequest requestData = new MappedRequest(dataMap);
         call = SERestClient.getInstance().service.createConnectSession(customerSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void reconnectToken(String localeCode,
-                               String returnTo,
-                               String connectionSecret,
-                               String customerSecret,
-                               boolean overrideCredentials) {
+    public void createReconnectSession(String customerSecret,
+                                       String connectionSecret,
+                                       String localeCode,
+                                       String returnToUrl,
+                                       boolean overrideCredentials) {
         ConnectSessionRequest requestData = overrideCredentials
-                ? new ConnectSessionRequest(localeCode, returnTo, "override")
-                : new ConnectSessionRequest(localeCode, returnTo);
+                ? new ConnectSessionRequest(localeCode, returnToUrl, "override")
+                : new ConnectSessionRequest(localeCode, returnToUrl);
         call = SERestClient.getInstance().service.createConnectSessionForReconnect(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void refreshToken(String localeCode,
-                             String returnTo,
-                             String connectSecret,
-                             String customerSecret) {
-        ConnectSessionRequest requestData = new ConnectSessionRequest(localeCode, returnTo);
-        call = SERestClient.getInstance().service.createConnectSessionForRefresh(customerSecret, connectSecret, requestData);
+    public void createRefreshSession(String customerSecret,
+                                     String connectionSecret,
+                                     String localeCode,
+                                     String returnToUrl) {
+        ConnectSessionRequest requestData = new ConnectSessionRequest(localeCode, returnToUrl);
+        call = SERestClient.getInstance().service.createConnectSessionForRefresh(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
@@ -89,14 +89,14 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
     }
 
     @Override
-    public void onResponse(Call<CreateConnectSessionResponse> call, Response<CreateConnectSessionResponse> response) {
-        CreateConnectSessionResponse responseBody = response.body();
+    public void onResponse(Call<ConnectSessionResponse> call, Response<ConnectSessionResponse> response) {
+        ConnectSessionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getConnectUrl());
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
-    public void onFailure(Call<CreateConnectSessionResponse> call, Throwable t) {
+    public void onFailure(Call<ConnectSessionResponse> call, Throwable t) {
         onFailure(SEErrorTools.processConnectionError(t));
     }
 }

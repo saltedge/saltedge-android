@@ -36,7 +36,7 @@ public class TokenConnectorTest implements ConnectSessionResult {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
         String[] scopes = {"value2", "value3"};
-        new ConnectSessionConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
+        new ConnectSessionConnector(this).createConnectSession("test_provider_code", scopes, "test_url", "test customer secret");
         doneSignal.await(10, TimeUnit.SECONDS);
 
         Assert.assertNull(errorMessage);
@@ -57,7 +57,7 @@ public class TokenConnectorTest implements ConnectSessionResult {
         String[] scopes = {"scope1", "scope2"};
         dataMap.put("scopes", scopes);
         dataMap.put("return_to", "test_url");
-        new ConnectSessionConnector(this).createToken(dataMap, "test customer secret");
+        new ConnectSessionConnector(this).createConnectSession(dataMap, "test customer secret");
         doneSignal.await(5, TimeUnit.SECONDS);
 
         Assert.assertNull(errorMessage);
@@ -75,7 +75,7 @@ public class TokenConnectorTest implements ConnectSessionResult {
         mockWebServer.enqueue(new MockResponse().setResponseCode(404).setBody(errorResponse));
 
         String[] scopes = {"value2", "value3"};
-        new ConnectSessionConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
+        new ConnectSessionConnector(this).createConnectSession("test_provider_code", scopes, "test_url", "test customer secret");
         doneSignal.await(5, TimeUnit.SECONDS);
 
         assertThat(errorMessage, equalTo("Resource Not Found"));

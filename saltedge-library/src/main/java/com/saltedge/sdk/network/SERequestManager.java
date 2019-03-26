@@ -80,7 +80,7 @@ public class SERequestManager {
     }
 
     /**
-     * Creates a token, which will be used to access Salt Edge Connect for future creation of Connection.
+     * Creates a URL, which will be used to access Salt Edge Connect for future creation of Connection.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
@@ -89,30 +89,30 @@ public class SERequestManager {
      * @param returnToUrl - the URL the user will be redirected to
      * @param callback - callback for request result
      */
-    public void createToken(String customerSecret,
-                            String providerCode,
-                            String[] scopes,
-                            String returnToUrl,
-                            ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).createToken(providerCode, scopes, returnToUrl, customerSecret);
+    public void createConnectSession(String customerSecret,
+                                     String providerCode,
+                                     String[] scopes,
+                                     String returnToUrl,
+                                     ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).createConnectSession(providerCode, scopes, returnToUrl, customerSecret);
     }
 
     /**
-     * Creates a token, which will be used to access Salt Edge Connect for future creation of Connection.
+     * Creates a URL, which will be used to access Salt Edge Connect for future creation of Connection.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
      * @param dataMap - custom params map
      * @param callback - callback for request result
      */
-    public void createToken(String customerSecret,
-                            Map<String, Object> dataMap,
-                            ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).createToken(dataMap, customerSecret);
+    public void createConnectSession(String customerSecret,
+                                     Map<String, Object> dataMap,
+                                     ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).createConnectSession(dataMap, customerSecret);
     }
 
     /**
-     * Creates a token, which will be used to access Salt Edge Connect for future reconnect of Connection.
+     * Creates a URL, which will be used to access Salt Edge Connect for future reconnect of Connection.
      * Result is returned through callback.
      *
      * @param connectionSecret - secret of the Connection which you want to reconnect
@@ -121,17 +121,17 @@ public class SERequestManager {
      * @param returnToUrl - the URL the user will be redirected to
      * @param callback - callback for request result
      */
-    public void reconnectToken(String customerSecret,
-                               String connectionSecret,
-                               String localeCode,
-                               String returnToUrl,
-                               ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).reconnectToken(localeCode, returnToUrl, connectionSecret,
+    public void createReconnectSession(String customerSecret,
+                                       String connectionSecret,
+                                       String localeCode,
+                                       String returnToUrl,
+                                       ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).createReconnectSession(localeCode, returnToUrl, connectionSecret,
                 customerSecret, false);
     }
 
     /**
-     * Creates a token, which will be used to access Salt Edge Connect for future reconnect of Connection.
+     * Creates a URL, which will be used to access Salt Edge Connect for future reconnect of Connection.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
@@ -141,18 +141,18 @@ public class SERequestManager {
      * @param overrideCredentials - override credentials strategy. If true, the new credentials will automatically override the old ones.
      * @param callback - callback for request result
      */
-    public void reconnectToken(String customerSecret,
-                               String connectionSecret,
-                               String localeCode,
-                               String returnToUrl,
-                               boolean overrideCredentials,
-                               ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).reconnectToken(localeCode, returnToUrl, connectionSecret,
+    public void createReconnectSession(String customerSecret,
+                                       String connectionSecret,
+                                       String localeCode,
+                                       String returnToUrl,
+                                       boolean overrideCredentials,
+                                       ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).createReconnectSession(localeCode, returnToUrl, connectionSecret,
                 customerSecret, overrideCredentials);
     }
 
     /**
-     * Create a token, which will be used to access Salt Edge Connect for refreshing of Connection.
+     * Create a URL, which will be used to access Salt Edge Connect for refreshing of Connection.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
@@ -161,12 +161,12 @@ public class SERequestManager {
      * @param returnToUrl - the URL the user will be redirected to
      * @param callback - callback for request result
      */
-    public void refreshToken(String customerSecret,
-                             String connectionSecret,
-                             String localeCode,
-                             String returnToUrl,
-                             ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).refreshToken(localeCode, returnToUrl, connectionSecret, customerSecret);
+    public void createRefreshSession(String customerSecret,
+                                     String connectionSecret,
+                                     String localeCode,
+                                     String returnToUrl,
+                                     ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).createRefreshSession(localeCode, returnToUrl, connectionSecret, customerSecret);
     }
 
     /**
@@ -230,9 +230,9 @@ public class SERequestManager {
     }
 
     /**
-     * Return the list of accounts of a Connection.
-     * Result is returned through callback.
+     * You can see the list of accounts of a Connection.
      * The accounts are sorted in ascending order of their ID, so the newest accounts will come last.
+     * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
      * @param connectionSecret - secret code of the Connection
@@ -245,7 +245,7 @@ public class SERequestManager {
     }
 
     /**
-     * Return the list of all transactions for an Account of a Connection.
+     * Return the list of all non duplicated  transactions for an Account of a Connection.
      * The list not includes pending transactions
      * Result is returned through callback.
      *

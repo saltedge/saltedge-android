@@ -61,9 +61,6 @@ public class ProviderData extends BaseModel implements Serializable {
     @SerializedName(SEConstants.KEY_LOGIN_URL)
     private String loginUrl;
 
-    @SerializedName(SEConstants.KEY_FORUM_URL)
-    private String forumUrl;
-
     @SerializedName(SEConstants.KEY_LOGO_URL)
     private String logoUrl;
 
@@ -165,14 +162,6 @@ public class ProviderData extends BaseModel implements Serializable {
 
     public void setLoginUrl(String loginUrl) {
         this.loginUrl = loginUrl;
-    }
-
-    public String getForumUrl() {
-        return forumUrl;
-    }
-
-    public void setForumUrl(String forumUrl) {
-        this.forumUrl = forumUrl;
     }
 
     public String getLogoUrl() {

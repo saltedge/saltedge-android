@@ -47,7 +47,6 @@ public class SEConstants {
     public static final String KEY_IDENTIFIER = "identifier";
     public static final String KEY_OAUTH = "oauth";
     public static final String KEY_CONNECT_URL = "connect_url";
-    public static final String KEY_TOKEN = "token";
     public static final String KEY_EXPIRES_AT = "expires_at";
     public static final String KEY_REMOVED = "removed";
     public static final String KEY_FETCH_SCOPES = "fetch_scopes";

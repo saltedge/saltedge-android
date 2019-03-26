@@ -29,7 +29,7 @@ import com.saltedge.sdk.model.request.RefreshConnectionRequest;
 import com.saltedge.sdk.model.request.ConnectSessionRequest;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.model.response.CreateCustomerResponse;
-import com.saltedge.sdk.model.response.CreateConnectSessionResponse;
+import com.saltedge.sdk.model.response.ConnectSessionResponse;
 import com.saltedge.sdk.model.response.DeleteConnectionResponse;
 import com.saltedge.sdk.model.response.ConnectionResponse;
 import com.saltedge.sdk.model.response.ProvidersResponse;
@@ -62,25 +62,23 @@ public interface SEApiInterface {
             @Query(SEConstants.KEY_FROM_ID) String fromId);
 
     @POST(SEApiConstants.API_CONNECT_SESSION_CREATE_PATH)
-    Call<CreateConnectSessionResponse> createConnectSession(
+    Call<ConnectSessionResponse> createConnectSession(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
             @Body CreateConnectSessionRequest body);
 
     @POST(SEApiConstants.API_CONNECT_SESSION_CREATE_PATH)
-    Call<CreateConnectSessionResponse> createConnectSession(
+    Call<ConnectSessionResponse> createConnectSession(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
             @Body MappedRequest body);
 
     @POST(SEApiConstants.API_CONNECT_SESSION_RECONNECT_PATH)
-    Call<CreateConnectSessionResponse> createConnectSessionForReconnect(
+    Call<ConnectSessionResponse> createConnectSessionForReconnect(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
             @Body ConnectSessionRequest body);
 
     @POST(SEApiConstants.API_CONNECT_SESSION_REFRESH_PATH)
-    Call<CreateConnectSessionResponse> createConnectSessionForRefresh(
+    Call<ConnectSessionResponse> createConnectSessionForRefresh(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
             @Body ConnectSessionRequest body);
 
     @GET(SEApiConstants.API_CONNECTION_PATH)

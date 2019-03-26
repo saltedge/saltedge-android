@@ -27,34 +27,34 @@ import com.saltedge.sdk.utils.SEConstants;
 public class ConnectSessionRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private SECreateTokenData data;
+    private ConnectSessionData data;
 
-    public ConnectSessionRequest(String locale, String returnTo) {
-        data = new SECreateTokenData(locale, returnTo);
+    public ConnectSessionRequest(String locale, String returnToUrl) {
+        data = new ConnectSessionData(locale, returnToUrl);
     }
 
-    public ConnectSessionRequest(String locale, String returnTo, String overrideCredentialsStrategy) {
-        data = new SECreateTokenData(locale, returnTo, overrideCredentialsStrategy);
+    public ConnectSessionRequest(String locale, String returnToUrl, String overrideCredentialsStrategy) {
+        data = new ConnectSessionData(locale, returnToUrl, overrideCredentialsStrategy);
     }
 
-    private class SECreateTokenData {
+    private class ConnectSessionData {
 
         @SerializedName(SEConstants.KEY_LOCALE)
         private String locale;
 
         @SerializedName(SEConstants.KEY_RETURN_TO)
-        private String returnTo;
+        private String returnToUrl;
 
         @SerializedName(SEConstants.KEY_OVERRIDE_CREDENTIALS_STRATEGY)
         private String overrideCredentialsStrategy;
 
-        private SECreateTokenData(String locale, String returnTo) {
+        private ConnectSessionData(String locale, String returnToUrl) {
             this.locale = locale;
-            this.returnTo = returnTo;
+            this.returnToUrl = returnToUrl;
         }
 
-        private SECreateTokenData(String locale, String returnTo, String overrideCredentialsStrategy) {
-            this(locale, returnTo);
+        private ConnectSessionData(String locale, String returnToUrl, String overrideCredentialsStrategy) {
+            this(locale, returnToUrl);
             this.overrideCredentialsStrategy = overrideCredentialsStrategy;
         }
     }

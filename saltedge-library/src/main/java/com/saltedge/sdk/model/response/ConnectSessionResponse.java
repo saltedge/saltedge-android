@@ -24,17 +24,13 @@ package com.saltedge.sdk.model.response;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class CreateConnectSessionResponse {
+public class ConnectSessionResponse {
 
     @SerializedName(SEConstants.KEY_DATA)
     private SECreateConnectSessionData data;
 
     public String getConnectUrl() {
         return data.connectUrl;
-    }
-
-    public String getToken() {
-        return data.token;
     }
 
     public String getExpiresAt() {
@@ -45,9 +41,6 @@ public class CreateConnectSessionResponse {
 
         @SerializedName(SEConstants.KEY_CONNECT_URL)
         public String connectUrl;
-
-        @SerializedName(SEConstants.KEY_TOKEN)
-        public String token;
 
         @SerializedName(SEConstants.KEY_EXPIRES_AT)
         public String expiresAt;

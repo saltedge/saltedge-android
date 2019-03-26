@@ -27,13 +27,16 @@ import com.saltedge.sdk.utils.SEConstants;
 public class CreateConnectSessionRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private SECreateTokenData data;
+    private CreateConnectSessionData data;
 
-    public CreateConnectSessionRequest(String[] allowedCountries, String providerCode, String[] scopes, String returnTo) {
-        data = new SECreateTokenData(allowedCountries, providerCode, scopes, returnTo, SEConstants.IFRAME);
+    public CreateConnectSessionRequest(String[] allowedCountries,
+                                       String providerCode,
+                                       String[] scopes,
+                                       String returnToUrl) {
+        data = new CreateConnectSessionData(allowedCountries, providerCode, scopes, returnToUrl, SEConstants.IFRAME);
     }
 
-    private class SECreateTokenData {
+    private class CreateConnectSessionData {
 
         @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
         private String[] allowedCountries;
@@ -45,17 +48,20 @@ public class CreateConnectSessionRequest {
         private String[] fetchScopes;
 
         @SerializedName(SEConstants.KEY_RETURN_TO)
-        private String returnTo;
+        private String returnToUrl;
 
         @SerializedName(SEConstants.JAVASCRIPT_CALLBACK)
         private String javascriptCallback;
 
-        private SECreateTokenData(String[] allowedCountries, String providerCode, String[] scopes,
-                                  String returnTo, String javascriptCallback) {
+        private CreateConnectSessionData(String[] allowedCountries,
+                                         String providerCode,
+                                         String[] scopes,
+                                         String returnToUrl,
+                                         String javascriptCallback) {
             this.allowedCountries = allowedCountries;
             this.providerCode = providerCode;
             this.fetchScopes = scopes;
-            this.returnTo = returnTo;
+            this.returnToUrl = returnToUrl;
             this.javascriptCallback = javascriptCallback;
         }
     }
