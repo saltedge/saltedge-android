@@ -28,7 +28,7 @@ import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.TestTools;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.model.TransactionData;
-import com.saltedge.sdk.network.ApiInterface;
+import com.saltedge.sdk.network.SEApiInterface;
 import com.saltedge.sdk.network.SERestClient;
 
 import org.junit.After;
@@ -129,7 +129,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
         mockWebServer.start();
         HttpUrl url = mockWebServer.url("/");
         mockRetrofit = TestTools.createMockRetrofit(url);
-        SERestClient.getInstance().service = mockRetrofit.create(ApiInterface.class);
+        SERestClient.getInstance().service = mockRetrofit.create(SEApiInterface.class);
         doneSignal = new CountDownLatch(1);
     }
 

@@ -22,20 +22,20 @@ import android.text.TextUtils;
 
 import com.saltedge.sdk.connector.AccountsConnector;
 import com.saltedge.sdk.connector.CustomerConnector;
-import com.saltedge.sdk.connector.DeleteLoginConnector;
-import com.saltedge.sdk.connector.LoginsShowConnector;
+import com.saltedge.sdk.connector.ConnectionDeleteConnector;
+import com.saltedge.sdk.connector.ConnectionsShowConnector;
 import com.saltedge.sdk.connector.ProvidersConnector;
-import com.saltedge.sdk.connector.TokenConnector;
+import com.saltedge.sdk.connector.ConnectSessionConnector;
 import com.saltedge.sdk.connector.TransactionsConnector;
 import com.saltedge.sdk.interfaces.CreateCustomerResult;
-import com.saltedge.sdk.interfaces.DeleteLoginResult;
+import com.saltedge.sdk.interfaces.DeleteConnectionResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
-import com.saltedge.sdk.interfaces.FetchLoginsResult;
+import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
-import com.saltedge.sdk.interfaces.RefreshLoginResult;
-import com.saltedge.sdk.interfaces.TokenConnectionResult;
-import com.saltedge.sdk.model.LoginData;
+import com.saltedge.sdk.interfaces.RefreshConnectionResult;
+import com.saltedge.sdk.interfaces.ConnectSessionResult;
+import com.saltedge.sdk.model.ConnectionData;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.Map;
@@ -55,7 +55,7 @@ public class SERequestManager {
     }
 
     /**
-     * Return list of providers.
+     * Return list of available Providers.
      * Result is returned through callback.
      *
      * @param countryCode - code of the provider’s country
@@ -66,10 +66,10 @@ public class SERequestManager {
     }
 
     /**
-     * Allows to create new customer.
+     * Allows to create new Customer.
      * Result is returned through callback.
      *
-     * @param customerIdentifier - a unique identifier of the new customer
+     * @param customerIdentifier - a unique identifier of the new Customer
      * @param callback - callback for request result
      */
     public void createCustomer(String customerIdentifier, CreateCustomerResult callback) {
@@ -80,215 +80,242 @@ public class SERequestManager {
     }
 
     /**
-     * Allows you to create a token, which will be used to access Salt Edge Connect for login creation.
+     * Creates a token, which will be used to access Salt Edge Connect for future creation of Connection.
      * Result is returned through callback.
      *
-     * @param providerCode - the code of the desired provider
+     * @param customerSecret - current Customer secret code
+     * @param providerCode - the code of the desired Provider
      * @param scopes - fetching mode, possible values: ['accounts'], ['holder_info'], ['accounts', 'holder_info'], ['accounts', 'transactions'], ['accounts', 'holder_info', 'transactions']
-     * @param returnTo - the URL the user will be redirected to
-     * @param customerSecret - current customer secret code
+     * @param returnToUrl - the URL the user will be redirected to
      * @param callback - callback for request result
      */
-    public void createToken(String providerCode,
+    public void createToken(String customerSecret,
+                            String providerCode,
                             String[] scopes,
-                            String returnTo,
-                            String customerSecret,
-                            TokenConnectionResult callback) {
-        new TokenConnector(callback).createToken(providerCode, scopes, returnTo, customerSecret);
+                            String returnToUrl,
+                            ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).createToken(providerCode, scopes, returnToUrl, customerSecret);
     }
 
     /**
-     * Allows you to create a token, which will be used to access Salt Edge Connect for login creation.
+     * Creates a token, which will be used to access Salt Edge Connect for future creation of Connection.
      * Result is returned through callback.
      *
+     * @param customerSecret - current Customer secret code
      * @param dataMap - custom params map
-     * @param customerSecret - current customer secret code
      * @param callback - callback for request result
      */
-    public void createToken(Map<String, Object> dataMap,
-                            String customerSecret,
-                            TokenConnectionResult callback) {
-        new TokenConnector(callback).createToken(dataMap, customerSecret);
+    public void createToken(String customerSecret,
+                            Map<String, Object> dataMap,
+                            ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).createToken(dataMap, customerSecret);
     }
 
     /**
-     * Allows you to create a token, which will be used to access Salt Edge Connect for login reconnect.
+     * Creates a token, which will be used to access Salt Edge Connect for future reconnect of Connection.
      * Result is returned through callback.
      *
+     * @param connectionSecret - secret of the Connection which you want to reconnect
+     * @param customerSecret - current Customer secret code
      * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnTo - the URL the user will be redirected to
-     * @param loginSecret - secret of the login which you want to reconnect
-     * @param customerSecret - current customer secret code
+     * @param returnToUrl - the URL the user will be redirected to
      * @param callback - callback for request result
      */
-    public void reconnectToken(String localeCode,
-                               String returnTo,
-                               String loginSecret,
-                               String customerSecret,
-                               TokenConnectionResult callback) {
-        new TokenConnector(callback).reconnectToken(localeCode, returnTo, loginSecret,
+    public void reconnectToken(String customerSecret,
+                               String connectionSecret,
+                               String localeCode,
+                               String returnToUrl,
+                               ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).reconnectToken(localeCode, returnToUrl, connectionSecret,
                 customerSecret, false);
     }
 
     /**
-     * Allows you to create a token, which will be used to access Salt Edge Connect for login reconnect.
+     * Creates a token, which will be used to access Salt Edge Connect for future reconnect of Connection.
      * Result is returned through callback.
      *
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret of the Connection which you want to reconnect
      * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnTo - the URL the user will be redirected to
-     * @param loginSecret - secret of the login which you want to reconnect
-     * @param customerSecret - current customer secret code
+     * @param returnToUrl - the URL the user will be redirected to
      * @param overrideCredentials - override credentials strategy. If true, the new credentials will automatically override the old ones.
      * @param callback - callback for request result
      */
-    public void reconnectToken(String localeCode,
-                               String returnTo,
-                               String loginSecret,
-                               String customerSecret,
+    public void reconnectToken(String customerSecret,
+                               String connectionSecret,
+                               String localeCode,
+                               String returnToUrl,
                                boolean overrideCredentials,
-                               TokenConnectionResult callback) {
-        new TokenConnector(callback).reconnectToken(localeCode, returnTo, loginSecret,
+                               ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).reconnectToken(localeCode, returnToUrl, connectionSecret,
                 customerSecret, overrideCredentials);
     }
 
-    public void refreshToken(String localeCode, String returnTo, String loginSecret, String customerSecret,
-                             TokenConnectionResult callback) {
-        new TokenConnector(callback).refreshToken(localeCode, returnTo, loginSecret, customerSecret);
-    }
-
-    public SERefreshService refreshLoginWithSecret(String customerSecret,
-                                                   LoginData loginData,
-                                                   String[] refreshScopes,
-                                                   RefreshLoginResult callback) {
-        return new SERefreshService(callback).startRefresh(customerSecret, loginData, refreshScopes);
-    }
-
     /**
-     * Returns a single login object.
+     * Create a token, which will be used to access Salt Edge Connect for refreshing of Connection.
      * Result is returned through callback.
      *
-     * @param loginSecret - secret of the login which should be returned if exist
-     * @param customerSecret - current customer secret code
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection which you want to reconnect
+     * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param returnToUrl - the URL the user will be redirected to
      * @param callback - callback for request result
      */
-    public void fetchLogin(String customerSecret,
-                           String loginSecret,
-                           FetchLoginsResult callback) {
-        String[] loginSecrets = { loginSecret };
-        fetchLogins(customerSecret, loginSecrets, callback);
+    public void refreshToken(String customerSecret,
+                             String connectionSecret,
+                             String localeCode,
+                             String returnToUrl,
+                             ConnectSessionResult callback) {
+        new ConnectSessionConnector(callback).refreshToken(localeCode, returnToUrl, connectionSecret, customerSecret);
     }
 
     /**
-     * Returns login objects collection.
+     * Created SERefreshService and starts refresh through Salt Edge API
      * Result is returned through callback.
      *
-     * @param loginSecretsArray - array of secrets of the logins which should be returned if exist
-     * @param customerSecret - current customer secret code
+     * @param customerSecret - current Customer secret code
+     * @param connectionData - Connection data for refresh
+     * @param refreshScopes - array of refresh scopes, e.g. {"accounts", "transactions"}
+     * @param callback - callback for request result
+     * @return SERefreshService - refresh service object
+     */
+    public SERefreshService refreshConnectionWithSecret(String customerSecret,
+                                                        ConnectionData connectionData,
+                                                        String[] refreshScopes,
+                                                        RefreshConnectionResult callback) {
+        return new SERefreshService(callback).startRefresh(customerSecret, connectionData, refreshScopes);
+    }
+
+    /**
+     * Returns a single Connection object.
+     * Result is returned through callback.
+     *
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection which should be returned if exist
      * @param callback - callback for request result
      */
-    public void fetchLogins(String customerSecret,
-                            String[] loginSecretsArray,
-                            FetchLoginsResult callback) {
-        new LoginsShowConnector(callback).fetchLogins(customerSecret, loginSecretsArray);
+    public void fetchConnection(String customerSecret,
+                                String connectionSecret,
+                                FetchConnectionsResult callback) {
+        String[] secrets = { connectionSecret };
+        fetchConnections(customerSecret, secrets, callback);
     }
 
     /**
-     * Delete login.
+     * Returns Connections objects collection.
      * Result is returned through callback.
      *
-     * @param loginSecret - secret of the login which should be deleted if exist
-     * @param customerSecret - current customer secret code
+     * @param customerSecret - current Customer secret code
+     * @param connectionsSecretsArray - array of secrets of the Connections which should be returned if exist
      * @param callback - callback for request result
      */
-    public void deleteLogin(String customerSecret,
-                            String loginSecret,
-                            DeleteLoginResult callback) {
-        new DeleteLoginConnector(callback).deleteLogin(customerSecret, loginSecret);
+    public void fetchConnections(String customerSecret,
+                                 String[] connectionsSecretsArray,
+                                 FetchConnectionsResult callback) {
+        new ConnectionsShowConnector(callback).fetchConnections(customerSecret, connectionsSecretsArray);
     }
 
     /**
-     * Return the list of accounts of a login.
+     * Delete Connection.
      * Result is returned through callback.
      *
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection which should be deleted if exist
+     * @param callback - callback for request result
+     */
+    public void deleteConnection(String customerSecret,
+                                 String connectionSecret,
+                                 DeleteConnectionResult callback) {
+        new ConnectionDeleteConnector(callback).deleteConnection(customerSecret, connectionSecret);
+    }
+
+    /**
+     * Return the list of accounts of a Connection.
+     * Result is returned through callback.
      * The accounts are sorted in ascending order of their ID, so the newest accounts will come last.
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
+     *
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection
      * @param callback - callback for request result
      */
     public void fetchAccounts(String customerSecret,
-                              String loginSecret,
+                              String connectionSecret,
                               FetchAccountsResult callback) {
-        new AccountsConnector(callback).fetchAccounts(customerSecret, loginSecret);
+        new AccountsConnector(callback).fetchAccounts(customerSecret, connectionSecret);
     }
 
     /**
-     * Return the list of all transactions for an account.
+     * Return the list of all transactions for an Account of a Connection.
+     * The list not includes pending transactions
      * Result is returned through callback.
      *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection
+     * @param accountId - Account ID
      * @param callback - callback for request result
      */
     public void fetchAllTransactions(String customerSecret,
-                                     String loginSecret,
+                                     String connectionSecret,
                                      String accountId,
                                      FetchTransactionsResult callback) {
-        fetchTransactions(customerSecret, loginSecret, accountId, "", false, true, callback);
+        fetchTransactions(customerSecret, connectionSecret, accountId, "", false, true, callback);
     }
 
     /**
-     * Return the list of all transactions for an account from transaction id.
+     * Return the list of all transactions from transactionId for an Account of a Connection.
+     * The list not includes pending transactions
      * Result is returned through callback.
      *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection
+     * @param accountId - Account ID
      * @param fromTransactionId - the id from which the result list should starts
      * @param callback - callback for request result
      */
     public void fetchAllTransactions(String customerSecret,
-                                     String loginSecret,
+                                     String connectionSecret,
                                      String accountId,
                                      String fromTransactionId,
                                      FetchTransactionsResult callback) {
-        fetchTransactions(customerSecret, loginSecret, accountId, fromTransactionId, false, true, callback);
+        fetchTransactions(customerSecret, connectionSecret, accountId, fromTransactionId, false, true, callback);
     }
 
     /**
-     * Return the page of transactions for an account from transaction id.
+     * Return the single page of transactions from transactionId for an Account of a Connection.
      * Transaction page contains maximum 100 items.
+     * The list not includes pending transactions
      * Result is returned through callback.
      *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection
+     * @param accountId - Account ID
      * @param fromTransactionId - the ID from which the next page of transactions starts
      * @param callback - callback for request result
      */
     public void fetchTransactions(String customerSecret,
-                                  String loginSecret,
+                                  String connectionSecret,
                                   String accountId,
                                   String fromTransactionId,
                                   FetchTransactionsResult callback) {
-        fetchTransactions(customerSecret, loginSecret, accountId, fromTransactionId, false, false, callback);
+        fetchTransactions(customerSecret, connectionSecret, accountId, fromTransactionId, false, false, callback);
     }
 
     /**
-     * Return the list of transactions for an account.
+     * Return the list of transactions for an Account of a Connection.
      * Initiate transactions fetch by params.
+     * The list includes posted or pending transactions.
      * Result is returned through callback.
      *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection
+     * @param accountId - Account ID
      * @param fromTransactionId - the ID from which the next page of transactions starts
      * @param fetchPendingTransactions - flag which indicates what type of transactions should be fetched (Normal or Pending)
      * @param fetchAllTransactionsFromId - flag which indicates that should be fetched one page or all
      * @param callback - callback for request result
      */
     public void fetchTransactions(String customerSecret,
-                                  String loginSecret,
+                                  String connectionSecret,
                                   String accountId,
                                   String fromTransactionId,
                                   boolean fetchPendingTransactions,
@@ -296,7 +323,7 @@ public class SERequestManager {
                                   FetchTransactionsResult callback) {
         new TransactionsConnector(callback).fetchTransactions(
                 customerSecret,
-                loginSecret,
+                connectionSecret,
                 accountId,
                 fromTransactionId,
                 fetchPendingTransactions,
@@ -304,77 +331,36 @@ public class SERequestManager {
     }
 
     /**
-     * Return the list of all transactions for an account.
-     * Result is returned through callback.
-     * Method is duplicating fetchAllTransactions(...)
-     *
-     * @deprecated  Replaced by {@link #fetchAllTransactions}
-     *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
-     * @param callback - callback for request result
-     */
-    @Deprecated
-    public void fetchTransactionsOfAccount(String customerSecret,
-                                           String loginSecret,
-                                           String accountId,
-                                           FetchTransactionsResult callback) {
-        fetchAllTransactions(customerSecret, loginSecret, accountId, callback);
-    }
-
-    /**
-     * Return the list of all transactions for an account from transaction id.
+     * Return the list of all pending transactions for an Account of a Connection.
      * Result is returned through callback.
      *
-     * @deprecated  Replaced by {@link #fetchTransactions}
-     *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
-     * @param fromTransactionId - the id from which the result list should starts
-     * @param callback - callback for request result
-     */
-    @Deprecated
-    public void fetchTransactionsOfAccount(String customerSecret,
-                                           String loginSecret,
-                                           String accountId,
-                                           String fromTransactionId,
-                                           FetchTransactionsResult callback) {
-        fetchTransactions(customerSecret, loginSecret, accountId, fromTransactionId, false, true, callback);
-    }
-
-    /**
-     * Return the list of all pending transactions for an account.
-     * Result is returned through callback.
-     *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret of the Connection
+     * @param accountId - Account ID
      * @param callback - callback for request result
      */
     public void fetchPendingTransactionsOfAccount(String customerSecret,
-                                                  String loginSecret,
+                                                  String connectionSecret,
                                                   String accountId,
                                                   FetchTransactionsResult callback) {
-        fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId, "", callback);
+        fetchPendingTransactionsOfAccount(customerSecret, connectionSecret, accountId, "", callback);
     }
 
     /**
-     * Return the list of all pending transactions for an account.
+     * Return the list of all pending transactions from transactionId for an Account of a Connection.
      * Result is returned through callback.
      *
-     * @param customerSecret - current customer secret code
-     * @param loginSecret - secret of the login
-     * @param accountId - account ID
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret of the Connection
+     * @param accountId - Account ID
      * @param fromTransactionId - the id from which the result list should starts
      * @param callback - callback for request result
      */
     public void fetchPendingTransactionsOfAccount(String customerSecret,
-                                                  String loginSecret,
+                                                  String connectionSecret,
                                                   String accountId,
                                                   String fromTransactionId,
                                                   FetchTransactionsResult callback) {
-        fetchTransactions(customerSecret, loginSecret, accountId, fromTransactionId, true, true, callback);
+        fetchTransactions(customerSecret, connectionSecret, accountId, fromTransactionId, true, true, callback);
     }
 }

@@ -29,21 +29,21 @@ import java.util.Map;
 /*
     PUT Interactive Credentials API model
  */
-public class PutLoginCredentialsRequest {
+public class PutConnectionCredentialsRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private PutLoginCredentialsRequestData data;
+    private PutConnectionCredentialsRequestData data;
 
-    public PutLoginCredentialsRequest(Map<String, Object> credentials) {
-        data = new PutLoginCredentialsRequestData(credentials);
+    public PutConnectionCredentialsRequest(Map<String, Object> credentials) {
+        data = new PutConnectionCredentialsRequestData(credentials);
     }
 
-    private class PutLoginCredentialsRequestData {
+    private class PutConnectionCredentialsRequestData {
 
         @SerializedName(SEConstants.KEY_CREDENTIALS)
         private Map<String, Object> credentials;
 
-        PutLoginCredentialsRequestData(Map<String, Object> credentials) {
+        PutConnectionCredentialsRequestData(Map<String, Object> credentials) {
             this.credentials = credentials;
         }
     }

@@ -19,23 +19,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.model.response;
+package com.saltedge.sdk.interfaces;
 
-import com.google.gson.annotations.SerializedName;
-import com.saltedge.sdk.utils.SEConstants;
+import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.StageData;
 
-public class DeleteLoginResponse {
-
-    @SerializedName(SEConstants.KEY_DATA)
-    private DeleteLoginData data;
-
-    public Boolean isRemoved() {
-        return data.removed;
-    }
-
-    private class DeleteLoginData {
-
-        @SerializedName(SEConstants.KEY_REMOVED)
-        Boolean removed;
-    }
+public interface RefreshConnectionResult {
+    void onRefreshSuccess(ConnectionData connection);
+    void onRefreshFailure(String errorMessage);
+    void onInteractiveStepFailure(String errorMessage);
+    void onConnectionStateFetchError(String errorMessage);
+    void provideInteractiveData(StageData lastStage);
 }

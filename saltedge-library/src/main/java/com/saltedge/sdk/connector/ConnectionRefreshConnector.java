@@ -21,8 +21,9 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.interfaces.DeleteLoginResult;
-import com.saltedge.sdk.model.response.DeleteLoginResponse;
+import com.saltedge.sdk.interfaces.FetchConnectionResult;
+import com.saltedge.sdk.model.request.RefreshConnectionRequest;
+import com.saltedge.sdk.model.response.ConnectionResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
@@ -31,25 +32,32 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DeleteLoginConnector extends BasePinnedConnector implements Callback<DeleteLoginResponse> {
+public class ConnectionRefreshConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
 
-    private final DeleteLoginResult callback;
-    private String loginSecret;
-    private String customerSecret;
+    private FetchConnectionResult callback;
+    private Call<ConnectionResponse> call;
 
-    public DeleteLoginConnector(DeleteLoginResult callback) {
+    public ConnectionRefreshConnector(FetchConnectionResult callback) {
         this.callback = callback;
     }
 
-    public void deleteLogin(String customerSecret, String loginSecret) {
-        this.loginSecret = loginSecret;
-        this.customerSecret = customerSecret;
+    public void refreshConnection(String customerSecret, String connectionSecret, String[] scopes) {
+        RefreshConnectionRequest requestData = new RefreshConnectionRequest(scopes);
+        call = SERestClient.getInstance().service.refreshConnection(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
+    }
+
+    public void cancel() {
+        callback = null;
+        if (call != null && !call.isCanceled()) {
+            call.cancel();
+        }
+        call = null;
     }
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.deleteLogin(customerSecret, loginSecret).enqueue(this);
+        if (call != null) call.enqueue(this);
     }
 
     @Override
@@ -58,14 +66,14 @@ public class DeleteLoginConnector extends BasePinnedConnector implements Callbac
     }
 
     @Override
-    public void onResponse(Call<DeleteLoginResponse> call, Response<DeleteLoginResponse> response) {
-        DeleteLoginResponse responseBody = response.body();
-        if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.isRemoved());
+    public void onResponse(Call<ConnectionResponse> call, Response<ConnectionResponse> response) {
+        ConnectionResponse responseBody = response.body();
+        if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getData());
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
-    public void onFailure(Call<DeleteLoginResponse> call, Throwable t) {
+    public void onFailure(Call<ConnectionResponse> call, Throwable t) {
         onFailure(SEErrorTools.processConnectionError(t));
     }
 }

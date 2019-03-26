@@ -21,13 +21,13 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
 
-import com.saltedge.sdk.connector.LoginInteractiveCredentialsConnector;
-import com.saltedge.sdk.connector.LoginRefreshConnector;
-import com.saltedge.sdk.connector.LoginsShowConnector;
-import com.saltedge.sdk.interfaces.FetchLoginResult;
-import com.saltedge.sdk.interfaces.FetchLoginsResult;
-import com.saltedge.sdk.interfaces.RefreshLoginResult;
-import com.saltedge.sdk.model.LoginData;
+import com.saltedge.sdk.connector.ConnectionInteractiveCredentialsConnector;
+import com.saltedge.sdk.connector.ConnectionRefreshConnector;
+import com.saltedge.sdk.connector.ConnectionsShowConnector;
+import com.saltedge.sdk.interfaces.FetchConnectionResult;
+import com.saltedge.sdk.interfaces.FetchConnectionsResult;
+import com.saltedge.sdk.interfaces.RefreshConnectionResult;
+import com.saltedge.sdk.model.ConnectionData;
 import com.saltedge.sdk.model.StageData;
 import com.saltedge.sdk.utils.SEConstants;
 
@@ -38,23 +38,23 @@ import java.util.TimerTask;
 
 public class SERefreshService {
 
-    public SERefreshService(RefreshLoginResult callback) {
+    public SERefreshService(RefreshConnectionResult callback) {
         this.callback = callback;
     }
 
-    private RefreshLoginResult callback;
-    private LoginRefreshConnector refreshConnector;
-    private LoginInteractiveCredentialsConnector interactiveConnector;
-    private LoginsShowConnector showLoginConnector;
+    private RefreshConnectionResult callback;
+    private ConnectionRefreshConnector refreshConnector;
+    private ConnectionInteractiveCredentialsConnector interactiveConnector;
+    private ConnectionsShowConnector showConnectionConnector;
     private final static long POLLING_TIMEOUT = 5000L;
     private String customerSecret;
-    private LoginData login;
+    private ConnectionData connectionData;
     private Timer timer;
-    private FetchLoginResult refreshLoginResult = new FetchLoginResult() {
+    private FetchConnectionResult refreshConnectionCallback = new FetchConnectionResult() {
 
         @Override
-        public void onSuccess(LoginData login) {
-            checkLoginStage(login);
+        public void onSuccess(ConnectionData connection) {
+            checkConnectionStage(connection);
         }
 
         @Override
@@ -63,11 +63,11 @@ public class SERefreshService {
         }
     };
 
-    private FetchLoginResult interactiveLoginResult = new FetchLoginResult() {
+    private FetchConnectionResult interactiveConnectionCallback = new FetchConnectionResult() {
 
         @Override
-        public void onSuccess(LoginData login) {
-            checkLoginStage(login);
+        public void onSuccess(ConnectionData connection) {
+            checkConnectionStage(connection);
         }
 
         @Override
@@ -76,40 +76,42 @@ public class SERefreshService {
         }
     };
 
-    private FetchLoginsResult showLoginResult = new FetchLoginsResult() {
+    private FetchConnectionsResult showConnectionsCallback = new FetchConnectionsResult() {
 
         @Override
-        public void onSuccess(List<LoginData> logins) {
-            if (!logins.isEmpty()) {
-                LoginData lastLogin = logins.get(0);
-                checkLoginStage(lastLogin);
+        public void onSuccess(List<ConnectionData> connections) {
+            if (!connections.isEmpty()) {
+                ConnectionData lastConnectionData = connections.get(0);
+                checkConnectionStage(lastConnectionData);
             }
         }
 
         @Override
         public void onFailure(String errorMessage) {
-            if (callback != null) callback.onLoginStateFetchError(errorMessage);
+            if (callback != null) callback.onConnectionStateFetchError(errorMessage);
         }
     };
 
     /**
-     * Start refresh login process
+     * Start refresh connectionData process
      * @param customerSecret - current customer secret
-     * @param login - login model which should be refreshed
+     * @param connectionData - ConnectionData model which should be refreshed
      * @param refreshScopes - refresh scopes. e.g. `['accounts', 'transactions']`
      * @return SERefreshService itself
      */
-    public SERefreshService startRefresh(String customerSecret, LoginData login, String[] refreshScopes) {
+    public SERefreshService startRefresh(String customerSecret,
+                                         ConnectionData connectionData,
+                                         String[] refreshScopes) {
         this.customerSecret = customerSecret;
-        this.login = login;
+        this.connectionData = connectionData;
         if (secretsNotValid()) {
             onRefreshError(SEConstants.ERROR_INVALID_REFRESH_SECRETS);
         } else {
             if (refreshConnector != null) {
                 refreshConnector.cancel();
             }
-            refreshConnector = new LoginRefreshConnector(refreshLoginResult);
-            refreshConnector.refreshLogin(customerSecret, login.getSecret(), refreshScopes);
+            refreshConnector = new ConnectionRefreshConnector(refreshConnectionCallback);
+            refreshConnector.refreshConnection(customerSecret, connectionData.getSecret(), refreshScopes);
         }
         return this;
     }
@@ -124,7 +126,7 @@ public class SERefreshService {
         if (interactiveConnector != null) {
             interactiveConnector.cancel();
         }
-        stopLoginPolling();
+        stopConnectionPolling();
     }
 
     /**
@@ -138,12 +140,15 @@ public class SERefreshService {
             if (interactiveConnector != null) {
                 interactiveConnector.cancel();
             }
-            interactiveConnector = new LoginInteractiveCredentialsConnector(interactiveLoginResult);
-            interactiveConnector.sendLoginCredentials(customerSecret, login.getSecret(), credentials);
+            interactiveConnector = new ConnectionInteractiveCredentialsConnector(interactiveConnectionCallback);
+            interactiveConnector.sendConnectionCredentials(
+                    customerSecret,
+                    connectionData.getSecret(),
+                    credentials);
         }
     }
 
-    private void startLoginPolling() {
+    private void startConnectionPolling() {
         try {
             timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -152,73 +157,79 @@ public class SERefreshService {
                     pollingAction();
                 }
             }, 0, POLLING_TIMEOUT);
-            showLoginConnector = new LoginsShowConnector(showLoginResult);
+            showConnectionConnector = new ConnectionsShowConnector(showConnectionsCallback);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private void stopLoginPolling() {
+    private void stopConnectionPolling() {
         try {
             if (timer != null) {
                 timer.cancel();
                 timer.purge();
             }
-            if (showLoginConnector != null) {
-                showLoginConnector.cancel();
+            if (showConnectionConnector != null) {
+                showConnectionConnector.cancel();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        showLoginConnector = null;
+        showConnectionConnector = null;
         timer = null;
     }
 
-    private boolean pollingIsRunning() {
-        return timer != null;
+    private boolean pollingIsStopped() {
+        return timer == null;
     }
 
     private void pollingAction() {
-        if (showLoginConnector != null) {
-            showLoginConnector.fetchLogins(customerSecret, new String[]{ login.getSecret() });
+        if (showConnectionConnector != null) {
+            showConnectionConnector.fetchConnections(
+                    customerSecret,
+                    new String[]{ connectionData.getSecret() });
         }
     }
 
-    private void checkLoginStage(LoginData login) {
-        if (login.attemptIsFinished()) {
-            onRefreshSuccess(login);
-        } else if (login.attemptIsInteractive()) {
-            askInteractiveData(login.getLastAttempt().getLastStage());
+    private void checkConnectionStage(ConnectionData connectionData) {
+        if (connectionData.attemptIsFinished()) {
+            onRefreshSuccess(connectionData);
+        } else if (connectionData.attemptIsInteractive()) {
+            askInteractiveData(connectionData.getLastAttempt().getLastStage());
         } else {
-            if (!pollingIsRunning()) {
-                startLoginPolling();
+            if (pollingIsStopped()) {
+                startConnectionPolling();
             }
         }
     }
 
     private void askInteractiveData(StageData lastStage) {
-        stopLoginPolling();
+        stopConnectionPolling();
         if (callback != null) callback.provideInteractiveData(lastStage);
     }
 
-    private void onRefreshSuccess(LoginData login) {
-        stopLoginPolling();
-        if (callback != null) callback.onRefreshSuccess(login);
+    private void onRefreshSuccess(ConnectionData connectionData) {
+        stopConnectionPolling();
+        if (callback != null) callback.onRefreshSuccess(connectionData);
     }
 
     private void onRefreshError(String errorMessage) {
-        stopLoginPolling();
+        stopConnectionPolling();
         if (callback != null) callback.onRefreshFailure(errorMessage);
     }
 
     private void onInteractiveStepError(String errorMessage) {
         if (callback != null) callback.onInteractiveStepFailure(errorMessage);
-        if (!pollingIsRunning()) {
-            startLoginPolling();
+        if (pollingIsStopped()) {
+            startConnectionPolling();
         }
     }
 
     private boolean secretsNotValid() {
-        return customerSecret == null || customerSecret.isEmpty() || login == null || login.getSecret() == null || login.getSecret().isEmpty();
+        return customerSecret == null
+                || customerSecret.isEmpty()
+                || connectionData == null
+                || connectionData.getSecret() == null
+                || connectionData.getSecret().isEmpty();
     }
 }

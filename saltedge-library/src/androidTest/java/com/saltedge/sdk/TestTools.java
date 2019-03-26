@@ -56,11 +56,11 @@ public class TestTools {
     private static OkHttpClient createTestClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new HeaderInterceptor())
-                .addInterceptor(prepareLoginInterceptor())
+                .addInterceptor(prepareLoggingInterceptor())
                 .build();
     }
 
-    private static HttpLoggingInterceptor prepareLoginInterceptor() {
+    private static HttpLoggingInterceptor prepareLoggingInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return interceptor;

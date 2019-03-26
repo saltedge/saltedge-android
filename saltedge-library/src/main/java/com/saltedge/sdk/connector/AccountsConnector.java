@@ -42,21 +42,21 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
     private String nextPageId = "";
     private ArrayList<AccountData> accountsList = new ArrayList<>();
     private String customerSecret = "";
-    private String loginSecret = "";
+    private String connectionSecret = "";
 
     public AccountsConnector(FetchAccountsResult callback) {
         this.callback = callback;
     }
 
-    public void fetchAccounts(String customerSecret, String loginSecret) {
+    public void fetchAccounts(String customerSecret, String connectionSecret) {
         this.customerSecret = customerSecret;
-        this.loginSecret = loginSecret;
+        this.connectionSecret = connectionSecret;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.getAccounts(customerSecret, loginSecret, nextPageId).enqueue(this);
+        SERestClient.getInstance().service.getAccounts(customerSecret, connectionSecret, nextPageId).enqueue(this);
     }
 
     @Override

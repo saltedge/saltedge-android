@@ -24,39 +24,22 @@ package com.saltedge.sdk.model.request;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class CreateTokenRequest {
+public class RefreshConnectionRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private SECreateTokenData data;
+    private RefreshConnectionRequestData data;
 
-    public CreateTokenRequest(String[] allowedCountries, String providerCode, String[] scopes, String returnTo) {
-        data = new SECreateTokenData(allowedCountries, providerCode, scopes, returnTo, SEConstants.IFRAME);
+    public RefreshConnectionRequest(String[] fetchScopes) {
+        data = new RefreshConnectionRequestData(fetchScopes);
     }
 
-    private class SECreateTokenData {
-
-        @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
-        private String[] allowedCountries;
-
-        @SerializedName(SEConstants.KEY_PROVIDER_CODE)
-        private String providerCode;
+    private class RefreshConnectionRequestData {
 
         @SerializedName(SEConstants.KEY_FETCH_SCOPES)
         private String[] fetchScopes;
 
-        @SerializedName(SEConstants.KEY_RETURN_TO)
-        private String returnTo;
-
-        @SerializedName(SEConstants.JAVASCRIPT_CALLBACK)
-        private String javascriptCallback;
-
-        private SECreateTokenData(String[] allowedCountries, String providerCode, String[] scopes,
-                                  String returnTo, String javascriptCallback) {
-            this.allowedCountries = allowedCountries;
-            this.providerCode = providerCode;
-            this.fetchScopes = scopes;
-            this.returnTo = returnTo;
-            this.javascriptCallback = javascriptCallback;
+        RefreshConnectionRequestData(String[] fetchScopes) {
+            this.fetchScopes = fetchScopes;
         }
     }
 }

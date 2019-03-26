@@ -19,18 +19,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.model.response;
+package com.saltedge.sdk.model.request;
 
 import com.google.gson.annotations.SerializedName;
-import com.saltedge.sdk.model.LoginData;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class LoginResponse {
+public class ConnectSessionRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private LoginData data;
+    private SECreateTokenData data;
 
-    public LoginData getData() {
-        return data;
+    public ConnectSessionRequest(String locale, String returnTo) {
+        data = new SECreateTokenData(locale, returnTo);
     }
+
+    public ConnectSessionRequest(String locale, String returnTo, String overrideCredentialsStrategy) {
+        data = new SECreateTokenData(locale, returnTo, overrideCredentialsStrategy);
+    }
+
+    private class SECreateTokenData {
+
+        @SerializedName(SEConstants.KEY_LOCALE)
+        private String locale;
+
+        @SerializedName(SEConstants.KEY_RETURN_TO)
+        private String returnTo;
+
+        @SerializedName(SEConstants.KEY_OVERRIDE_CREDENTIALS_STRATEGY)
+        private String overrideCredentialsStrategy;
+
+        private SECreateTokenData(String locale, String returnTo) {
+            this.locale = locale;
+            this.returnTo = returnTo;
+        }
+
+        private SECreateTokenData(String locale, String returnTo, String overrideCredentialsStrategy) {
+            this(locale, returnTo);
+            this.overrideCredentialsStrategy = overrideCredentialsStrategy;
+        }
+    }
+
 }

@@ -51,14 +51,14 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     private ProgressDialog progressDialog;
     private ArrayList<TransactionData> transactions;
     private String accountId;
-    private String loginSecret;
+    private String connectionSecret;
     private boolean pendingTransactionsMode = false;
 
-    public static Intent newIntent(Activity activity, String accountId, String loginSecret,
+    public static Intent newIntent(Activity activity, String accountId, String connectionSecret,
                                    boolean showPendingTransactions) {
         Intent intent = new Intent(activity, TransactionsActivity.class);
         intent.putExtra(SEConstants.KEY_ACCOUNT_ID, accountId);
-        intent.putExtra(Constants.KEY_LOGIN_SECRET, loginSecret);
+        intent.putExtra(Constants.KEY_CONNECTION_SECRET, connectionSecret);
         intent.putExtra(Constants.KEY_PENDING, showPendingTransactions);
         return intent;
     }

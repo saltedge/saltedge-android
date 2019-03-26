@@ -5,8 +5,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.TestTools;
-import com.saltedge.sdk.interfaces.TokenConnectionResult;
-import com.saltedge.sdk.network.ApiInterface;
+import com.saltedge.sdk.interfaces.ConnectSessionResult;
+import com.saltedge.sdk.network.SEApiInterface;
 import com.saltedge.sdk.network.SERestClient;
 
 import org.junit.After;
@@ -29,14 +29,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class TokenConnectorTest implements TokenConnectionResult {
+public class TokenConnectorTest implements ConnectSessionResult {
 
     @Test
     public void createTokenTest() throws Exception {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
         String[] scopes = {"value2", "value3"};
-        new TokenConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
+        new ConnectSessionConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
         doneSignal.await(10, TimeUnit.SECONDS);
 
         Assert.assertNull(errorMessage);
@@ -57,7 +57,7 @@ public class TokenConnectorTest implements TokenConnectionResult {
         String[] scopes = {"scope1", "scope2"};
         dataMap.put("scopes", scopes);
         dataMap.put("return_to", "test_url");
-        new TokenConnector(this).createToken(dataMap, "test customer secret");
+        new ConnectSessionConnector(this).createToken(dataMap, "test customer secret");
         doneSignal.await(5, TimeUnit.SECONDS);
 
         Assert.assertNull(errorMessage);
@@ -75,7 +75,7 @@ public class TokenConnectorTest implements TokenConnectionResult {
         mockWebServer.enqueue(new MockResponse().setResponseCode(404).setBody(errorResponse));
 
         String[] scopes = {"value2", "value3"};
-        new TokenConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
+        new ConnectSessionConnector(this).createToken("test_provider_code", scopes, "test_url", "test customer secret");
         doneSignal.await(5, TimeUnit.SECONDS);
 
         assertThat(errorMessage, equalTo("Resource Not Found"));
@@ -104,7 +104,7 @@ public class TokenConnectorTest implements TokenConnectionResult {
         mockWebServer.start();
         HttpUrl url = mockWebServer.url("/");
         mockRetrofit = TestTools.createMockRetrofit(url);
-        SERestClient.getInstance().service = mockRetrofit.create(ApiInterface.class);
+        SERestClient.getInstance().service = mockRetrofit.create(SEApiInterface.class);
         doneSignal = new CountDownLatch(1);
     }
 

@@ -29,7 +29,7 @@ public class SEApiConstants {
     static final String KEY_HEADER_APP_ID = "App-id";
     static final String KEY_HEADER_APP_SECRET = "Secret";
     static final String KEY_HEADER_CUSTOMER_SECRET = "Customer-Secret";
-    static final String KEY_HEADER_LOGIN_SECRET = "Login-secret";
+    static final String KEY_HEADER_CONNECTION_SECRET = "Connection-secret";
     static final String MIME_TYPE_JSON = "application/json";
 
     //PREFIX
@@ -37,19 +37,17 @@ public class SEApiConstants {
 
     //API urls
     static final String API_HOST_NAME = "www.saltedge.com";
-    public static final String API_BASE_URL = "https://www.saltedge.com/";
-    private static final String API_VERSION_PATH = "api/v4";
-    static final String API_COUNTRIES_PATH = API_VERSION_PATH + "/countries";
+    public static final String API_BASE_URL = "https://" + API_HOST_NAME + "/";
+    private static final String API_VERSION_PATH = "api/v5";
     static final String API_CUSTOMERS_PATH = API_VERSION_PATH + "/customers";
     static final String API_PROVIDERS_PATH = API_VERSION_PATH + "/providers";
-    static final String PER_PAGE = API_VERSION_PATH + "/per";
-    private static final String API_TOKENS_PATH = API_VERSION_PATH + "/tokens";
-    static final String API_TOKEN_RECONNECT_PATH = SEApiConstants.API_TOKENS_PATH + "/reconnect";
-    static final String API_TOKEN_CREATE_PATH = SEApiConstants.API_TOKENS_PATH + "/create";
-    static final String API_TOKEN_REFRESH_PATH = SEApiConstants.API_TOKENS_PATH + "/refresh";
-    static final String API_LOGIN_PATH = API_VERSION_PATH + "/login";
-    static final String API_LOGIN_REFRESH_PATH = API_LOGIN_PATH + "/refresh";
-    static final String API_LOGIN_INTERACTIVE_PATH = API_LOGIN_PATH + "/interactive";
+    private static final String API_CONNECT_SESSIONS_PATH = API_VERSION_PATH + "/connect_sessions";
+    static final String API_CONNECT_SESSION_CREATE_PATH = API_CONNECT_SESSIONS_PATH + "/create";
+    static final String API_CONNECT_SESSION_RECONNECT_PATH = API_CONNECT_SESSIONS_PATH + "/reconnect";
+    static final String API_CONNECT_SESSION_REFRESH_PATH = API_CONNECT_SESSIONS_PATH + "/refresh";
+    static final String API_CONNECTION_PATH = API_VERSION_PATH + "/connection";
+    static final String API_CONNECTION_REFRESH_PATH = API_CONNECTION_PATH + "/refresh";
+    static final String API_CONNECTION_INTERACTIVE_PATH = API_CONNECTION_PATH + "/interactive";
     static final String API_ACCOUNTS_PATH = API_VERSION_PATH + "/accounts";
     static final String API_TRANSACTIONS_PATH = API_VERSION_PATH + "/transactions";
     static final String API_PENDING_TRANSACTIONS_PATH = API_TRANSACTIONS_PATH + "/pending";

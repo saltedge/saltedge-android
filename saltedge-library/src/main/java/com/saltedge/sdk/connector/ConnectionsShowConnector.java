@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.interfaces.FetchLoginsResult;
-import com.saltedge.sdk.model.LoginData;
-import com.saltedge.sdk.model.response.LoginResponse;
+import com.saltedge.sdk.interfaces.FetchConnectionsResult;
+import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.response.ConnectionResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
@@ -34,22 +34,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginsShowConnector extends BasePinnedConnector implements Callback<LoginResponse> {
+public class ConnectionsShowConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
 
-    private FetchLoginsResult callback;
-    private ArrayList<Call<LoginResponse>> callsList;
-    private ArrayList<LoginData> loginsList = new ArrayList<>();
+    private FetchConnectionsResult callback;
+    private ArrayList<Call<ConnectionResponse>> callsList;
+    private ArrayList<ConnectionData> connectionsList = new ArrayList<>();
     private int resultCount;
 
-    public LoginsShowConnector(FetchLoginsResult callback) {
+    public ConnectionsShowConnector(FetchConnectionsResult callback) {
         this.callback = callback;
     }
 
-    public void fetchLogins(String customerSecret, String[] loginSecretsArray) {
-        loginsList = new ArrayList<>();
+    public void fetchConnections(String customerSecret, String[] connectionsSecretsArray) {
+        connectionsList = new ArrayList<>();
         callsList = new ArrayList<>();
-        for (String loginSecret : loginSecretsArray) {
-            callsList.add(SERestClient.getInstance().service.showLogin(customerSecret, loginSecret));
+        for (String connectionSecret : connectionsSecretsArray) {
+            callsList.add(SERestClient.getInstance().service.showConnection(customerSecret, connectionSecret));
         }
         checkAndLoadPinsOrDoRequest();
     }
@@ -57,7 +57,7 @@ public class LoginsShowConnector extends BasePinnedConnector implements Callback
     @Override
     void enqueueCall() {
         resultCount = callsList.size();
-        for (Call<LoginResponse> call : callsList) {
+        for (Call<ConnectionResponse> call : callsList) {
             call.enqueue(this);
         }
     }
@@ -68,21 +68,21 @@ public class LoginsShowConnector extends BasePinnedConnector implements Callback
     }
 
     @Override
-    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-        LoginResponse responseBody = response.body();
+    public void onResponse(Call<ConnectionResponse> call, Response<ConnectionResponse> response) {
+        ConnectionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) onSuccess(responseBody.getData());
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
-    public void onFailure(Call<LoginResponse> call, Throwable t) {
+    public void onFailure(Call<ConnectionResponse> call, Throwable t) {
         onFailure(SEErrorTools.processConnectionError(t));
     }
 
     public void cancel() {
         callback = null;
         if (callsList != null) {
-            for (Call<LoginResponse> call : callsList) {
+            for (Call<ConnectionResponse> call : callsList) {
                 if (callsList != null && !call.isCanceled()) {
                     call.cancel();
                 }
@@ -91,10 +91,10 @@ public class LoginsShowConnector extends BasePinnedConnector implements Callback
         callsList = null;
     }
 
-    private void onSuccess(LoginData data) {
-        loginsList.add(data);
-        if (loginsList.size() >= resultCount) {
-            callback.onSuccess(loginsList);
+    private void onSuccess(ConnectionData data) {
+        connectionsList.add(data);
+        if (connectionsList.size() >= resultCount) {
+            callback.onSuccess(connectionsList);
         }
     }
 }

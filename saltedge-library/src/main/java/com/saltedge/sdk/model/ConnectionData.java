@@ -28,7 +28,7 @@ import com.saltedge.sdk.utils.SEDateTools;
 import java.io.Serializable;
 import java.util.Date;
 
-public class LoginData extends BaseModel implements Serializable {
+public class ConnectionData extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_SECRET)
     private String secret;

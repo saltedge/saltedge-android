@@ -41,7 +41,7 @@ public class SERestClient {
 
     private static final String TAG = "SERestClient";
 
-    public ApiInterface service = createRetrofit().create(ApiInterface.class);
+    public SEApiInterface service = createRetrofit().create(SEApiInterface.class);
     private static SERestClient instance;
 
     public static SERestClient getInstance() {
@@ -52,7 +52,7 @@ public class SERestClient {
     }
 
     public void initService() {
-        service = createRetrofit().create(ApiInterface.class);
+        service = createRetrofit().create(SEApiInterface.class);
     }
 
     @NotNull
@@ -74,7 +74,7 @@ public class SERestClient {
     @NotNull
     private OkHttpClient createOkHttpClient() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
-                .addInterceptor(prepareLoginInterceptor());
+                .addInterceptor(prepareLoggingInterceptor());
         boolean pinsAdded = addCertificatePinner(clientBuilder);
         addSSLSocketFactory(clientBuilder);
         addHeaderInterceptor(clientBuilder, pinsAdded);
@@ -110,7 +110,7 @@ public class SERestClient {
         }
     }
 
-    private HttpLoggingInterceptor prepareLoginInterceptor() {
+    private HttpLoggingInterceptor prepareLoggingInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(SaltEdgeSDK.isLoggingEnabled() ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
         return interceptor;

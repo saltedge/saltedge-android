@@ -21,45 +21,35 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.interfaces.FetchLoginResult;
-import com.saltedge.sdk.model.request.PutLoginCredentialsRequest;
-import com.saltedge.sdk.model.response.LoginResponse;
+import com.saltedge.sdk.interfaces.DeleteConnectionResult;
+import com.saltedge.sdk.model.response.DeleteConnectionResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
-
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginInteractiveCredentialsConnector extends BasePinnedConnector implements Callback<LoginResponse> {
+public class ConnectionDeleteConnector extends BasePinnedConnector implements Callback<DeleteConnectionResponse> {
 
-    private FetchLoginResult callback;
-    private Call<LoginResponse> call;
+    private final DeleteConnectionResult callback;
+    private String customerSecret;
+    private String connectionSecret;
 
-    public LoginInteractiveCredentialsConnector(FetchLoginResult callback) {
+    public ConnectionDeleteConnector(DeleteConnectionResult callback) {
         this.callback = callback;
     }
 
-    public void sendLoginCredentials(String customerSecret, String loginSecret, Map<String, Object> credentials) {
-        PutLoginCredentialsRequest requestData = new PutLoginCredentialsRequest(credentials);
-        call = SERestClient.getInstance().service.putInteractiveCredentials(customerSecret, loginSecret, requestData);
+    public void deleteConnection(String customerSecret, String connectionSecret) {
+        this.customerSecret = customerSecret;
+        this.connectionSecret = connectionSecret;
         checkAndLoadPinsOrDoRequest();
-    }
-
-    public void cancel() {
-        callback = null;
-        if (call != null && !call.isCanceled()) {
-            call.cancel();
-        }
-        call = null;
     }
 
     @Override
     void enqueueCall() {
-        if (call != null) call.enqueue(this);
+        SERestClient.getInstance().service.deleteConnection(customerSecret, connectionSecret).enqueue(this);
     }
 
     @Override
@@ -68,14 +58,14 @@ public class LoginInteractiveCredentialsConnector extends BasePinnedConnector im
     }
 
     @Override
-    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-        LoginResponse responseBody = response.body();
-        if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getData());
+    public void onResponse(Call<DeleteConnectionResponse> call, Response<DeleteConnectionResponse> response) {
+        DeleteConnectionResponse responseBody = response.body();
+        if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.isRemoved());
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
-    public void onFailure(Call<LoginResponse> call, Throwable t) {
+    public void onFailure(Call<DeleteConnectionResponse> call, Throwable t) {
         onFailure(SEErrorTools.processConnectionError(t));
     }
 }

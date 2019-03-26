@@ -19,37 +19,44 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.model.response;
+package com.saltedge.sdk.model.request;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class CreateTokenResponse {
+public class CreateConnectSessionRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
     private SECreateTokenData data;
 
-    public String getConnectUrl() {
-        return data.connectUrl;
+    public CreateConnectSessionRequest(String[] allowedCountries, String providerCode, String[] scopes, String returnTo) {
+        data = new SECreateTokenData(allowedCountries, providerCode, scopes, returnTo, SEConstants.IFRAME);
     }
 
-    public String getToken() {
-        return data.token;
-    }
+    private class SECreateTokenData {
 
-    public String getExpiresAt() {
-        return data.expiresAt;
-    }
+        @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
+        private String[] allowedCountries;
 
-    class SECreateTokenData {
+        @SerializedName(SEConstants.KEY_PROVIDER_CODE)
+        private String providerCode;
 
-        @SerializedName(SEConstants.KEY_CONNECT_URL)
-        public String connectUrl;
+        @SerializedName(SEConstants.KEY_FETCH_SCOPES)
+        private String[] fetchScopes;
 
-        @SerializedName(SEConstants.KEY_TOKEN)
-        public String token;
+        @SerializedName(SEConstants.KEY_RETURN_TO)
+        private String returnTo;
 
-        @SerializedName(SEConstants.KEY_EXPIRES_AT)
-        public String expiresAt;
+        @SerializedName(SEConstants.JAVASCRIPT_CALLBACK)
+        private String javascriptCallback;
+
+        private SECreateTokenData(String[] allowedCountries, String providerCode, String[] scopes,
+                                  String returnTo, String javascriptCallback) {
+            this.allowedCountries = allowedCountries;
+            this.providerCode = providerCode;
+            this.fetchScopes = scopes;
+            this.returnTo = returnTo;
+            this.javascriptCallback = javascriptCallback;
+        }
     }
 }

@@ -49,10 +49,10 @@ public class SEWebViewTools {
     private String returnUrl;
 
     public interface WebViewRedirectListener {
-        void onLoginSecretFetchSuccess(String statusResponse, String loginId, String loginSecret);
-        void onLoginSecretFetchError(String statusResponse);
-        void onLoginRefreshSuccess();
-        void onLoginFetchingStage(String loginId, String loginSecret);
+        void onConnectionSecretFetchSuccess(String statusResponse, String connectionId, String connectionSecret);
+        void onConnectionSecretFetchError(String statusResponse);
+        void onConnectionRefreshSuccess();
+        void onConnectionFetchingStage(String connectionId, String connectionSecret);
     }
 
     public static SEWebViewTools getInstance() {
@@ -62,7 +62,10 @@ public class SEWebViewTools {
         return instance;
     }
 
-    public void initializeWithUrl(Activity activity, WebView webView, String url, String returnUrl,
+    public void initializeWithUrl(Activity activity,
+                                  WebView webView,
+                                  String url,
+                                  String returnUrl,
                                   WebViewRedirectListener listener) {
         this.activity = activity;
         this.webViewListener = listener;
@@ -74,7 +77,8 @@ public class SEWebViewTools {
         webView.setWebViewClient(new CustomWebViewClient());
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
-            public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback,
+            public boolean onShowFileChooser(WebView webView,
+                                             ValueCallback<Uri[]> filePathCallback,
                                              FileChooserParams fileChooserParams) {
                 uploadMessage = filePathCallback;
                 startFilePicker();
@@ -125,32 +129,34 @@ public class SEWebViewTools {
 
     private boolean urlIsSaltedgeRedirection(String url) {
         if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
-            if (webViewListener != null) webViewListener.onLoginRefreshSuccess();
+            if (webViewListener != null) webViewListener.onConnectionRefreshSuccess();
         } else if (url != null && url.contains(SEApiConstants.PREFIX_SALTBRIDGE)) {
             JSONObject dataJsonObject = extractDataObjectFromUrl(url);
             String stage = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_STAGE);
-            String loginId = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_LOGIN_ID);
-            String loginSecret = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_SECRET);
-            notifyAboutStage(stage, loginId, loginSecret);
+            String connectionId = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_CONNECTION_ID);
+            String connectionSecret = SEJsonTools.getString(dataJsonObject, SEConstants.KEY_SECRET);
+            notifyAboutStage(stage, connectionId, connectionSecret);
             return false;
         }
         return true;
     }
 
     private JSONObject extractDataObjectFromUrl(@NotNull String url) {
-        String jsonData = url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length(), url.length());
+        String jsonData = url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length());
         JSONObject jsonObject = SEJsonTools.stringToJSON(jsonData);
         return SEJsonTools.getObject(jsonObject, SEConstants.KEY_DATA);
     }
 
-    private void notifyAboutStage(@NotNull String stage, @NotNull String loginId, @NotNull String loginSecret) {
+    private void notifyAboutStage(@NotNull String stage,
+                                  @NotNull String connectionId,
+                                  @NotNull String connectionSecret) {
         if (webViewListener == null) return;
         if (stage.equals(SEConstants.STATUS_SUCCESS)) {
-            webViewListener.onLoginSecretFetchSuccess(stage, loginId, loginSecret);
+            webViewListener.onConnectionSecretFetchSuccess(stage, connectionId, connectionSecret);
         } else if (stage.equals(SEConstants.STATUS_ERROR)) {
-            webViewListener.onLoginSecretFetchError(stage);
+            webViewListener.onConnectionSecretFetchError(stage);
         } else if (stage.equals(SEConstants.STATUS_FETCHING)) {
-            webViewListener.onLoginFetchingStage(loginId, loginSecret);
+            webViewListener.onConnectionFetchingStage(connectionId, connectionSecret);
         }
     }
 }

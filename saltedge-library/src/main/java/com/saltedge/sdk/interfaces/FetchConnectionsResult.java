@@ -19,27 +19,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.model.request;
+package com.saltedge.sdk.interfaces;
 
-import com.google.gson.annotations.SerializedName;
-import com.saltedge.sdk.utils.SEConstants;
+import com.saltedge.sdk.model.ConnectionData;
 
-public class RefreshLoginRequest {
+import java.util.List;
 
-    @SerializedName(SEConstants.KEY_DATA)
-    private RefreshLoginRequestData data;
-
-    public RefreshLoginRequest(String[] fetchScopes) {
-        data = new RefreshLoginRequestData(fetchScopes);
-    }
-
-    private class RefreshLoginRequestData {
-
-        @SerializedName(SEConstants.KEY_FETCH_SCOPES)
-        private String[] fetchScopes;
-
-        RefreshLoginRequestData(String[] fetchScopes) {
-            this.fetchScopes = fetchScopes;
-        }
-    }
+public interface FetchConnectionsResult {
+    void onSuccess(List<ConnectionData> connections);
+    void onFailure(String errorMessage);
 }

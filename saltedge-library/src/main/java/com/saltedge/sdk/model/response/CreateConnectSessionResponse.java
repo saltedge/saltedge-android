@@ -19,9 +19,37 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.interfaces;
+package com.saltedge.sdk.model.response;
 
-public interface TokenConnectionResult {
-    void onSuccess(String connectUrl);
-    void onFailure(String errorMessage);
+import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.utils.SEConstants;
+
+public class CreateConnectSessionResponse {
+
+    @SerializedName(SEConstants.KEY_DATA)
+    private SECreateConnectSessionData data;
+
+    public String getConnectUrl() {
+        return data.connectUrl;
+    }
+
+    public String getToken() {
+        return data.token;
+    }
+
+    public String getExpiresAt() {
+        return data.expiresAt;
+    }
+
+    class SECreateConnectSessionData {
+
+        @SerializedName(SEConstants.KEY_CONNECT_URL)
+        public String connectUrl;
+
+        @SerializedName(SEConstants.KEY_TOKEN)
+        public String token;
+
+        @SerializedName(SEConstants.KEY_EXPIRES_AT)
+        public String expiresAt;
+    }
 }

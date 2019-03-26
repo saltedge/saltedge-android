@@ -21,29 +21,34 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.interfaces.FetchLoginResult;
-import com.saltedge.sdk.model.request.RefreshLoginRequest;
-import com.saltedge.sdk.model.response.LoginResponse;
+import com.saltedge.sdk.interfaces.FetchConnectionResult;
+import com.saltedge.sdk.model.request.PutConnectionCredentialsRequest;
+import com.saltedge.sdk.model.response.ConnectionResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
+
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginRefreshConnector extends BasePinnedConnector implements Callback<LoginResponse> {
+public class ConnectionInteractiveCredentialsConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
 
-    private FetchLoginResult callback;
-    private Call<LoginResponse> call;
+    private FetchConnectionResult callback;
+    private Call<ConnectionResponse> call;
 
-    public LoginRefreshConnector(FetchLoginResult callback) {
+    public ConnectionInteractiveCredentialsConnector(FetchConnectionResult callback) {
         this.callback = callback;
     }
 
-    public void refreshLogin(String customerSecret, String loginSecret, String[] scopes) {
-        RefreshLoginRequest requestData = new RefreshLoginRequest(scopes);
-        call = SERestClient.getInstance().service.refreshLogin(customerSecret, loginSecret, requestData);
+    public void sendConnectionCredentials(
+            String customerSecret,
+            String connectionSecret,
+            Map<String, Object> credentials) {
+        PutConnectionCredentialsRequest requestData = new PutConnectionCredentialsRequest(credentials);
+        call = SERestClient.getInstance().service.putInteractiveCredentials(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
@@ -66,14 +71,14 @@ public class LoginRefreshConnector extends BasePinnedConnector implements Callba
     }
 
     @Override
-    public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-        LoginResponse responseBody = response.body();
+    public void onResponse(Call<ConnectionResponse> call, Response<ConnectionResponse> response) {
+        ConnectionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getData());
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
-    public void onFailure(Call<LoginResponse> call, Throwable t) {
+    public void onFailure(Call<ConnectionResponse> call, Throwable t) {
         onFailure(SEErrorTools.processConnectionError(t));
     }
 }

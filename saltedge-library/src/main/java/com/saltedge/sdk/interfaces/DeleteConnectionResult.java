@@ -21,11 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.LoginData;
-
-import java.util.List;
-
-public interface FetchLoginsResult {
-    void onSuccess(List<LoginData> logins);
+public interface DeleteConnectionResult {
+    void onSuccess(Boolean isRemoved);
     void onFailure(String errorMessage);
 }

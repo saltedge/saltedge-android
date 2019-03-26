@@ -21,9 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.LoginData;
-
-public interface FetchLoginResult {
-    void onSuccess(LoginData login);
+public interface ConnectSessionResult {
+    void onSuccess(String connectUrl);
     void onFailure(String errorMessage);
 }

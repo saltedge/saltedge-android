@@ -82,7 +82,7 @@ public class SEConstants {
     public static final String KEY_MAX_CONSENT_DAYS = "max_consent_days";
     public static final String KEY_INCLUDE_FAKE_PROVIDERS = "include_fake_providers";
 
-    //Login keys
+    //Connections keys
     public static final String KEY_SECRET = "secret";
     public static final String KEY_DAILY_REFRESH = "daily_refresh";
     public static final String KEY_FINISHED = "finished";
@@ -115,7 +115,7 @@ public class SEConstants {
     public static final String KEY_BALANCE = "balance";
     public static final String KEY_CURRENCY_CODE = "currency_code";
     public static final String KEY_EXTRA = "extra";
-    public static final String KEY_LOGIN_ID = "login_id";
+    public static final String KEY_CONNECTION_ID = "connection_id";
 
     //Transaction keys
     public static final String KEY_DUPLICATED = "duplicated";
@@ -154,7 +154,6 @@ public class SEConstants {
     public static final String KEY_OVERRIDE_CREDENTIALS_STRATEGY = "override_credentials_strategy";
     public static final String KEY_RETURN_TO = "return_to";
     public static final String KEY_LOCALE = "locale";
-    public static final String KEY_RETURN_LOGIN_ID = "return_login_id";
     public static final String KEY_PROVIDER_MODES = "provider_modes";
     public static final String KEY_FROM_ID = "from_id";
     public static final String KEY_FROM_DATE = "from_date";

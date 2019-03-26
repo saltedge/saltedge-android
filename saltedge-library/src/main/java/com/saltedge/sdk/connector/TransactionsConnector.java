@@ -40,7 +40,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     private final FetchTransactionsResult callback;
     private ArrayList<TransactionData> transactionsList = new ArrayList<>();
     private String customerSecret = "";
-    private String loginSecret = "";
+    private String connectionSecret = "";
     private String accountId = "";
     private String fromId = "";
     private boolean fetchPendingTransactions = false;
@@ -51,13 +51,13 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     }
 
     public void fetchTransactions(String customerSecret,
-                                  String loginSecret,
+                                  String connectionSecret,
                                   String accountId,
                                   String fromId,
                                   boolean fetchPendingTransactions,
                                   boolean fetchAllTransactionsFromId) {
         this.customerSecret = customerSecret;
-        this.loginSecret = loginSecret;
+        this.connectionSecret = connectionSecret;
         this.accountId = accountId;
         this.fromId = fromId;
         this.fetchPendingTransactions = fetchPendingTransactions;
@@ -69,11 +69,11 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     void enqueueCall() {
         if (fetchPendingTransactions) {
             SERestClient.getInstance().service
-                    .getPendingTransactions(customerSecret, loginSecret, accountId, fromId)
+                    .getPendingTransactions(customerSecret, connectionSecret, accountId, fromId)
                     .enqueue(this);
         } else {
             SERestClient.getInstance().service
-                    .getTransactions(customerSecret, loginSecret, accountId, fromId)
+                    .getTransactions(customerSecret, connectionSecret, accountId, fromId)
                     .enqueue(this);
         }
     }

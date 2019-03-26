@@ -21,7 +21,9 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-public interface DeleteLoginResult {
-    void onSuccess(Boolean isRemoved);
+import com.saltedge.sdk.model.ConnectionData;
+
+public interface FetchConnectionResult {
+    void onSuccess(ConnectionData connection);
     void onFailure(String errorMessage);
 }
