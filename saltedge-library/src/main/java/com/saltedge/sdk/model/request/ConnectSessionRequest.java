@@ -22,6 +22,8 @@ THE SOFTWARE.
 package com.saltedge.sdk.model.request;
 
 import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.model.SEAttempt;
+import com.saltedge.sdk.model.SEConsent;
 import com.saltedge.sdk.utils.SEConstants;
 
 public class ConnectSessionRequest {
@@ -29,34 +31,39 @@ public class ConnectSessionRequest {
     @SerializedName(SEConstants.KEY_DATA)
     private ConnectSessionData data;
 
-    public ConnectSessionRequest(String locale, String returnToUrl) {
-        data = new ConnectSessionData(locale, returnToUrl);
-    }
-
-    public ConnectSessionRequest(String locale, String returnToUrl, String overrideCredentialsStrategy) {
-        data = new ConnectSessionData(locale, returnToUrl, overrideCredentialsStrategy);
+    public ConnectSessionRequest(SEConsent consent,
+                                 SEAttempt attempt,
+                                 String[] allowedCountries,
+                                 String providerCode,
+                                 String javascriptCallbackType,
+                                 String overrideCredentialsStrategy) {
+        data = new ConnectSessionData();
+        data.consent = consent;
+        data.attempt = attempt;
+        data.allowedCountries = allowedCountries;
+        data.providerCode = providerCode;
+        data.javascriptCallbackType = javascriptCallbackType;
+        data.overrideCredentialsStrategy = overrideCredentialsStrategy;
     }
 
     private class ConnectSessionData {
 
-        @SerializedName(SEConstants.KEY_LOCALE)
-        private String locale;
+        @SerializedName(SEConstants.KEY_CONSENT)
+        SEConsent consent;
 
-        @SerializedName(SEConstants.KEY_RETURN_TO)
-        private String returnToUrl;
+        @SerializedName(SEConstants.KEY_ATTEMPT)
+        SEAttempt attempt;
+
+        @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
+        String[] allowedCountries;
+
+        @SerializedName(SEConstants.KEY_PROVIDER_CODE)
+        String providerCode;
+
+        @SerializedName(SEConstants.KEY_JAVASCRIPT_CALLBACK_TYPE)
+        String javascriptCallbackType;
 
         @SerializedName(SEConstants.KEY_OVERRIDE_CREDENTIALS_STRATEGY)
-        private String overrideCredentialsStrategy;
-
-        private ConnectSessionData(String locale, String returnToUrl) {
-            this.locale = locale;
-            this.returnToUrl = returnToUrl;
-        }
-
-        private ConnectSessionData(String locale, String returnToUrl, String overrideCredentialsStrategy) {
-            this(locale, returnToUrl);
-            this.overrideCredentialsStrategy = overrideCredentialsStrategy;
-        }
+        String overrideCredentialsStrategy;
     }
-
 }

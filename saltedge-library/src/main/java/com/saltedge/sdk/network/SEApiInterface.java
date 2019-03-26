@@ -64,7 +64,7 @@ public interface SEApiInterface {
     @POST(SEApiConstants.API_CONNECT_SESSION_CREATE_PATH)
     Call<ConnectSessionResponse> createConnectSession(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
-            @Body CreateConnectSessionRequest body);
+            @Body ConnectSessionRequest body);
 
     @POST(SEApiConstants.API_CONNECT_SESSION_CREATE_PATH)
     Call<ConnectSessionResponse> createConnectSession(
@@ -72,13 +72,15 @@ public interface SEApiInterface {
             @Body MappedRequest body);
 
     @POST(SEApiConstants.API_CONNECT_SESSION_RECONNECT_PATH)
-    Call<ConnectSessionResponse> createConnectSessionForReconnect(
+    Call<ConnectSessionResponse> createReconnectSession(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
             @Body ConnectSessionRequest body);
 
     @POST(SEApiConstants.API_CONNECT_SESSION_REFRESH_PATH)
-    Call<ConnectSessionResponse> createConnectSessionForRefresh(
+    Call<ConnectSessionResponse> createRefreshSession(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
             @Body ConnectSessionRequest body);
 
     @GET(SEApiConstants.API_CONNECTION_PATH)

@@ -26,7 +26,11 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
-public class AttemptData extends BaseModel implements Serializable {
+public class SEAttempt extends BaseModel implements Serializable {
+
+    public final static String FETCH_SCOPE_HOLDER_INFO = "holder_info";
+    public final static String FETCH_SCOPE_ACCOUNTS = "accounts";
+    public final static String FETCH_SCOPE_TRANSACTIONS = "transactions";
 
     @SerializedName(SEConstants.KEY_API_MODE)
     private String apiMode;
@@ -113,10 +117,22 @@ public class AttemptData extends BaseModel implements Serializable {
     private String consentExpiresAt;
 
     @SerializedName(SEConstants.KEY_STAGES)
-    private StageData[] stages;
+    private SEStage[] stages;
 
     @SerializedName(SEConstants.KEY_LAST_STAGE)
-    private StageData lastStage;
+    private SEStage lastStage;
+
+    @SerializedName(SEConstants.KEY_RETURN_TO)
+    private String returnToUrl;
+
+// CONSTRUCTOR
+
+    public SEAttempt(String locale, String returnToUrl) {
+        this.locale = locale;
+        this.returnToUrl = returnToUrl;
+    }
+
+// GETTER AND SETTERS
 
     public String getApiMode() {
         return apiMode;
@@ -230,7 +246,7 @@ public class AttemptData extends BaseModel implements Serializable {
         this.fetchScopes = fetchScopes;
     }
 
-    public Boolean isFinished() {
+    public Boolean getFinished() {
         return finished;
     }
 
@@ -342,19 +358,27 @@ public class AttemptData extends BaseModel implements Serializable {
         this.consentExpiresAt = consentExpiresAt;
     }
 
-    public StageData[] getStages() {
+    public SEStage[] getStages() {
         return stages;
     }
 
-    public void setStages(StageData[] stages) {
+    public void setStages(SEStage[] stages) {
         this.stages = stages;
     }
 
-    public StageData getLastStage() {
+    public SEStage getLastStage() {
         return lastStage;
     }
 
-    public void setLastStage(StageData lastStage) {
+    public void setLastStage(SEStage lastStage) {
         this.lastStage = lastStage;
+    }
+
+    public String getReturnToUrl() {
+        return returnToUrl;
+    }
+
+    public void setReturnToUrl(String returnToUrl) {
+        this.returnToUrl = returnToUrl;
     }
 }

@@ -21,9 +21,9 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.SEConnection;
 
 public interface FetchConnectionResult {
-    void onSuccess(ConnectionData connection);
+    void onSuccess(SEConnection connection);
     void onFailure(String errorMessage);
 }

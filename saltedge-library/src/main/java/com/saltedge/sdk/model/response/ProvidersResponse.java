@@ -23,7 +23,7 @@ package com.saltedge.sdk.model.response;
 
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.model.Meta;
-import com.saltedge.sdk.model.ProviderData;
+import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.List;
@@ -31,12 +31,12 @@ import java.util.List;
 public class ProvidersResponse {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private List<ProviderData> data;
+    private List<SEProvider> data;
 
     @SerializedName(SEConstants.KEY_META)
     private Meta meta;
 
-    public List<ProviderData> getData() {
+    public List<SEProvider> getData() {
         return data;
     }
 

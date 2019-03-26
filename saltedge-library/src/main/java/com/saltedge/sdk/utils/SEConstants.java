@@ -50,6 +50,7 @@ public class SEConstants {
     public static final String KEY_EXPIRES_AT = "expires_at";
     public static final String KEY_REMOVED = "removed";
     public static final String KEY_FETCH_SCOPES = "fetch_scopes";
+    public static final String KEY_SCOPES = "scopes";
 
     //String resources
     public static final String REQUEST_ERROR = "Request error";
@@ -108,6 +109,8 @@ public class SEConstants {
     public static final String KEY_CONSENT_EXPIRES_AT = "consent_expires_at";
     public static final String KEY_LAST_ATTEMPT = "last_attempt";
     public static final String KEY_LAST_STAGE = "last_stage";
+    public static final String KEY_CONSENT = "consent";
+    public static final String KEY_ATTEMPT = "attempt";
 
     //Account keys
     public static final String KEY_NATURE = "nature";
@@ -157,8 +160,9 @@ public class SEConstants {
     public static final String KEY_FROM_ID = "from_id";
     public static final String KEY_FROM_DATE = "from_date";
     public static final String KEY_TO_DATE = "to_date";
+    public static final String KEY_PERIOD_DAYS = "period_days";
     public static final String URL_EMPTY = "URL is empty";
-    public static final String JAVASCRIPT_CALLBACK = "javascript_callback_type";
+    public static final String KEY_JAVASCRIPT_CALLBACK_TYPE = "javascript_callback_type";
     public static final String IFRAME = "iframe";
 
     //ERRORS

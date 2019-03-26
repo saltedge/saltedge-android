@@ -24,62 +24,51 @@ package com.saltedge.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-import org.json.JSONObject;
+import java.io.Serializable;
 
-public class AccountData extends BaseModel {
+public class SEHolder implements Serializable {
 
-    @SerializedName(SEConstants.KEY_NAME)
-    private String name;
+    @SerializedName(SEConstants.KEY_NAMES)
+    private String[] names;
 
-    @SerializedName(SEConstants.KEY_NATURE)
-    private String nature;
+    @SerializedName(SEConstants.KEY_EMAILS)
+    private String[] emails;
 
-    @SerializedName(SEConstants.KEY_BALANCE)
-    private double balance;
+    @SerializedName(SEConstants.KEY_PHONE_NUMBERS)
+    private String[] phoneNumbers;
 
-    @SerializedName(SEConstants.KEY_CURRENCY_CODE)
-    private String currencyCode;
+    @SerializedName(SEConstants.KEY_ADDRESSES)
+    private AddressData[] addresses;
 
-    @SerializedName(SEConstants.KEY_EXTRA)
-    private JSONObject extra;
-
-    public String getName() {
-        return name;
+    public String[] getNames() {
+        return names;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNames(String[] names) {
+        this.names = names;
     }
 
-    public String getNature() {
-        return nature;
+    public String[] getEmails() {
+        return emails;
     }
 
-    public void setNature(String nature) {
-        this.nature = nature;
+    public void setEmails(String[] emails) {
+        this.emails = emails;
     }
 
-    public double getBalance() {
-        return balance;
+    public String[] getPhoneNumbers() {
+        return phoneNumbers;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void setPhoneNumbers(String[] phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 
-    public String getCurrencyCode() {
-        return currencyCode;
+    public AddressData[] getAddresses() {
+        return addresses;
     }
 
-    public void setCurrencyCode(String currencyCode) {
-        this.currencyCode = currencyCode;
-    }
-
-    public JSONObject getExtra() {
-        return extra;
-    }
-
-    public void setExtra(JSONObject extra) {
-        this.extra = extra;
+    public void setAddresses(AddressData[] addresses) {
+        this.addresses = addresses;
     }
 }

@@ -35,7 +35,7 @@ import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.interfaces.RefreshConnectionResult;
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
-import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.SEConnection;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.Map;
@@ -80,25 +80,29 @@ public class SERequestManager {
     }
 
     /**
-     * Creates a URL, which will be used to access Salt Edge Connect for future creation of Connection.
+     * Allows you to create a connect session, which will be used to access Salt Edge Connect for Connection creation.
+     * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
      * @param providerCode - the code of the desired Provider
-     * @param scopes - fetching mode, possible values: ['accounts'], ['holder_info'], ['accounts', 'holder_info'], ['accounts', 'transactions'], ['accounts', 'holder_info', 'transactions']
-     * @param returnToUrl - the URL the user will be redirected to
+     * @param consentScopes - fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
+     * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param callback - callback for request result
      */
     public void createConnectSession(String customerSecret,
                                      String providerCode,
-                                     String[] scopes,
+                                     String[] consentScopes,
+                                     String localeCode,
                                      String returnToUrl,
                                      ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).createConnectSession(providerCode, scopes, returnToUrl, customerSecret);
+        new ConnectSessionConnector(callback).createConnectSession(customerSecret, providerCode, consentScopes, localeCode, returnToUrl);
     }
 
     /**
-     * Creates a URL, which will be used to access Salt Edge Connect for future creation of Connection.
+     * Allows you to create a connect session, which will be used to access Salt Edge Connect for Connection creation.
+     * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
@@ -108,57 +112,74 @@ public class SERequestManager {
     public void createConnectSession(String customerSecret,
                                      Map<String, Object> dataMap,
                                      ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).createConnectSession(dataMap, customerSecret);
+        new ConnectSessionConnector(callback).createConnectSession(customerSecret, dataMap);
     }
 
     /**
-     * Creates a URL, which will be used to access Salt Edge Connect for future reconnect of Connection.
+     * Allows you to create a connect session, which will be used to access Salt Edge Connect to reconnect a connection.
+     * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
-     * @param connectionSecret - secret of the Connection which you want to reconnect
      * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret of the Connection which you want to reconnect
+     * @param consentScopes - fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
      * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to
+     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param callback - callback for request result
      */
     public void createReconnectSession(String customerSecret,
                                        String connectionSecret,
+                                       String[] consentScopes,
                                        String localeCode,
                                        String returnToUrl,
                                        ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).createReconnectSession(localeCode, returnToUrl, connectionSecret,
-                customerSecret, false);
+        new ConnectSessionConnector(callback).createReconnectSession(
+                customerSecret,
+                connectionSecret,
+                consentScopes,
+                localeCode,
+                returnToUrl,
+                false);
     }
 
     /**
-     * Creates a URL, which will be used to access Salt Edge Connect for future reconnect of Connection.
+     * Allows you to create a connect session, which will be used to access Salt Edge Connect to reconnect a connection.
+     * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
      * @param connectionSecret - secret of the Connection which you want to reconnect
+     * @param consentScopes - fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
      * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to
+     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param overrideCredentials - override credentials strategy. If true, the new credentials will automatically override the old ones.
      * @param callback - callback for request result
      */
     public void createReconnectSession(String customerSecret,
                                        String connectionSecret,
+                                       String[] consentScopes,
                                        String localeCode,
                                        String returnToUrl,
                                        boolean overrideCredentials,
                                        ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).createReconnectSession(localeCode, returnToUrl, connectionSecret,
-                customerSecret, overrideCredentials);
+        new ConnectSessionConnector(callback).createReconnectSession(
+                customerSecret,
+                connectionSecret,
+                consentScopes,
+                localeCode,
+                returnToUrl,
+                overrideCredentials);
     }
 
     /**
-     * Create a URL, which will be used to access Salt Edge Connect for refreshing of Connection.
+     * Allows you to create a connect session, which will be used to access Salt Edge Connect to refresh a connection.
+     * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
      * @param customerSecret - current Customer secret code
      * @param connectionSecret - secret code of the Connection which you want to reconnect
      * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to
+     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param callback - callback for request result
      */
     public void createRefreshSession(String customerSecret,
@@ -166,7 +187,7 @@ public class SERequestManager {
                                      String localeCode,
                                      String returnToUrl,
                                      ConnectSessionResult callback) {
-        new ConnectSessionConnector(callback).createRefreshSession(localeCode, returnToUrl, connectionSecret, customerSecret);
+        new ConnectSessionConnector(callback).createRefreshSession(customerSecret, connectionSecret, localeCode, returnToUrl);
     }
 
     /**
@@ -180,7 +201,7 @@ public class SERequestManager {
      * @return SERefreshService - refresh service object
      */
     public SERefreshService refreshConnectionWithSecret(String customerSecret,
-                                                        ConnectionData connectionData,
+                                                        SEConnection connectionData,
                                                         String[] refreshScopes,
                                                         RefreshConnectionResult callback) {
         return new SERefreshService(callback).startRefresh(customerSecret, connectionData, refreshScopes);

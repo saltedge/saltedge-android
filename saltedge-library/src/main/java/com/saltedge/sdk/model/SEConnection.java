@@ -28,7 +28,7 @@ import com.saltedge.sdk.utils.SEDateTools;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ConnectionData extends BaseModel implements Serializable {
+public class SEConnection extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_SECRET)
     private String secret;
@@ -61,10 +61,10 @@ public class ConnectionData extends BaseModel implements Serializable {
     private Boolean storeCredentials;
 
     @SerializedName(SEConstants.KEY_LAST_ATTEMPT)
-    private AttemptData lastAttempt;
+    private SEAttempt lastAttempt;
 
     @SerializedName(SEConstants.KEY_HOLDER_INFO)
-    private HolderData holderInfo;
+    private SEHolder holderInfo;
 
     @SerializedName(SEConstants.KEY_SHOW_CONSENT_CONFIRMATION)
     private Boolean showConsentConfirmation;
@@ -80,6 +80,18 @@ public class ConnectionData extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_CONSENT_EXPIRES_AT)
     private String consentExpiresAt;
+
+    public boolean attemptIsFinished() {
+        return lastAttempt != null && lastAttempt.getLastStage() != null
+                && "finish".equals(lastAttempt.getLastStage().getName());
+    }
+
+    public boolean attemptIsInteractive() {
+        return lastAttempt != null && lastAttempt.getLastStage() != null
+                && "interactive".equals(lastAttempt.getLastStage().getName());
+    }
+
+// GETTER AND SETTERS
 
     public String getSecret() {
         return secret;
@@ -149,10 +161,6 @@ public class ConnectionData extends BaseModel implements Serializable {
         return nextRefreshPossibleAt;
     }
 
-    public Date getNextRefreshPossibleAtDate() {
-        return SEDateTools.parseStringToDate(nextRefreshPossibleAt);
-    }
-
     public void setNextRefreshPossibleAt(String nextRefreshPossibleAt) {
         this.nextRefreshPossibleAt = nextRefreshPossibleAt;
     }
@@ -165,19 +173,19 @@ public class ConnectionData extends BaseModel implements Serializable {
         this.storeCredentials = storeCredentials;
     }
 
-    public AttemptData getLastAttempt() {
+    public SEAttempt getLastAttempt() {
         return lastAttempt;
     }
 
-    public void setLastAttempt(AttemptData lastAttempt) {
+    public void setLastAttempt(SEAttempt lastAttempt) {
         this.lastAttempt = lastAttempt;
     }
 
-    public HolderData getHolderInfo() {
+    public SEHolder getHolderInfo() {
         return holderInfo;
     }
 
-    public void setHolderInfo(HolderData holderInfo) {
+    public void setHolderInfo(SEHolder holderInfo) {
         this.holderInfo = holderInfo;
     }
 
@@ -219,15 +227,5 @@ public class ConnectionData extends BaseModel implements Serializable {
 
     public void setConsentExpiresAt(String consentExpiresAt) {
         this.consentExpiresAt = consentExpiresAt;
-    }
-
-    public boolean attemptIsFinished() {
-        return lastAttempt != null && lastAttempt.getLastStage() != null
-                && "finish".equals(lastAttempt.getLastStage().getName());
-    }
-
-    public boolean attemptIsInteractive() {
-        return lastAttempt != null && lastAttempt.getLastStage() != null
-                && "interactive".equals(lastAttempt.getLastStage().getName());
     }
 }

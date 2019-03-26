@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
-import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.SEConnection;
 import com.saltedge.sdk.model.response.ConnectionResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
@@ -38,7 +38,7 @@ public class ConnectionsShowConnector extends BasePinnedConnector implements Cal
 
     private FetchConnectionsResult callback;
     private ArrayList<Call<ConnectionResponse>> callsList;
-    private ArrayList<ConnectionData> connectionsList = new ArrayList<>();
+    private ArrayList<SEConnection> connectionsList = new ArrayList<>();
     private int resultCount;
 
     public ConnectionsShowConnector(FetchConnectionsResult callback) {
@@ -91,7 +91,7 @@ public class ConnectionsShowConnector extends BasePinnedConnector implements Cal
         callsList = null;
     }
 
-    private void onSuccess(ConnectionData data) {
+    private void onSuccess(SEConnection data) {
         connectionsList.add(data);
         if (connectionsList.size() >= resultCount) {
             callback.onSuccess(connectionsList);

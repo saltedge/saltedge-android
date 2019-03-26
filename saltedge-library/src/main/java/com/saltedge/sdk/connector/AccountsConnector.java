@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
-import com.saltedge.sdk.model.AccountData;
+import com.saltedge.sdk.model.SEAccount;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
@@ -40,7 +40,7 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
 
     private final FetchAccountsResult callback;
     private String nextPageId = "";
-    private ArrayList<AccountData> accountsList = new ArrayList<>();
+    private ArrayList<SEAccount> accountsList = new ArrayList<>();
     private String customerSecret = "";
     private String connectionSecret = "";
 
@@ -82,9 +82,9 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
-            Collections.sort(accountsList, new Comparator<AccountData>() {
+            Collections.sort(accountsList, new Comparator<SEAccount>() {
                 @Override
-                public int compare(AccountData a1, AccountData a2) {
+                public int compare(SEAccount a1, SEAccount a2) {
                     return a1.getName().compareTo(a2.getName());
                 }
             });

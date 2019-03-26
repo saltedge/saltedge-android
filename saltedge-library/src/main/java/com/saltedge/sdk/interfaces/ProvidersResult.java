@@ -21,11 +21,11 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.ProviderData;
+import com.saltedge.sdk.model.SEProvider;
 
 import java.util.ArrayList;
 
 public interface ProvidersResult {
-    void onSuccess(ArrayList<ProviderData> providersList);
+    void onSuccess(ArrayList<SEProvider> providersList);
     void onFailure(String errorMessage);
 }

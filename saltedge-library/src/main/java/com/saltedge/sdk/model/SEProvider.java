@@ -26,7 +26,7 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
-public class ProviderData extends BaseModel implements Serializable {
+public class SEProvider extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_CODE)
     private String code;
@@ -75,6 +75,8 @@ public class ProviderData extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_MAX_CONSENT_DAYS)
     private Integer maxConsentDays;
+
+// GETTER AND SETTERS
 
     public String getCode() {
         return code;

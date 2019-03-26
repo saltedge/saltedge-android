@@ -51,7 +51,4 @@ public class SEApiConstants {
     static final String API_ACCOUNTS_PATH = API_VERSION_PATH + "/accounts";
     static final String API_TRANSACTIONS_PATH = API_VERSION_PATH + "/transactions";
     static final String API_PENDING_TRANSACTIONS_PATH = API_TRANSACTIONS_PATH + "/pending";
-
-    //SCOPES
-    public static final String[] SCOPE_ACCOUNT_TRANSACTIONS = {"accounts", "transactions"};
 }

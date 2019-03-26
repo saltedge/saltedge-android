@@ -22,11 +22,14 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
+import com.saltedge.sdk.model.SEAttempt;
+import com.saltedge.sdk.model.SEConsent;
 import com.saltedge.sdk.model.request.CreateConnectSessionRequest;
 import com.saltedge.sdk.model.request.MappedRequest;
 import com.saltedge.sdk.model.request.ConnectSessionRequest;
 import com.saltedge.sdk.model.response.ConnectSessionResponse;
 import com.saltedge.sdk.network.SERestClient;
+import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
@@ -45,8 +48,18 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
         this.callback = callback;
     }
 
-    public void createConnectSession(String customerSecret, String providerCode, String[] scopes, String returnToUrl) {
-        CreateConnectSessionRequest requestData = new CreateConnectSessionRequest(new String[0], providerCode, scopes, returnToUrl);
+    public void createConnectSession(String customerSecret,
+                                     String providerCode,
+                                     String[] consentScopes,
+                                     String localeCode,
+                                     String returnToUrl) {
+        ConnectSessionRequest requestData = new ConnectSessionRequest(
+                new SEConsent(consentScopes),
+                new SEAttempt(localeCode, returnToUrl),
+                new String[0],
+                providerCode,
+                SEConstants.IFRAME,
+                null);
         call = SERestClient.getInstance().service.createConnectSession(customerSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
@@ -59,13 +72,18 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
 
     public void createReconnectSession(String customerSecret,
                                        String connectionSecret,
+                                       String[] consentScopes,
                                        String localeCode,
                                        String returnToUrl,
                                        boolean overrideCredentials) {
-        ConnectSessionRequest requestData = overrideCredentials
-                ? new ConnectSessionRequest(localeCode, returnToUrl, "override")
-                : new ConnectSessionRequest(localeCode, returnToUrl);
-        call = SERestClient.getInstance().service.createConnectSessionForReconnect(customerSecret, connectionSecret, requestData);
+        ConnectSessionRequest requestData = new ConnectSessionRequest(
+                new SEConsent(consentScopes),
+                new SEAttempt(localeCode, returnToUrl),
+                null,
+                null,
+                SEConstants.IFRAME,
+                overrideCredentials ? "override" : null);
+        call = SERestClient.getInstance().service.createReconnectSession(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
@@ -73,8 +91,14 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
                                      String connectionSecret,
                                      String localeCode,
                                      String returnToUrl) {
-        ConnectSessionRequest requestData = new ConnectSessionRequest(localeCode, returnToUrl);
-        call = SERestClient.getInstance().service.createConnectSessionForRefresh(customerSecret, connectionSecret, requestData);
+        ConnectSessionRequest requestData = new ConnectSessionRequest(
+                null,
+                new SEAttempt(localeCode, returnToUrl),
+                null,
+                null,
+                SEConstants.IFRAME,
+                null);
+        call = SERestClient.getInstance().service.createRefreshSession(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 

@@ -23,7 +23,7 @@ package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.BuildConfig;
 import com.saltedge.sdk.interfaces.ProvidersResult;
-import com.saltedge.sdk.model.ProviderData;
+import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.model.response.ProvidersResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
@@ -40,7 +40,7 @@ import retrofit2.Response;
 public class ProvidersConnector extends BasePinnedConnector implements Callback<ProvidersResponse> {
 
     private final ProvidersResult callback;
-    private ArrayList<ProviderData> providersList = new ArrayList<>();
+    private ArrayList<SEProvider> providersList = new ArrayList<>();
     private String countryCode = "";
     private String nextPageId = "";
 
@@ -91,9 +91,9 @@ public class ProvidersConnector extends BasePinnedConnector implements Callback<
         return BuildConfig.DEBUG || "XF".equals(countryCode);
     }
 
-    private class ProviderDataComparator implements Comparator<ProviderData> {
+    private class ProviderDataComparator implements Comparator<SEProvider> {
         @Override
-        public int compare(ProviderData p1, ProviderData p2) {
+        public int compare(SEProvider p1, SEProvider p2) {
             return p1.getName().compareTo(p2.getName());
         }
     }

@@ -27,8 +27,8 @@ import com.saltedge.sdk.connector.ConnectionsShowConnector;
 import com.saltedge.sdk.interfaces.FetchConnectionResult;
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.RefreshConnectionResult;
-import com.saltedge.sdk.model.ConnectionData;
-import com.saltedge.sdk.model.StageData;
+import com.saltedge.sdk.model.SEConnection;
+import com.saltedge.sdk.model.SEStage;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.List;
@@ -48,12 +48,12 @@ public class SERefreshService {
     private ConnectionsShowConnector showConnectionConnector;
     private final static long POLLING_TIMEOUT = 5000L;
     private String customerSecret;
-    private ConnectionData connectionData;
+    private SEConnection connectionData;
     private Timer timer;
     private FetchConnectionResult refreshConnectionCallback = new FetchConnectionResult() {
 
         @Override
-        public void onSuccess(ConnectionData connection) {
+        public void onSuccess(SEConnection connection) {
             checkConnectionStage(connection);
         }
 
@@ -66,7 +66,7 @@ public class SERefreshService {
     private FetchConnectionResult interactiveConnectionCallback = new FetchConnectionResult() {
 
         @Override
-        public void onSuccess(ConnectionData connection) {
+        public void onSuccess(SEConnection connection) {
             checkConnectionStage(connection);
         }
 
@@ -79,9 +79,9 @@ public class SERefreshService {
     private FetchConnectionsResult showConnectionsCallback = new FetchConnectionsResult() {
 
         @Override
-        public void onSuccess(List<ConnectionData> connections) {
+        public void onSuccess(List<SEConnection> connections) {
             if (!connections.isEmpty()) {
-                ConnectionData lastConnectionData = connections.get(0);
+                SEConnection lastConnectionData = connections.get(0);
                 checkConnectionStage(lastConnectionData);
             }
         }
@@ -100,7 +100,7 @@ public class SERefreshService {
      * @return SERefreshService itself
      */
     public SERefreshService startRefresh(String customerSecret,
-                                         ConnectionData connectionData,
+                                         SEConnection connectionData,
                                          String[] refreshScopes) {
         this.customerSecret = customerSecret;
         this.connectionData = connectionData;
@@ -191,7 +191,7 @@ public class SERefreshService {
         }
     }
 
-    private void checkConnectionStage(ConnectionData connectionData) {
+    private void checkConnectionStage(SEConnection connectionData) {
         if (connectionData.attemptIsFinished()) {
             onRefreshSuccess(connectionData);
         } else if (connectionData.attemptIsInteractive()) {
@@ -203,12 +203,12 @@ public class SERefreshService {
         }
     }
 
-    private void askInteractiveData(StageData lastStage) {
+    private void askInteractiveData(SEStage lastStage) {
         stopConnectionPolling();
         if (callback != null) callback.provideInteractiveData(lastStage);
     }
 
-    private void onRefreshSuccess(ConnectionData connectionData) {
+    private void onRefreshSuccess(SEConnection connectionData) {
         stopConnectionPolling();
         if (callback != null) callback.onRefreshSuccess(connectionData);
     }

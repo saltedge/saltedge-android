@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
-import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.model.SETransaction;
 import com.saltedge.sdk.model.response.TransactionsResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
@@ -38,7 +38,7 @@ import retrofit2.Response;
 public class TransactionsConnector extends BasePinnedConnector implements Callback<TransactionsResponse> {
 
     private final FetchTransactionsResult callback;
-    private ArrayList<TransactionData> transactionsList = new ArrayList<>();
+    private ArrayList<SETransaction> transactionsList = new ArrayList<>();
     private String customerSecret = "";
     private String connectionSecret = "";
     private String accountId = "";
@@ -87,7 +87,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     public void onResponse(Call<TransactionsResponse> call, Response<TransactionsResponse> response) {
         TransactionsResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) {
-            List<TransactionData> newTransactions = responseBody.getData();
+            List<SETransaction> newTransactions = responseBody.getData();
             if (newTransactions != null) transactionsList.addAll(newTransactions);
             fromId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();

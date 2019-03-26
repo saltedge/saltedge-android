@@ -21,13 +21,13 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.ConnectionData;
-import com.saltedge.sdk.model.StageData;
+import com.saltedge.sdk.model.SEConnection;
+import com.saltedge.sdk.model.SEStage;
 
 public interface RefreshConnectionResult {
-    void onRefreshSuccess(ConnectionData connection);
+    void onRefreshSuccess(SEConnection connection);
     void onRefreshFailure(String errorMessage);
     void onInteractiveStepFailure(String errorMessage);
     void onConnectionStateFetchError(String errorMessage);
-    void provideInteractiveData(StageData lastStage);
+    void provideInteractiveData(SEStage lastStage);
 }

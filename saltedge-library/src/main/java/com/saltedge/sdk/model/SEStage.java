@@ -27,7 +27,7 @@ import com.saltedge.sdk.utils.SEConstants;
 import java.io.Serializable;
 import java.util.Map;
 
-public class StageData extends BaseModel implements Serializable {
+public class SEStage extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_NAME)
     private String name;
@@ -40,6 +40,8 @@ public class StageData extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_INTERACTIVE_FIELDS_OPTIONS)
     private Map<String, InteractiveFieldOptionData> interactiveFieldsOptions;
+
+// GETTER AND SETTERS
 
     public String getName() {
         return name;

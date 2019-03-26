@@ -29,7 +29,7 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-public class TransactionData extends BaseModel {
+public class SETransaction extends BaseModel {
 
     @SerializedName(SEConstants.KEY_DUPLICATED)
     private boolean duplicated;
@@ -60,6 +60,8 @@ public class TransactionData extends BaseModel {
 
     @SerializedName(SEConstants.KEY_EXTRA)
     private JSONObject extra;
+
+// GETTER AND SETTERS
 
     public boolean isDuplicated() {
         return duplicated;

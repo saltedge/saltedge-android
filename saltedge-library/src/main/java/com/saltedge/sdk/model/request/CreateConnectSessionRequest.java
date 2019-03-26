@@ -22,21 +22,23 @@ THE SOFTWARE.
 package com.saltedge.sdk.model.request;
 
 import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.model.SEAttempt;
+import com.saltedge.sdk.model.SEConsent;
 import com.saltedge.sdk.utils.SEConstants;
 
+//TODO REMOVE
 public class CreateConnectSessionRequest {
 
     @SerializedName(SEConstants.KEY_DATA)
     private CreateConnectSessionData data;
 
-    public CreateConnectSessionRequest(String[] allowedCountries,
-                                       String providerCode,
-                                       String[] scopes,
-                                       String returnToUrl) {
-        data = new CreateConnectSessionData(allowedCountries, providerCode, scopes, returnToUrl, SEConstants.IFRAME);
-    }
-
     private class CreateConnectSessionData {
+
+        @SerializedName(SEConstants.KEY_CONSENT)
+        private SEConsent consent;
+
+        @SerializedName(SEConstants.KEY_ATTEMPT)
+        private SEAttempt attempt;
 
         @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
         private String[] allowedCountries;
@@ -44,25 +46,7 @@ public class CreateConnectSessionRequest {
         @SerializedName(SEConstants.KEY_PROVIDER_CODE)
         private String providerCode;
 
-        @SerializedName(SEConstants.KEY_FETCH_SCOPES)
-        private String[] fetchScopes;
-
-        @SerializedName(SEConstants.KEY_RETURN_TO)
-        private String returnToUrl;
-
-        @SerializedName(SEConstants.JAVASCRIPT_CALLBACK)
-        private String javascriptCallback;
-
-        private CreateConnectSessionData(String[] allowedCountries,
-                                         String providerCode,
-                                         String[] scopes,
-                                         String returnToUrl,
-                                         String javascriptCallback) {
-            this.allowedCountries = allowedCountries;
-            this.providerCode = providerCode;
-            this.fetchScopes = scopes;
-            this.returnToUrl = returnToUrl;
-            this.javascriptCallback = javascriptCallback;
-        }
+        @SerializedName(SEConstants.KEY_JAVASCRIPT_CALLBACK_TYPE)
+        private String javascriptCallbackType;
     }
 }

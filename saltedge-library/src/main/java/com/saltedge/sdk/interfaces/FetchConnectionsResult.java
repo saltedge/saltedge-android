@@ -21,11 +21,11 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.SEConnection;
 
 import java.util.List;
 
 public interface FetchConnectionsResult {
-    void onSuccess(List<ConnectionData> connections);
+    void onSuccess(List<SEConnection> connections);
     void onFailure(String errorMessage);
 }

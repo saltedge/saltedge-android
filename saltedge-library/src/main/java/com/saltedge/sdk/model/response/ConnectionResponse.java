@@ -22,15 +22,15 @@ THE SOFTWARE.
 package com.saltedge.sdk.model.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.SEConnection;
 import com.saltedge.sdk.utils.SEConstants;
 
 public class ConnectionResponse {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private ConnectionData data;
+    private SEConnection data;
 
-    public ConnectionData getData() {
+    public SEConnection getData() {
         return data;
     }
 }
