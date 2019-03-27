@@ -1,6 +1,7 @@
 # SaltEdge Android SDK & Sample application
 
-A handful of classes to help you interact with the Salt Edge API from your Android app.
+A handful of classes to help you interact with the Salt Edge API from your Android app.  
+Current SDK is based on Salt Edge API v5.  
 
 **Warning!** The SDK doesn't work without Client ID and App Secret!
 
@@ -449,7 +450,7 @@ For a supplementary description of the models listed above that is not included 
 
 A few utility classes are bundled within the components, and are used internally, but you could also use them if you find that necessary.
 
-## Changelog
+## [Changelog](CHANGELOG.MD)
 
 ## License
 
