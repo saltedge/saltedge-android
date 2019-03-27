@@ -39,6 +39,7 @@ public class SEApiConstants {
     static final String API_HOST_NAME = "www.saltedge.com";
     public static final String API_BASE_URL = "https://" + API_HOST_NAME + "/";
     private static final String API_VERSION_PATH = "api/v5";
+    public static final String API_COUNTRIES_PATH = API_VERSION_PATH + "/countries";
     static final String API_CUSTOMERS_PATH = API_VERSION_PATH + "/customers";
     static final String API_PROVIDERS_PATH = API_VERSION_PATH + "/providers";
     private static final String API_CONNECT_SESSIONS_PATH = API_VERSION_PATH + "/connect_sessions";

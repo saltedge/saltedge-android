@@ -49,8 +49,8 @@ import retrofit2.http.Url;
 
 public interface SEApiInterface {
 
-    @HEAD
-    Call<Void> getPins(@Url String url);
+    @HEAD(SEApiConstants.API_COUNTRIES_PATH)
+    Call<Void> getPins();
 
     @POST(SEApiConstants.API_CUSTOMERS_PATH)
     Call<CreateCustomerResponse> createCustomer(@Body CreateCustomerRequest body);

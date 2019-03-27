@@ -21,7 +21,6 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network.pin;
 
-import com.saltedge.sdk.network.SEApiConstants;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.preferences.SEPreferencesRepository;
 import com.saltedge.sdk.utils.SEDateTools;
@@ -54,7 +53,7 @@ public class SEPinsManager implements Callback<Void> {
 
     public void loadPins(PinsLoaderResult callback) {
         this.pinLoaderCallback = callback;
-        SERestClient.getInstance().service.getPins(SEApiConstants.API_BASE_URL).enqueue(this);
+        SERestClient.getInstance().service.getPins().enqueue(this);
     }
 
     public void clearPinLoaderCallback() {
