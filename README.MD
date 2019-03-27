@@ -1,16 +1,15 @@
 # SaltEdge Android SDK & Sample application
 
 A handful of classes to help you interact with the Salt Edge API from your Android app.  
-Current SDK is based on Salt Edge API v5.  
-
-**Warning!** The SDK doesn't work without Client ID and App Secret!
-
-*Note*: You can find your Client ID and App Secret on your [profile](https://www.saltedge.com/keys_and_secrets) page.
+Current SDK is based on Salt Edge API v5.
 
 ## Requirements
 
 * Android 4.0.2+ (minimum 15 sdk version) with Play Services installed
-* Account on saltedge.com
+* Client ID and App Secrets
+
+**Warning!** The SDK doesn't work without Client ID and App Secret!
+*Note*: You can find your Client ID and App Secret on your [profile](https://www.saltedge.com/keys_and_secrets) page.
 
 ## Source
 
