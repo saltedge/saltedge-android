@@ -25,7 +25,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -37,7 +36,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.DeleteConnectionResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
@@ -155,7 +153,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onRefreshSuccess(SEConnection connection) {
-        showShortToast(R.string.connection_refreshed);
+        UITools.showShortToast(this, R.string.connection_refreshed);
         refreshMenuItem.setVisible(!accounts.isEmpty());
         if (connection != null) {
             this.currentConnection = connection;
@@ -168,13 +166,13 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onRefreshFailure(String errorMessage) {
         refreshMenuItem.setVisible(!accounts.isEmpty());
-        showShortToast("Refresh error: " + errorMessage);
+        UITools.showShortToast(this, "Refresh error: " + errorMessage);
     }
 
     @Override
     public void onInteractiveStepFailure(String errorMessage) {
         //we can ignore interactive step error
-        showShortToast(errorMessage);
+        UITools.showShortToast(this, errorMessage);
     }
 
     @Override
@@ -195,7 +193,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void inputValueResult(String inputFieldKey, String inputFieldValue) {
         if (TextUtils.isEmpty(inputFieldValue)) {
-            showShortToast(R.string.empty_value_not_allowed);
+            UITools.showShortToast(this, R.string.empty_value_not_allowed);
         }
         HashMap<String, Object> credentials = new HashMap<>();
         credentials.put(inputFieldKey, inputFieldValue);
@@ -320,32 +318,16 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     private void startRefreshInBackground() {
         if (TextUtils.isEmpty(currentConnection.getSecret()) || TextUtils.isEmpty(customerSecret)) {
-            showShortToast(R.string.error_invalid_refresh_secrets);
+            UITools.showShortToast(this, R.string.error_invalid_refresh_secrets);
         } else if (currentConnection.getNextRefreshPossibleAt() == null) {
-            showLongToast(R.string.refresh_not_allowed_reconnect);
+            UITools.showShortToast(this, R.string.refresh_not_allowed_reconnect);
         } else if (currentConnection.getNextRefreshPossibleAtDate().before(new Date())) {
             refreshMenuItem.setVisible(false);
             refreshService = SERequestManager.getInstance().refreshConnectionWithSecret(customerSecret,
                     currentConnection, Constants.CONSENT_SCOPES, this);
         } else {
-            showLongToast("Refresh is not allowed. Wait until " + currentConnection.getNextRefreshPossibleAtDate());
+            UITools.showShortToast(this, "Refresh is not allowed. Wait until " + currentConnection.getNextRefreshPossibleAtDate());
         }
-    }
-
-    private void showShortToast(@StringRes Integer messageResId) {
-        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
-    }
-
-    private void showLongToast(@StringRes Integer messageResId) {
-        Toast.makeText(this, messageResId, Toast.LENGTH_LONG).show();
-    }
-
-    private void showShortToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void showLongToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
     private void setInitialData() {

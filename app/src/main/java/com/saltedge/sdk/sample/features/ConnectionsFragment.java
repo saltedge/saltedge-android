@@ -38,7 +38,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
@@ -99,7 +98,7 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
 
     @Override
     public void onProviderSelected(SEProvider provider) {
-        Toast.makeText(getActivity(), "Selected " + String.valueOf(provider.getName()), Toast.LENGTH_SHORT).show();
+        UITools.showShortToast(getActivity(), "Selected " + String.valueOf(provider.getName()));
         showConnectActivity(provider.getCode());
     }
 
@@ -214,7 +213,7 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
 
     private void showProvidersListDialog() {
         if (providers != null && !providers.isEmpty()) {
-            Toast.makeText(getActivity(), "Fetched " + String.valueOf(providers.size()) + " providers", Toast.LENGTH_SHORT).show();
+            UITools.showShortToast(getActivity(), "Fetched " + String.valueOf(providers.size()));
             if (isVisible()) {
                 ProvidersDialog.newInstance(providers, this).show(getFragmentManager(), "");
             }

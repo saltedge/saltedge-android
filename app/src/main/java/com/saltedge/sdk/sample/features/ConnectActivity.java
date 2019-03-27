@@ -29,7 +29,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.network.SERequestManager;
@@ -104,7 +103,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     }
 
     /**
-     * Success callback after Token create request. Url is used to redirect the user
+     * Success callback after Session create request. Url is used to redirect the user
      * @param connectUrl - url of Saltedge Connect Page.
      */
     @Override
@@ -129,31 +128,31 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     /**
      * Success callback of provider connect flow
      * @param stage - last connect flow stage
-     * @param loginSecret - login secret code
+     * @param connectionSecret - connection secret code
      */
     @Override
-    public void onConnectionSecretFetchSuccess(String stage, String loginId, String loginSecret) {
-        PreferencesTools.putConnectionSecret(this, loginId, loginSecret);
-        Toast.makeText(this, "Login successfully connected", Toast.LENGTH_SHORT).show();
+    public void onConnectionSecretFetchSuccess(String stage, String connectionId, String connectionSecret) {
+        PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
+        UITools.showShortToast(this, R.string.connection_connected);
         closeActivity(true);
     }
 
     /**
-     * Login data updated callback.
+     * Connection data updated callback.
      */
     @Override
     public void onConnectionRefreshSuccess() {
-        Toast.makeText(this, "Login updated", Toast.LENGTH_SHORT).show();
+        UITools.showShortToast(this, R.string.connection_updated);
         closeActivity(true);
     }
 
     @Override
-    public void onConnectionFetchingStage(String loginId, String loginSecret) {
-        if (loginId == null || loginSecret == null) return;
-        if (this.connectionSecret == null || !this.connectionSecret.equals(loginSecret)) {
-            this.connectionSecret = loginSecret;
-            if (!PreferencesTools.connectionSecretIsSaved(this, loginId, loginSecret)) {
-                PreferencesTools.putConnectionSecret(this, loginId, loginSecret);
+    public void onConnectionFetchingStage(String connectionId, String connectionSecret) {
+        if (connectionId == null || connectionSecret == null) return;
+        if (this.connectionSecret == null || !this.connectionSecret.equals(connectionSecret)) {
+            this.connectionSecret = connectionSecret;
+            if (!PreferencesTools.connectionSecretIsSaved(this, connectionId, connectionSecret)) {
+                PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
             }
         }
     }
@@ -181,11 +180,11 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             if (isRefreshMode()) {
-                actionBar.setTitle("Refresh provider");
+                actionBar.setTitle(R.string.refreshing);
             } else if (isReconnectViewMode()) {
-                actionBar.setTitle("Reconnect provider");
+                actionBar.setTitle(R.string.reconnecting);
             } else {
-                actionBar.setTitle("Connect provider");
+                actionBar.setTitle(R.string.connecting);
             }
         }
     }
@@ -241,7 +240,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.reconnect_provider));
         SERequestManager.getInstance().createReconnectSession(
                 customerSecret,
-                providerCode,
+                connectionSecret,
                 Constants.CONSENT_SCOPES,
                 localeCode,
                 callbackUrl,

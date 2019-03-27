@@ -25,6 +25,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.annotation.StringRes;
+import android.widget.Toast;
 
 import com.saltedge.sdk.sample.R;
 
@@ -65,5 +67,21 @@ public class UITools {
 
     public static void hideProgress(ProgressDialog dialog) {
         dialog.hide();
+    }
+
+    public static void showShortToast(Context context, @StringRes Integer messageResId) {
+        Toast.makeText(context, messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showLongToast(Context context, @StringRes Integer messageResId) {
+        Toast.makeText(context, messageResId, Toast.LENGTH_LONG).show();
+    }
+
+    public static void showShortToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showLongToast(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 }

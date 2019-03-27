@@ -32,7 +32,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.model.SETransaction;
@@ -69,7 +68,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         setContentView(R.layout.fragment_list_view);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(R.string.transactions);
+            actionBar.setTitle(pendingTransactionsMode ? R.string.pending_transactions : R.string.transactions);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         setInitialData();
@@ -108,7 +107,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         String message = "Click ListItem Number " + String.valueOf(i);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        UITools.showLongToast(this, message);
     }
 
     @Override
