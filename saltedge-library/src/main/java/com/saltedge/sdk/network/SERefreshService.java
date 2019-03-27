@@ -23,7 +23,7 @@ package com.saltedge.sdk.network;
 
 import com.saltedge.sdk.connector.ConnectionInteractiveCredentialsConnector;
 import com.saltedge.sdk.connector.ConnectionRefreshConnector;
-import com.saltedge.sdk.connector.ConnectionsShowConnector;
+import com.saltedge.sdk.connector.ConnectionsConnector;
 import com.saltedge.sdk.interfaces.FetchConnectionResult;
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.RefreshConnectionResult;
@@ -45,7 +45,7 @@ public class SERefreshService {
     private RefreshConnectionResult callback;
     private ConnectionRefreshConnector refreshConnector;
     private ConnectionInteractiveCredentialsConnector interactiveConnector;
-    private ConnectionsShowConnector showConnectionConnector;
+    private ConnectionsConnector showConnectionConnector;
     private final static long POLLING_TIMEOUT = 5000L;
     private String customerSecret;
     private SEConnection connectionData;
@@ -157,7 +157,7 @@ public class SERefreshService {
                     pollingAction();
                 }
             }, 0, POLLING_TIMEOUT);
-            showConnectionConnector = new ConnectionsShowConnector(showConnectionsCallback);
+            showConnectionConnector = new ConnectionsConnector(showConnectionsCallback);
         } catch (Exception e) {
             e.printStackTrace();
         }

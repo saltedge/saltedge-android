@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-public interface DeleteConnectionResult {
+public interface DeleteEntryResult {
     void onSuccess(Boolean isRemoved);
     void onFailure(String errorMessage);
 }

@@ -82,12 +82,7 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
-            Collections.sort(accountsList, new Comparator<SEAccount>() {
-                @Override
-                public int compare(SEAccount a1, SEAccount a2) {
-                    return a1.getName().compareTo(a2.getName());
-                }
-            });
+            Collections.sort(accountsList, (a1, a2) -> a1.getName().compareTo(a2.getName()));
             callback.onSuccess(accountsList);
         } else enqueueCall();
     }

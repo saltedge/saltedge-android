@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.DeleteEntryResult;
-import com.saltedge.sdk.model.response.DeleteConnectionResponse;
+import com.saltedge.sdk.model.response.ConsentResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
@@ -31,25 +31,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectionDeleteConnector extends BasePinnedConnector implements Callback<DeleteConnectionResponse> {
+public class ConsentRevokeConnector extends BasePinnedConnector implements Callback<ConsentResponse> {
 
     private final DeleteEntryResult callback;
     private String customerSecret;
     private String connectionSecret;
+    private String consentId;
 
-    public ConnectionDeleteConnector(DeleteEntryResult callback) {
+    public ConsentRevokeConnector(DeleteEntryResult callback) {
         this.callback = callback;
     }
 
-    public void deleteConnection(String customerSecret, String connectionSecret) {
+    public void deleteConnection(String customerSecret, String connectionSecret, String consentId) {
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
+        this.consentId = consentId;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.deleteConnection(customerSecret, connectionSecret).enqueue(this);
+        SERestClient.getInstance().service.revokeConsent(customerSecret, connectionSecret, consentId).enqueue(this);
     }
 
     @Override
@@ -58,14 +60,16 @@ public class ConnectionDeleteConnector extends BasePinnedConnector implements Ca
     }
 
     @Override
-    public void onResponse(Call<DeleteConnectionResponse> call, Response<DeleteConnectionResponse> response) {
-        DeleteConnectionResponse responseBody = response.body();
-        if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.isRemoved());
+    public void onResponse(Call<ConsentResponse> call, Response<ConsentResponse> response) {
+        ConsentResponse responseBody = response.body();
+        if (response.isSuccessful() && responseBody != null && responseBody.getData() != null) {
+            callback.onSuccess(responseBody.getData().getRevokedAt() != null);
+        }
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
-    public void onFailure(Call<DeleteConnectionResponse> call, Throwable t) {
+    public void onFailure(Call<ConsentResponse> call, Throwable t) {
         onFailure(SEErrorTools.processConnectionError(t));
     }
 }

@@ -34,14 +34,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectionsShowConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
+public class ConnectionsConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
 
     private FetchConnectionsResult callback;
     private ArrayList<Call<ConnectionResponse>> callsList;
     private ArrayList<SEConnection> connectionsList = new ArrayList<>();
     private int resultCount;
 
-    public ConnectionsShowConnector(FetchConnectionsResult callback) {
+    public ConnectionsConnector(FetchConnectionsResult callback) {
         this.callback = callback;
     }
 

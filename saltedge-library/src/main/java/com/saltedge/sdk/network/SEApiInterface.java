@@ -29,6 +29,7 @@ import com.saltedge.sdk.model.request.RefreshConnectionRequest;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.model.response.ConnectSessionResponse;
 import com.saltedge.sdk.model.response.ConnectionResponse;
+import com.saltedge.sdk.model.response.ConsentResponse;
 import com.saltedge.sdk.model.response.ConsentsResponse;
 import com.saltedge.sdk.model.response.CreateCustomerResponse;
 import com.saltedge.sdk.model.response.DeleteConnectionResponse;
@@ -44,6 +45,7 @@ import retrofit2.http.HEAD;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface SEApiInterface {
@@ -129,4 +131,10 @@ public interface SEApiInterface {
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
             @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
             @Query(SEConstants.KEY_FROM_ID) String fromId);
+
+    @PUT(SEApiConstants.API_CONSENT_REVOKE_PATH)
+    Call<ConsentResponse> revokeConsent(
+            @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
+            @Path(value = SEConstants.KEY_CONSENT_ID, encoded = true) String consentId);
 }

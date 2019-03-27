@@ -32,6 +32,12 @@ public class SEConsent extends BaseModel implements Serializable {
     public final static String SCOPE_ACCOUNT_DETAILS = "account_details";
     public final static String SCOPE_TRANSACTIONS_DETAILS = "transactions_details";
 
+    @SerializedName(SEConstants.KEY_CONNECTION_ID)
+    private String connectionId;
+
+    @SerializedName(SEConstants.KEY_CUSTOMER_ID)
+    private String customerId;
+
     @SerializedName(SEConstants.KEY_SCOPES)
     private String[] scopes;
 
@@ -46,6 +52,12 @@ public class SEConsent extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_EXPIRES_AT)
     private String expiresAt;
+
+    @SerializedName(SEConstants.KEY_REVOKED_AT)
+    private String revokedAt;
+
+    @SerializedName(SEConstants.KEY_COLLECTED_BY)
+    private String collectedBy;
 
 // CONSTRUCTOR
 
@@ -94,5 +106,36 @@ public class SEConsent extends BaseModel implements Serializable {
     public void setExpiresAt(String expiresAt) {
         this.expiresAt = expiresAt;
     }
-}
 
+    public String getConnectionId() {
+        return connectionId;
+    }
+
+    public void setConnectionId(String connectionId) {
+        this.connectionId = connectionId;
+    }
+
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public String getRevokedAt() {
+        return revokedAt;
+    }
+
+    public void setRevokedAt(String revokedAt) {
+        this.revokedAt = revokedAt;
+    }
+
+    public String getCollectedBy() {
+        return collectedBy;
+    }
+
+    public void setCollectedBy(String collectedBy) {
+        this.collectedBy = collectedBy;
+    }
+}

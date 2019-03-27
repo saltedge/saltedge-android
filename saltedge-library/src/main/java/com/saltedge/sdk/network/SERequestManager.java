@@ -23,12 +23,12 @@ import android.text.TextUtils;
 import com.saltedge.sdk.connector.AccountsConnector;
 import com.saltedge.sdk.connector.CustomerConnector;
 import com.saltedge.sdk.connector.ConnectionDeleteConnector;
-import com.saltedge.sdk.connector.ConnectionsShowConnector;
+import com.saltedge.sdk.connector.ConnectionsConnector;
 import com.saltedge.sdk.connector.ProvidersConnector;
 import com.saltedge.sdk.connector.ConnectSessionConnector;
 import com.saltedge.sdk.connector.TransactionsConnector;
 import com.saltedge.sdk.interfaces.CreateCustomerResult;
-import com.saltedge.sdk.interfaces.DeleteConnectionResult;
+import com.saltedge.sdk.interfaces.DeleteEntryResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
@@ -233,7 +233,7 @@ public class SERequestManager {
     public void fetchConnections(String customerSecret,
                                  String[] connectionsSecretsArray,
                                  FetchConnectionsResult callback) {
-        new ConnectionsShowConnector(callback).fetchConnections(customerSecret, connectionsSecretsArray);
+        new ConnectionsConnector(callback).fetchConnections(customerSecret, connectionsSecretsArray);
     }
 
     /**
@@ -246,7 +246,7 @@ public class SERequestManager {
      */
     public void deleteConnection(String customerSecret,
                                  String connectionSecret,
-                                 DeleteConnectionResult callback) {
+                                 DeleteEntryResult callback) {
         new ConnectionDeleteConnector(callback).deleteConnection(customerSecret, connectionSecret);
     }
 

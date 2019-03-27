@@ -48,7 +48,9 @@ public class SEConstants {
     public static final String KEY_OAUTH = "oauth";
     public static final String KEY_CONNECT_URL = "connect_url";
     public static final String KEY_EXPIRES_AT = "expires_at";
+    public static final String KEY_REVOKED_AT = "revoked_at";
     public static final String KEY_REMOVED = "removed";
+    public static final String KEY_COLLECTED_BY = "collected_by";
     public static final String KEY_FETCH_SCOPES = "fetch_scopes";
     public static final String KEY_SCOPES = "scopes";
 
@@ -117,7 +119,6 @@ public class SEConstants {
     public static final String KEY_BALANCE = "balance";
     public static final String KEY_CURRENCY_CODE = "currency_code";
     public static final String KEY_EXTRA = "extra";
-    public static final String KEY_CONNECTION_ID = "connection_id";
 
     //Transaction keys
     public static final String KEY_DUPLICATED = "duplicated";
@@ -128,6 +129,8 @@ public class SEConstants {
     public static final String KEY_ACCOUNT_ID = "account_id";
 
     //Other keys
+    public static final String KEY_CUSTOMER_ID = "customer_id";
+    public static final String KEY_CONNECTION_ID = "connection_id";
     public static final String KEY_API_MODE = "api_mode";
     public static final String KEY_API_VERSION = "api_version";
     public static final String KEY_CATEGORIZATION = "categorization";
@@ -161,9 +164,11 @@ public class SEConstants {
     public static final String KEY_FROM_DATE = "from_date";
     public static final String KEY_TO_DATE = "to_date";
     public static final String KEY_PERIOD_DAYS = "period_days";
-    public static final String URL_EMPTY = "URL is empty";
+    public static final String KEY_CONSENT_ID = "consent_id";
+
     public static final String KEY_JAVASCRIPT_CALLBACK_TYPE = "javascript_callback_type";
     public static final String IFRAME = "iframe";
+    public static final String URL_EMPTY = "URL is empty";
 
     //ERRORS
     public static final String ERROR_INVALID_REFRESH_SECRETS = "Invalid refresh secrets";
