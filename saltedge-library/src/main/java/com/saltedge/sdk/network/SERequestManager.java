@@ -21,20 +21,23 @@ package com.saltedge.sdk.network;
 import android.text.TextUtils;
 
 import com.saltedge.sdk.connector.AccountsConnector;
-import com.saltedge.sdk.connector.CustomerConnector;
+import com.saltedge.sdk.connector.ConnectSessionConnector;
 import com.saltedge.sdk.connector.ConnectionDeleteConnector;
 import com.saltedge.sdk.connector.ConnectionsConnector;
+import com.saltedge.sdk.connector.ConsentRevokeConnector;
+import com.saltedge.sdk.connector.ConsentsConnector;
+import com.saltedge.sdk.connector.CustomerConnector;
 import com.saltedge.sdk.connector.ProvidersConnector;
-import com.saltedge.sdk.connector.ConnectSessionConnector;
 import com.saltedge.sdk.connector.TransactionsConnector;
+import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.interfaces.DeleteEntryResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
+import com.saltedge.sdk.interfaces.FetchConsentsResult;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.interfaces.RefreshConnectionResult;
-import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.model.SEConnection;
 import com.saltedge.sdk.utils.SEConstants;
 
@@ -383,5 +386,36 @@ public class SERequestManager {
                                                   String fromTransactionId,
                                                   FetchTransactionsResult callback) {
         fetchTransactions(customerSecret, connectionSecret, accountId, fromTransactionId, true, true, callback);
+    }
+
+    /**
+     * You can see the list of consents of Connection.
+     * The accounts are sorted in ascending order of their ID, so the newest accounts will come last.
+     * Result is returned through callback.
+     *
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection
+     * @param callback - callback for request result
+     */
+    public void fetchConsents(String customerSecret,
+                              String connectionSecret,
+                              FetchConsentsResult callback) {
+        new ConsentsConnector(callback).fetchConsents(customerSecret, connectionSecret);
+    }
+
+    /**
+     * Consent revoke is an option that allows you to revoke a consent.
+     * Result is returned through callback.
+     *
+     * @param customerSecret - current Customer secret code
+     * @param connectionSecret - secret code of the Connection which should be deleted if exist
+     * @param consentId - id of Consent which should be revoked
+     * @param callback - callback for request result
+     */
+    public void revokeConsent(String customerSecret,
+                              String connectionSecret,
+                              String consentId,
+                              DeleteEntryResult callback) {
+        new ConsentRevokeConnector(callback).revokeConsent(customerSecret, connectionSecret, consentId);
     }
 }

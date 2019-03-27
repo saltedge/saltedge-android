@@ -360,7 +360,7 @@ You can reconnect the connection. You should obtain a connectUrl of Salt Edge Co
         SERequestManager.getInstance().deleteConnection(
                 customerSecret, 
                 connectionSecret,
-                new DeleteConnectionResult() {
+                new DeleteEntryResult() {
                     @Override
                     public void onSuccess(Boolean isRemoved) {
                         //show changes
@@ -430,6 +430,44 @@ Credentials is `Map<String, Object>` type with content like `"interactive field 
 
 **Saltedge Connect API requires high security standards for data handling on client’s side. This method is only available for the certified and/or selected partners. For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  
 Please consult the Demo app to see how it works**
+
+### Get Consents   
+```java    
+        SERequestManager.getInstance().fetchConsents(
+                customerSecret, 
+                connectionSecret,
+                new FetchConsentsResult() {
+                    @Override
+                    public void onSuccess(List<SEConsent> consents) {
+                        //show consents
+                    }
+    
+                    @Override
+                    public void onFailure(String errorResponse) {
+                        //process error
+                    }
+                });
+```
+
+### Revoke Consents   
+```java    
+        SERequestManager.getInstance().fetchConsents(
+                customerSecret, 
+                connectionSecret,
+                consentId,
+                new DeleteEntryResult() {
+                    @Override
+                    public void onSuccess(Boolean isRemoved) {
+                        //show changes
+                    }
+
+                    @Override
+                    public void onFailure(String errorResponse) {
+                        //process error
+                    }
+                });
+```
+
 
 ## Models
 

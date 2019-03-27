@@ -81,7 +81,7 @@ public class ConsentsConnector extends BasePinnedConnector implements Callback<C
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
-            Collections.sort(consentsList, (a1, a2) -> a1.getCreatedAt().compareTo(a2.getCreatedAt()));
+            Collections.sort(consentsList, (a1, a2) -> a1.getId().compareTo(a2.getId()));
             callback.onSuccess(consentsList);
         } else enqueueCall();
     }

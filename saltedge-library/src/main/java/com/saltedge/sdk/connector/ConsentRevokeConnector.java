@@ -42,7 +42,7 @@ public class ConsentRevokeConnector extends BasePinnedConnector implements Callb
         this.callback = callback;
     }
 
-    public void deleteConnection(String customerSecret, String connectionSecret, String consentId) {
+    public void revokeConsent(String customerSecret, String connectionSecret, String consentId) {
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
         this.consentId = consentId;
