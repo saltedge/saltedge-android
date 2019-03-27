@@ -21,17 +21,16 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.network;
 
+import com.saltedge.sdk.model.request.ConnectSessionRequest;
 import com.saltedge.sdk.model.request.CreateCustomerRequest;
-import com.saltedge.sdk.model.request.CreateConnectSessionRequest;
 import com.saltedge.sdk.model.request.MappedRequest;
 import com.saltedge.sdk.model.request.PutConnectionCredentialsRequest;
 import com.saltedge.sdk.model.request.RefreshConnectionRequest;
-import com.saltedge.sdk.model.request.ConnectSessionRequest;
 import com.saltedge.sdk.model.response.AccountsResponse;
-import com.saltedge.sdk.model.response.CreateCustomerResponse;
 import com.saltedge.sdk.model.response.ConnectSessionResponse;
-import com.saltedge.sdk.model.response.DeleteConnectionResponse;
 import com.saltedge.sdk.model.response.ConnectionResponse;
+import com.saltedge.sdk.model.response.CreateCustomerResponse;
+import com.saltedge.sdk.model.response.DeleteConnectionResponse;
 import com.saltedge.sdk.model.response.ProvidersResponse;
 import com.saltedge.sdk.model.response.TransactionsResponse;
 import com.saltedge.sdk.utils.SEConstants;
@@ -45,7 +44,6 @@ import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 public interface SEApiInterface {
 

@@ -40,7 +40,7 @@ repositories {
 
 Add SDK dependency  
 ```groovy
-implementation 'com.saltedge.sdk:saltedge-library:1.3.10@aar'
+implementation 'com.saltedge.sdk:saltedge-library:2.0.0@aar'
 ```
 
 Saltedge SDK library require extra dependencies:
@@ -78,8 +78,8 @@ or provide clientAppId and clientAppSecret and set http logging is enabled or no
     SaltEdgeSDK.getInstance().init(applicationContext, clientAppId, clientAppSecret, loggingIsEnabled);
 ```
   
-* Create customer and get secret token. 
-  The customerIdentifier is used to [create customers](https://docs.saltedge.com/account_information/v4/#customers-create). 
+* Create customer and get customer secret token. 
+  The customerIdentifier is used to [create customers](https://docs.saltedge.com/account_information/v5/#customers-create). 
 ```java
     private void createCustomer() {
         String customerIdentifier = "customerIdentifier"; // Random num, each installation - new
@@ -97,7 +97,7 @@ or provide clientAppId and clientAppSecret and set http logging is enabled or no
     }
 ```
 
-* You can also get the [list of providers](https://docs.saltedge.com/account_information/v4/#providers-list):
+* You can also get the [list of providers](https://docs.saltedge.com/account_information/v5/#providers-list):
 
 ```java
     public static void fetchProviders() {
@@ -105,7 +105,7 @@ or provide clientAppId and clientAppSecret and set http logging is enabled or no
         SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersConnector.Result() {
         
             @Override
-            public void onSuccess(ArrayList<ProviderData> providersList) {
+            public void onSuccess(ArrayList<SEProvider> providersList) {
                 //use providers list
             }
 
@@ -118,7 +118,7 @@ or provide clientAppId and clientAppSecret and set http logging is enabled or no
 ```
 * To connect to the bank you need a provider code and a country code.
 You can obtain these by calling `getCode()` and `getCountryCode()` on an `SEProvider` object. 
-You will also need a `customerId` (obtain after creating the customer) and a `callbackUrl`.
+You will also need a `callbackUrl`.
 
 In order to encapsulate these params, you can use the `SECreateTokenParams` class.
 One more time, you need:
@@ -146,7 +146,7 @@ One more time, you need:
              });
     }
 ```
-or call [createToken(...)](https://docs.saltedge.com/account_information/v4/#tokens-create) with custom map of params
+or call [createToken(...)](https://docs.saltedge.com/account_information/v5/#tokens-create) with custom map of params
 ```java
      private void obtainCreateToken(SEProvider selectedProvider, String callbackUrl, String customerSecret) {
          HashMap<String, Object> dataMap = new HashMap<>();
@@ -381,9 +381,9 @@ If you do not wish to refresh logins using Salt Edge Connect Form, you can perfo
     }
 ```
 
-[StageData](https://docs.saltedge.com/account_information/v4/#attempts-stages) contains interactive fields name and options which should be used for credentials input  
+[StageData](https://docs.saltedge.com/account_information/v5/#attempts-stages) contains interactive fields name and options which should be used for credentials input  
   
-* [Sending interactive credentials](https://docs.saltedge.com/account_information/v4/#logins-interactive)
+* [Sending interactive credentials](https://docs.saltedge.com/account_information/v5/#logins-interactive)
 ```java
     refreshService.sendInteractiveData(credentials);
 ```
@@ -403,7 +403,7 @@ Base models contained within the components:
 * `ProviderData`
 * `TransactionData`
 
-For a supplementary description of the models listed above that is not included in the sources' docs, feel free to visit the [API Reference](https://docs.saltedge.com/account_information/v4/).
+For a supplementary description of the models listed above that is not included in the sources' docs, feel free to visit the [API Reference](https://docs.saltedge.com/account_information/v5/).
 
 ## Utilities
 
@@ -417,5 +417,5 @@ See the LICENSE file.
 
 ## References
 
-1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v4/#salt_edge_connect)
-2. [Salt Edge API Reference](https://docs.saltedge.com/account_information/v4/)
+1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)
+2. [Salt Edge API Reference](https://docs.saltedge.com/account_information/v5/)
