@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.model.SETransaction;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.DateTools;
 
@@ -37,9 +37,9 @@ import java.util.ArrayList;
 public class TransactionsAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
-    private ArrayList<TransactionData> transactionsList;
+    private ArrayList<SETransaction> transactionsList;
 
-    public TransactionsAdapter(Context context, ArrayList<TransactionData> transactionsList) {
+    public TransactionsAdapter(Context context, ArrayList<SETransaction> transactionsList) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.transactionsList = transactionsList;
@@ -51,7 +51,7 @@ public class TransactionsAdapter extends BaseAdapter {
     }
 
     @Override
-    public TransactionData getItem(int position) {
+    public SETransaction getItem(int position) {
         return transactionsList.get(position);
     }
 
@@ -66,7 +66,7 @@ public class TransactionsAdapter extends BaseAdapter {
         TextView title = rowView.findViewById(R.id.title);
         TextView subtitleLeft = rowView.findViewById(R.id.subtitleLeft);
         TextView subtitleRight = rowView.findViewById(R.id.subtitleRight);
-        TransactionData transaction = getItem(position);
+        SETransaction transaction = getItem(position);
         title.setText(transaction.getDescription());
         subtitleLeft.setText(DateTools.formatDateToString(transaction.getMadeOnDate()));
         String subTitle = transaction.getCurrencyCode() + " " + transaction.getAmount();

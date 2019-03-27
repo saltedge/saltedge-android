@@ -28,17 +28,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.model.ConnectionData;
+import com.saltedge.sdk.model.SEConnection;
 import com.saltedge.sdk.sample.R;
 
 import java.util.ArrayList;
 
-public class LoginsAdapter extends BaseAdapter {
+public class ConnectionsAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
-    private ArrayList<ConnectionData> connectionsList;
+    private ArrayList<SEConnection> connectionsList;
 
-    public LoginsAdapter(Context context, ArrayList<ConnectionData> connectionsList) {
+    public ConnectionsAdapter(Context context, ArrayList<SEConnection> connectionsList) {
         layoutInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.connectionsList = connectionsList;
@@ -50,7 +50,7 @@ public class LoginsAdapter extends BaseAdapter {
     }
 
     @Override
-    public ConnectionData getItem(int position) {
+    public SEConnection getItem(int position) {
         return connectionsList.get(position);
     }
 
@@ -61,9 +61,9 @@ public class LoginsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = layoutInflater.inflate(R.layout.list_item_login, parent, false);
+        View rowView = layoutInflater.inflate(R.layout.list_item_connection, parent, false);
         TextView title = rowView.findViewById(R.id.title);
-        ConnectionData connectionData = getItem(position);
+        SEConnection connectionData = getItem(position);
         title.setText(connectionData.getProviderName());
         return rowView;
     }

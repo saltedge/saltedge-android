@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.model.ProviderData;
+import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.sample.R;
 
 import java.util.List;
@@ -36,13 +36,13 @@ import java.util.List;
 public class ProvidersAdapter extends BaseAdapter {
 
     private LayoutInflater layoutInflater;
-    private List<ProviderData> providersList;
+    private List<SEProvider> providersList;
 
     public ProvidersAdapter(Context context) {
          layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public void setListItems(List<ProviderData> providersList) {
+    public void setListItems(List<SEProvider> providersList) {
         this.providersList = providersList;
     }
 
@@ -52,7 +52,7 @@ public class ProvidersAdapter extends BaseAdapter {
     }
 
     @Override
-    public ProviderData getItem(int position) {
+    public SEProvider getItem(int position) {
         return (position < 0 || position >= providersList.size()) ? null : providersList.get(position);
     }
 
@@ -65,7 +65,7 @@ public class ProvidersAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = layoutInflater.inflate(R.layout.list_item_provider, parent, false);
         TextView textView = rowView.findViewById(R.id.providerTitle);
-        ProviderData item = getItem(position);
+        SEProvider item = getItem(position);
         if (item != null) {
             textView.setText(getItem(position).getName());
         }

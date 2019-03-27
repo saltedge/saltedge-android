@@ -91,6 +91,10 @@ public class SEConnection extends BaseModel implements Serializable {
                 && "interactive".equals(lastAttempt.getLastStage().getName());
     }
 
+    public Date getNextRefreshPossibleAtDate() {
+        return SEDateTools.parseStringToDate(nextRefreshPossibleAt);
+    }
+
 // GETTER AND SETTERS
 
     public String getSecret() {

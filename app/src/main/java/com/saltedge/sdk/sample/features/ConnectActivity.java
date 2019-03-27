@@ -31,7 +31,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.saltedge.sdk.interfaces.TokenConnectionResult;
+import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.network.SEApiConstants;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -42,12 +42,12 @@ import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.webview.SEWebViewTools;
 
 public class ConnectActivity extends AppCompatActivity implements SEWebViewTools.WebViewRedirectListener,
-        DialogInterface.OnClickListener, TokenConnectionResult {
+        DialogInterface.OnClickListener, ConnectSessionResult {
 
     private ProgressDialog progressDialog;
     private WebView webView;
     private String providerCode;
-    private String loginSecret;
+    private String connectionSecret;
     private Boolean tryToRefresh;
     private String locale = "";
     private String callbackUrl = Constants.CALLBACK_URL;
@@ -68,15 +68,19 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
      * ConnectActivity intent creator for the new provider connection
      * @param activity - host activity
      * @param providerCode - provider code which should be connected
-     * @param loginSecret - login secret which should reconnected
-     * @param tryToRefresh - if it is possible connector should try to refresh the login data else reconnect the login
+     * @param connectionSecret - connection secret which should reconnected
+     * @param tryToRefresh - if it is possible connector should try to refresh the connection data else reconnect the connection
      * @param overrideCredentials - indicates that the new credentials will automatically override the old ones on reconnect
      * @return new Intent
      */
-    public static Intent newIntent(Activity activity, String providerCode, String loginSecret, Boolean tryToRefresh, Boolean overrideCredentials) {
+    public static Intent newIntent(Activity activity,
+                                   String providerCode,
+                                   String connectionSecret,
+                                   Boolean tryToRefresh,
+                                   Boolean overrideCredentials) {
         Intent intent = new Intent(activity, ConnectActivity.class);
         intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
-        intent.putExtra(Constants.KEY_LOGIN_SECRET, loginSecret);
+        intent.putExtra(Constants.KEY_CONNECTION_SECRET, connectionSecret);
         intent.putExtra(Constants.KEY_REFRESH, tryToRefresh);
         intent.putExtra(Constants.KEY_OVERRIDE_CREDENTIALS, overrideCredentials);
         return intent;
@@ -130,7 +134,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
      */
     @Override
     public void onLoginSecretFetchSuccess(String stage, String loginId, String loginSecret) {
-        PreferencesTools.putLoginSecret(this, loginId, loginSecret);
+        PreferencesTools.putConnectionSecret(this, loginId, loginSecret);
         Toast.makeText(this, "Login successfully connected", Toast.LENGTH_SHORT).show();
         closeActivity(true);
     }
@@ -147,10 +151,10 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     @Override
     public void onLoginFetchingStage(String loginId, String loginSecret) {
         if (loginId == null || loginSecret == null) return;
-        if (this.loginSecret == null || !this.loginSecret.equals(loginSecret)) {
-            this.loginSecret = loginSecret;
-            if (!PreferencesTools.loginSecretIsSaved(this, loginId, loginSecret)) {
-                PreferencesTools.putLoginSecret(this, loginId, loginSecret);
+        if (this.connectionSecret == null || !this.connectionSecret.equals(loginSecret)) {
+            this.connectionSecret = loginSecret;
+            if (!PreferencesTools.connectionSecretIsSaved(this, loginId, loginSecret)) {
+                PreferencesTools.putConnectionSecret(this, loginId, loginSecret);
             }
         }
     }
@@ -200,11 +204,11 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     }
 
     private boolean isRefreshMode() {
-        return tryToRefresh != null && loginSecret != null && tryToRefresh;
+        return tryToRefresh != null && connectionSecret != null && tryToRefresh;
     }
 
     private boolean isReconnectViewMode() {
-        return tryToRefresh != null && loginSecret != null && !tryToRefresh;
+        return tryToRefresh != null && connectionSecret != null && !tryToRefresh;
     }
 
     private void fetchCreateConnectionToken() {
@@ -219,14 +223,14 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.refresh_provider));
-        SERequestManager.getInstance().refreshToken(locale, callbackUrl, loginSecret, customerSecret, this);
+        SERequestManager.getInstance().refreshToken(locale, callbackUrl, connectionSecret, customerSecret, this);
     }
 
     private void fetchReconnectConnectionToken(boolean overrideCredentials) {
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.reconnect_provider));
-        SERequestManager.getInstance().reconnectToken(locale, callbackUrl, loginSecret, customerSecret,
+        SERequestManager.getInstance().reconnectToken(locale, callbackUrl, connectionSecret, customerSecret,
                 overrideCredentials, this);
     }
 
@@ -254,7 +258,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     private void setInitialData() {
         Intent intent = this.getIntent();
         providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
-        loginSecret = intent.getStringExtra(Constants.KEY_LOGIN_SECRET);
+        connectionSecret = intent.getStringExtra(Constants.KEY_CONNECTION_SECRET);
         if (intent.hasExtra(Constants.KEY_REFRESH)) {
             tryToRefresh = intent.getBooleanExtra(Constants.KEY_REFRESH, false);
         }

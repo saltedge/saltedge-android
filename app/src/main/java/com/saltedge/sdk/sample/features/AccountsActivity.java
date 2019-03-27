@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,13 +39,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.saltedge.sdk.interfaces.DeleteLoginResult;
+import com.saltedge.sdk.interfaces.DeleteConnectionResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
-import com.saltedge.sdk.interfaces.RefreshLoginResult;
-import com.saltedge.sdk.model.AccountData;
-import com.saltedge.sdk.model.LoginData;
-import com.saltedge.sdk.model.StageData;
-import com.saltedge.sdk.network.SEApiConstants;
+import com.saltedge.sdk.interfaces.RefreshConnectionResult;
+import com.saltedge.sdk.model.SEAccount;
+import com.saltedge.sdk.model.SEConnection;
+import com.saltedge.sdk.model.SEStage;
 import com.saltedge.sdk.network.SERefreshService;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -58,11 +58,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class AccountsActivity extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, RefreshLoginResult, InputValueResult {
+        AdapterView.OnItemClickListener, RefreshConnectionResult, InputValueResult {
 
     private ProgressDialog progressDialog;
-    private ArrayList<AccountData> accounts;
-    private LoginData currentLogin;
+    private ArrayList<SEAccount> accounts;
+    private SEConnection currentConnection;
     private BottomSheetDialog mBottomSheetDialog;
     private ListView listView;
     private TextView emptyView;
@@ -71,9 +71,9 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     private SERefreshService refreshService;
     private boolean fetchingAccounts = false;
 
-    public static Intent newIntent(Activity activity, LoginData login) {
+    public static Intent newIntent(Activity activity, SEConnection connection) {
         Intent intent = new Intent(activity, AccountsActivity.class);
-        intent.putExtra(Constants.KEY_LOGIN, login);
+        intent.putExtra(Constants.KEY_CONNECTION, connection);
         return intent;
     }
 
@@ -120,7 +120,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
                 finish();
                 return true;
             case R.id.action_delete:
-                deleteLogin();
+                deleteConnection();
                 return true;
             case R.id.action_reconnect:
                 showConnectActivity(false);
@@ -149,16 +149,16 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        AccountData account= accounts.get(position);
+        SEAccount account= accounts.get(position);
         showAccountOptions(account.getId());
     }
 
     @Override
-    public void onRefreshSuccess(LoginData login) {
-        showShortToast("Login refreshed.");
+    public void onRefreshSuccess(SEConnection connection) {
+        showShortToast(R.string.connection_refreshed);
         refreshMenuItem.setVisible(!accounts.isEmpty());
-        if (login != null) {
-            this.currentLogin = login;
+        if (connection != null) {
+            this.currentConnection = connection;
         }
         if (!fetchingAccounts) {
             fetchAccounts();
@@ -178,14 +178,14 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onLoginStateFetchError(String errorMessage) {
-        //we can ignore intermediate login's fetch error
+    public void onConnectionStateFetchError(String errorMessage) {
+        //we can ignore intermediate connection's fetch error
     }
 
     @Override
-    public void provideInteractiveData(StageData lastStage) {
+    public void provideInteractiveData(SEStage lastStage) {
         if (lastStage.getInteractiveFieldsNames().length == 0) {
-            refreshService.sendInteractiveData(new HashMap<String, Object>());
+            refreshService.sendInteractiveData(new HashMap<>());
         } else {
             String inputFieldKey = lastStage.getInteractiveFieldsNames()[0];
             InputValueDialogHelper.showInputValueDialog(this, inputFieldKey, this);
@@ -195,22 +195,22 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void inputValueResult(String inputFieldKey, String inputFieldValue) {
         if (TextUtils.isEmpty(inputFieldValue)) {
-            showShortToast("Empty value not allowed");
+            showShortToast(R.string.empty_value_not_allowed);
         }
         HashMap<String, Object> credentials = new HashMap<>();
         credentials.put(inputFieldKey, inputFieldValue);
         refreshService.sendInteractiveData(credentials);
     }
 
-    private void deleteLogin() {
+    private void deleteConnection() {
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_login));
-        SERequestManager.getInstance().deleteLogin(customerSecret, currentLogin.getSecret(),
-                new DeleteLoginResult() {
+        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_connection));
+        SERequestManager.getInstance().deleteConnection(customerSecret, currentConnection.getSecret(),
+                new DeleteConnectionResult() {
                     @Override
                     public void onSuccess(Boolean isRemoved) {
                         if (isRemoved) {
-                            onDeleteLoginSuccess();
+                            onDeleteConnectionSuccess();
                         }
                     }
 
@@ -221,9 +221,9 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void onDeleteLoginSuccess() {
+    private void onDeleteConnectionSuccess() {
         try {
-            PreferencesTools.removeLoginSecret(this, currentLogin.getId());
+            PreferencesTools.removeConnectionSecret(this, currentConnection.getId());
             UITools.destroyAlertDialog(progressDialog);
             this.finish();
         } catch (Exception e) {
@@ -232,17 +232,17 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void fetchAccounts() {
-        if (TextUtils.isEmpty(currentLogin.getSecret()) || TextUtils.isEmpty(customerSecret)) {
+        if (TextUtils.isEmpty(currentConnection.getSecret()) || TextUtils.isEmpty(customerSecret)) {
             return;
         }
         accounts = new ArrayList<>();
         UITools.destroyProgressDialog(progressDialog);
         fetchingAccounts = true;
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
-        SERequestManager.getInstance().fetchAccounts(customerSecret, currentLogin.getSecret(),
+        SERequestManager.getInstance().fetchAccounts(customerSecret, currentConnection.getSecret(),
                 new FetchAccountsResult() {
                     @Override
-                    public void onSuccess(ArrayList<AccountData> accountsList) {
+                    public void onSuccess(ArrayList<SEAccount> accountsList) {
                         fetchingAccounts = false;
                         onFetchAccountsSuccess(accountsList);
                     }
@@ -255,7 +255,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void onFetchAccountsSuccess(ArrayList<AccountData> accountsList) {
+    private void onFetchAccountsSuccess(ArrayList<SEAccount> accountsList) {
         UITools.destroyAlertDialog(progressDialog);
         accounts = accountsList;
         updateViewsContent();
@@ -303,46 +303,53 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         }
         if (accountId != null && !accountId.isEmpty()) {
             Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId,
-                    currentLogin.getSecret(), showPendingTransactions);
+                    currentConnection.getSecret(), showPendingTransactions);
             startActivity(transactionsIntent);
         }
     }
 
     private void showConnectActivity(Boolean tryToRefresh) {
         try {
-            boolean overrideCredentials = !tryToRefresh && currentLogin.getLastSuccessAt() == null;
-            startActivityForResult(ConnectActivity.newIntent(this, currentLogin.getProviderCode(),
-                    currentLogin.getSecret(), tryToRefresh, overrideCredentials), Constants.CONNECT_REQUEST_CODE);
+            boolean overrideCredentials = !tryToRefresh && currentConnection.getLastSuccessAt() == null;
+            startActivityForResult(ConnectActivity.newIntent(this, currentConnection.getProviderCode(),
+                    currentConnection.getSecret(), tryToRefresh, overrideCredentials), Constants.CONNECT_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void startRefreshInBackground() {
-        if (TextUtils.isEmpty(currentLogin.getSecret()) || TextUtils.isEmpty(customerSecret)) {
-            showShortToast("Internal error. Invalid refresh secrets");
-        } else if (currentLogin.getNextRefreshPossibleAt() == null) {
-            showLongToast("Refresh is not allowed. Please Reconnect");
-        } else if (currentLogin.getNextRefreshPossibleAtDate().before(new Date())) {
-            String[] scopes = SEApiConstants.SCOPE_ACCOUNT_TRANSACTIONS;
+        if (TextUtils.isEmpty(currentConnection.getSecret()) || TextUtils.isEmpty(customerSecret)) {
+            showShortToast(R.string.error_invalid_refresh_secrets);
+        } else if (currentConnection.getNextRefreshPossibleAt() == null) {
+            showLongToast(R.string.refresh_not_allowed_reconnect);
+        } else if (currentConnection.getNextRefreshPossibleAtDate().before(new Date())) {
             refreshMenuItem.setVisible(false);
-            refreshService = SERequestManager.getInstance().refreshLoginWithSecret(customerSecret,
-                    currentLogin, scopes, this);
+            refreshService = SERequestManager.getInstance().refreshConnectionWithSecret(customerSecret,
+                    currentConnection, Constants.CONSENT_SCOPES, this);
         } else {
-            showLongToast("Refresh is not allowed. Wait until " + currentLogin.getNextRefreshPossibleAtDate());
+            showLongToast("Refresh is not allowed. Wait until " + currentConnection.getNextRefreshPossibleAtDate());
         }
     }
 
-    private void showLongToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    private void showShortToast(@StringRes Integer messageResId) {
+        Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showLongToast(@StringRes Integer messageResId) {
+        Toast.makeText(this, messageResId, Toast.LENGTH_LONG).show();
     }
 
     private void showShortToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    private void showLongToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
     private void setInitialData() {
-        currentLogin = (LoginData) this.getIntent().getSerializableExtra(Constants.KEY_LOGIN);
+        currentConnection = (SEConnection) this.getIntent().getSerializableExtra(Constants.KEY_CONNECTION);
         customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
     }
 }

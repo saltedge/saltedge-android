@@ -35,7 +35,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.saltedge.sdk.model.ProviderData;
+import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.ProvidersAdapter;
 
@@ -45,10 +45,10 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
 
     private static final String KEY_DATA = "KEY_DATA";
     private ProvidersAdapter adapter;
-    private ArrayList<ProviderData> providers;
+    private ArrayList<SEProvider> providers;
     public ProviderSelectListener selectListener;
 
-    public static ProvidersDialog newInstance(ArrayList<ProviderData> providers, ProviderSelectListener selectListener) {
+    public static ProvidersDialog newInstance(ArrayList<SEProvider> providers, ProviderSelectListener selectListener) {
         Bundle args = new Bundle();
         args.putSerializable(KEY_DATA, providers);
         ProvidersDialog fragment = new ProvidersDialog();
@@ -60,7 +60,7 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        providers = (ArrayList<ProviderData>) getArguments().getSerializable(KEY_DATA);
+        providers = (ArrayList<SEProvider>) getArguments().getSerializable(KEY_DATA);
 
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_providers, null);
         EditText inputView = dialogView.findViewById(R.id.inputView);
@@ -95,7 +95,7 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        ProviderData selectedProvider = adapter.getItem(i);
+        SEProvider selectedProvider = adapter.getItem(i);
         if (selectedProvider != null) {
             dismiss();
             selectListener.onProviderSelected(selectedProvider);
@@ -114,9 +114,9 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
         adapter.notifyDataSetChanged();
     }
 
-    private static ArrayList<ProviderData> getFilteredProviders(ArrayList<ProviderData> providers, String filter) {
-        ArrayList<ProviderData> resultProviders = new ArrayList<>();
-        for (ProviderData provider : providers) {
+    private static ArrayList<SEProvider> getFilteredProviders(ArrayList<SEProvider> providers, String filter) {
+        ArrayList<SEProvider> resultProviders = new ArrayList<>();
+        for (SEProvider provider : providers) {
             if (provider.getName().toLowerCase().contains(filter.toLowerCase())) {
                 resultProviders.add(provider);
             }
@@ -125,6 +125,6 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
     }
 
     public interface ProviderSelectListener {
-        void onProviderSelected(ProviderData provider);
+        void onProviderSelected(SEProvider provider);
     }
 }

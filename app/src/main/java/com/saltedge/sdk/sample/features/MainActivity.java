@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setupActionBar();
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new LoginsFragment()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, new ConnectionsFragment()).commit();
         }
         setupContent();
     }

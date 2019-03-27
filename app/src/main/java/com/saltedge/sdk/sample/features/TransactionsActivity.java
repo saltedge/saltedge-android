@@ -35,7 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
-import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.model.SETransaction;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.TransactionsAdapter;
@@ -49,7 +49,7 @@ import java.util.ArrayList;
 public class TransactionsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, FetchTransactionsResult {
 
     private ProgressDialog progressDialog;
-    private ArrayList<TransactionData> transactions;
+    private ArrayList<SETransaction> transactions;
     private String accountId;
     private String connectionSecret;
     private boolean pendingTransactionsMode = false;
@@ -78,7 +78,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     private void setInitialData() {
         Intent intent = this.getIntent();
         accountId = intent.getStringExtra(SEConstants.KEY_ACCOUNT_ID);
-        loginSecret = intent.getStringExtra(Constants.KEY_LOGIN_SECRET);
+        connectionSecret = intent.getStringExtra(Constants.KEY_CONNECTION_SECRET);
         pendingTransactionsMode = intent.getBooleanExtra(Constants.KEY_PENDING, false);
     }
 
@@ -112,7 +112,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
-    public void onSuccess(ArrayList<TransactionData> transactionsList) {
+    public void onSuccess(ArrayList<SETransaction> transactionsList) {
         UITools.destroyAlertDialog(progressDialog);
         transactions = transactionsList;
         updateTransactionsList();
@@ -129,9 +129,9 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
         if (pendingTransactionsMode) {
-            SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
+            SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, connectionSecret, accountId, this);
         } else {
-            SERequestManager.getInstance().fetchAllTransactions(customerSecret, loginSecret, accountId, this);
+            SERequestManager.getInstance().fetchAllTransactions(customerSecret, connectionSecret, accountId, this);
         }
     }
 

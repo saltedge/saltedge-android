@@ -40,13 +40,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.saltedge.sdk.interfaces.FetchLoginsResult;
+import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
-import com.saltedge.sdk.model.LoginData;
-import com.saltedge.sdk.model.ProviderData;
+import com.saltedge.sdk.model.SEConnection;
+import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.sample.adapters.LoginsAdapter;
+import com.saltedge.sdk.sample.adapters.ConnectionsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
@@ -54,12 +54,12 @@ import com.saltedge.sdk.sample.utils.UITools;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LoginsFragment extends Fragment implements ProvidersDialog.ProviderSelectListener,
+public class ConnectionsFragment extends Fragment implements ProvidersDialog.ProviderSelectListener,
         AdapterView.OnItemClickListener, View.OnClickListener {
 
     private ProgressDialog progressDialog;
-    private ArrayList<ProviderData> providers;
-    private ArrayList<LoginData> loginsList;
+    private ArrayList<SEProvider> providers;
+    private ArrayList<SEConnection> connectionsList;
     private String applicationLanguage = "";
     private ListView listView;
     private TextView emptyView;
@@ -98,7 +98,7 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
     }
 
     @Override
-    public void onProviderSelected(ProviderData provider) {
+    public void onProviderSelected(SEProvider provider) {
         Toast.makeText(getActivity(), "Selected " + String.valueOf(provider.getName()), Toast.LENGTH_SHORT).show();
         showConnectActivity(provider.getCode());
     }
@@ -122,41 +122,41 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
 
     @Override
     public void onClick(View view) {
-        String[] loginSecretArray = PreferencesTools.getLoginSecrets(getActivity());
-        if (loginSecretArray.length == 0) {
+        String[] connectionsSecretArray = PreferencesTools.getConnectionSecrets(getActivity());
+        if (connectionsSecretArray.length == 0) {
             fetchAndShowProviders();
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        LoginData login = loginsList.get(position);
-        showLoginAccounts(login);
+        SEConnection connection = connectionsList.get(position);
+        showConnectionAccounts(connection);
     }
 
     private void updateViewData() {
-        String[] loginSecretArray = PreferencesTools.getLoginSecrets(getActivity());
+        String[] connectionsSecretArray = PreferencesTools.getConnectionSecrets(getActivity());
 
-        loginsList = new ArrayList<>();
+        connectionsList = new ArrayList<>();
         emptyView.setVisibility(View.VISIBLE);
-        if (loginSecretArray.length == 0) {
-            emptyView.setText(R.string.no_logins);
+        if (connectionsSecretArray.length == 0) {
+            emptyView.setText(R.string.no_connections);
         } else {
-            emptyView.setText(R.string.fetching_logins);
-            fetchLogins(loginSecretArray);
+            emptyView.setText(R.string.fetching_connections);
+            fetchConnections(connectionsSecretArray);
         }
     }
 
-    private void fetchLogins(String[] loginSecretsArray) {
+    private void fetchConnections(String[] connectionsSecretsArray) {
         UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_logins));
+        progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_connections));
         String customerSecret = PreferencesTools.getStringFromPreferences(getActivity(), Constants.KEY_CUSTOMER_SECRET);
-        SERequestManager.getInstance().fetchLogins(customerSecret, loginSecretsArray,
-                new FetchLoginsResult() {
+        SERequestManager.getInstance().fetchConnections(customerSecret, connectionsSecretsArray,
+                new FetchConnectionsResult() {
                     @Override
-                    public void onSuccess(List<LoginData> logins) {
+                    public void onSuccess(List<SEConnection> connections) {
                         UITools.destroyAlertDialog(progressDialog);
-                        loginsList = new ArrayList<>(logins);
+                        connectionsList = new ArrayList<>(connections);
                         updateProvidersList();
                     }
 
@@ -172,12 +172,12 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
         Context context = getActivity();
         if (context != null) {
             emptyView.setVisibility(View.GONE);
-            listView.setAdapter(new LoginsAdapter(context, loginsList));
+            listView.setAdapter(new ConnectionsAdapter(context, connectionsList));
         }
     }
 
-    private void showLoginAccounts(LoginData loginData) {
-        Intent intent = AccountsActivity.newIntent(getActivity(), loginData);
+    private void showConnectionAccounts(SEConnection connection) {
+        Intent intent = AccountsActivity.newIntent(getActivity(), connection);
         startActivity(intent);
     }
 
@@ -188,7 +188,7 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
             String countryCode = applicationLanguage;//"XF" for fake providers
             SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersResult() {
                 @Override
-                public void onSuccess(ArrayList<ProviderData> providersList) {
+                public void onSuccess(ArrayList<SEProvider> providersList) {
                     onFetchProvidersSuccess(providersList);
                 }
 
@@ -206,7 +206,7 @@ public class LoginsFragment extends Fragment implements ProvidersDialog.Provider
         UITools.showAlertDialog(getActivity(), errorMessage);
     }
 
-    private void onFetchProvidersSuccess(ArrayList<ProviderData> providersList) {
+    private void onFetchProvidersSuccess(ArrayList<SEProvider> providersList) {
         UITools.destroyAlertDialog(progressDialog);
         providers = providersList;
         showProvidersListDialog();
