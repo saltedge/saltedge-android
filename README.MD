@@ -125,10 +125,11 @@ Params:
 ### Initiate Provider Connection 
 Once we have the Customer Secret, we can create a connection using Salt Edge Connect, which already implemented the interface in a fast and secure way
 Params:
-* customerSecret
+* customer secret
 * provider code (SEProvider)
-* localeCode (by default "en")
-* returnUrl - the custom URL the user will be redirected to on connect finish
+* consent scope (e.g. `holder_information`, `account_details`, `transactions_details`)
+* locale code (by default "en")
+* return Url - the custom URL the user will be redirected to on connect finish
   
 ```java
      private void createConnectSession(String customerSecret, SEProvider selectedProvider, String localeCode, String returnUrl) {

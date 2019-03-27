@@ -1,7 +1,16 @@
 # Changelog
 
 ## [2.0.0] - 2019-04-01
-- Upgrade to Saltedge API v5
+### Added
+- Added prefix `SE` to all base models (e.g. SEProvider, SEConnection, SEAccount, SETransaction, SEStage, SEAttempt)
+- Added definition Consent (model SEConsent)
+- Added `returnUrl` and `locale` to SEAttempt
+### Changed
+- Upgraded library to use Saltedge API v5
+- Renamed all occurrences of definition "Login" to "Connection"
+- Renamed all occurrences of definition "Token" to "Connect Session"
+### Removed
+- CreateTokenRequest model
   
 ## [1.3.10] - 2019-03-18
 ### Changed
