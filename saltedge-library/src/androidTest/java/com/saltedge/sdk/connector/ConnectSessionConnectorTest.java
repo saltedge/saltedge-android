@@ -29,14 +29,19 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class TokenConnectorTest implements ConnectSessionResult {
+public class ConnectSessionConnectorTest implements ConnectSessionResult {
 
     @Test
-    public void createTokenTest() throws Exception {
+    public void createConnectSessionTestCase1() throws Exception {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
         String[] scopes = {"value2", "value3"};
-        new ConnectSessionConnector(this).createConnectSession("test_provider_code", scopes, "test_url", "test customer secret");
+        new ConnectSessionConnector(this).createConnectSession(
+                "test_customer_secret",
+                "test_provider_code",
+                scopes,
+                "en",
+                "test_url");
         doneSignal.await(10, TimeUnit.SECONDS);
 
         Assert.assertNull(errorMessage);
@@ -49,7 +54,7 @@ public class TokenConnectorTest implements ConnectSessionResult {
     }
 
     @Test
-    public void createTokenWithMapDataTest() throws Exception {
+    public void createConnectSessionTestCase2() throws Exception {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
         HashMap<String, Object> dataMap = new HashMap<>();
@@ -57,7 +62,7 @@ public class TokenConnectorTest implements ConnectSessionResult {
         String[] scopes = {"scope1", "scope2"};
         dataMap.put("scopes", scopes);
         dataMap.put("return_to", "test_url");
-        new ConnectSessionConnector(this).createConnectSession(dataMap, "test customer secret");
+        new ConnectSessionConnector(this).createConnectSession("test_customer_secret", dataMap);
         doneSignal.await(5, TimeUnit.SECONDS);
 
         Assert.assertNull(errorMessage);
@@ -70,12 +75,17 @@ public class TokenConnectorTest implements ConnectSessionResult {
     }
 
     @Test
-    public void createTokenTestWithErrorResult() throws Exception {
+    public void createConnectSessionTestCase3() throws Exception {
         String errorResponse = "{\"error_class\": \"ResourceNotFound\", \"error_message\": \"Resource Not Found\"}";
         mockWebServer.enqueue(new MockResponse().setResponseCode(404).setBody(errorResponse));
 
         String[] scopes = {"value2", "value3"};
-        new ConnectSessionConnector(this).createConnectSession("test_provider_code", scopes, "test_url", "test customer secret");
+        new ConnectSessionConnector(this).createConnectSession(
+                "test_customer_secret",
+                "test_provider_code",
+                scopes,
+                "en",
+                "test_url");
         doneSignal.await(5, TimeUnit.SECONDS);
 
         assertThat(errorMessage, equalTo("Resource Not Found"));
