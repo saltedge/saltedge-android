@@ -131,10 +131,19 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
      * @param connectionSecret - connection secret code
      */
     @Override
-    public void onConnectSessionSuccess(String stage, String connectionId, String connectionSecret) {
+    public void onConnectSessionSuccess(String connectionId, String connectionSecret, String stage) {
         PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
         UITools.showShortToast(this, R.string.connection_connected);
         closeActivity(true);
+    }
+
+    /**
+     * Error callback of provider connect flow
+     * @param stage - error stage from connect page
+     */
+    @Override
+    public void onConnectSessionError(String stage) {
+        UITools.showAlertDialog(this, stage, this);
     }
 
     /**
@@ -147,7 +156,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     }
 
     @Override
-    public void onConnectionFetchingStage(String connectionId, String connectionSecret) {
+    public void onConnectSessionStageChange(String connectionId, String connectionSecret, String stage, String apiStage) {
         if (connectionId == null || connectionSecret == null) return;
         if (this.connectionSecret == null || !this.connectionSecret.equals(connectionSecret)) {
             this.connectionSecret = connectionSecret;
@@ -155,15 +164,6 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
                 PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
             }
         }
-    }
-
-    /**
-     * Error callback of provider connect flow
-     * @param stage - error stage from connect page
-     */
-    @Override
-    public void onConnectSessionError(String stage) {
-        UITools.showAlertDialog(this, stage, this);
     }
 
     /**

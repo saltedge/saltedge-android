@@ -55,7 +55,7 @@ public class TestTools {
 
     private static OkHttpClient createTestClient() {
         return new OkHttpClient.Builder()
-                .addInterceptor(new HeaderInterceptor())
+                .addInterceptor(new HeaderInterceptor("json"))
                 .addInterceptor(prepareLoggingInterceptor())
                 .build();
     }

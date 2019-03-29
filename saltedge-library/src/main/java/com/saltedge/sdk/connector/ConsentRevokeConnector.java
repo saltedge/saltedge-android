@@ -63,7 +63,7 @@ public class ConsentRevokeConnector extends BasePinnedConnector implements Callb
     public void onResponse(Call<ConsentResponse> call, Response<ConsentResponse> response) {
         ConsentResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null && responseBody.getData() != null) {
-            callback.onSuccess(responseBody.getData().getRevokedAt() != null);
+            callback.onSuccess(responseBody.getData().getRevokedAt() != null, consentId);
         }
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }

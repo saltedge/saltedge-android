@@ -60,7 +60,7 @@ public class SEWebViewTools {
 
     public static SEWebViewTools getInstance() {
         if (instance == null) {
-            instance = new SEWebViewTools();s
+            instance = new SEWebViewTools();
         }
         return instance;
     }
