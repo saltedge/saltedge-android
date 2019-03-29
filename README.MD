@@ -78,10 +78,9 @@ or provide clientAppId and clientAppSecret and set http logging is enabled or no
     SaltEdgeSDK.getInstance().init(applicationContext, clientAppId, clientAppSecret, loggingIsEnabled);
 ```
   
-### Create customer
-You should create customer and get customer secret token.   
-[Documentation](https://docs.saltedge.com/account_information/v5/#customers-create).  
-Params: 
+### [Create new customer](https://docs.saltedge.com/account_information/v5/#customers-create).
+You should create customer and get customer secret token.    
+*Params:* 
 * customerIdentifier - Random string which identify user on current app instance  
 
 ```java
@@ -101,8 +100,7 @@ Params:
     }
 ```
 
-### Get list of available providers
-[Documentation](https://docs.saltedge.com/account_information/v5/#providers-list):
+### [Get list of available providers](https://docs.saltedge.com/account_information/v5/#providers-list):
 
 ```java
     public static void fetchProviders() {
@@ -121,8 +119,9 @@ Params:
         });
     }
 ```
-### Initiate Provider Connection 
-Once we have the Customer Secret, we can create a connection using Salt Edge Connect, which already implemented the interface in a fast and secure way
+### [Initiate Provider Connect Session]((https://docs.saltedge.com/account_information/v5/#connect_sessions-create)) 
+Once we have the Customer Secret, we can create a connection 
+using Salt Edge Connect, which already implemented the interface in a fast and secure way
 Params:
 * customer secret
 * provider code (SEProvider)
@@ -153,7 +152,8 @@ Params:
                  });
     }
 ```
-or call [createConnectSession(...)](https://docs.saltedge.com/account_information/v5/#connect_sessions-create) with custom map of params
+or call [createConnectSession(...)](https://docs.saltedge.com/account_information/v5/#connect_sessions-create) 
+with custom map of params
 ```java
      private void createConnectSession(String customerSecret, SEProvider selectedProvider, String localeCode, String returnUrl) {
          HashMap<String, Object> dataMap = new HashMap<>();
@@ -178,7 +178,7 @@ or call [createConnectSession(...)](https://docs.saltedge.com/account_informatio
     }
 ```
 
-### Show Salt Edge Connect Web Page
+### [Show Salt Edge Connect Web Page](https://docs.saltedge.com/account_information/v5/#salt_edge_connect) 
 Using the returned URL, you can let the user import their data. After doing this, you will obtain a `connectionSecret`.
 
 ```java   
@@ -209,7 +209,7 @@ Using the returned URL, you can let the user import their data. After doing this
     }
 ```
 
-### Get Connection status
+### [Get Connection status](https://docs.saltedge.com/account_information/v5/#connections-show)
 `connectionSecret` can be used to get the status of the Connection, its accounts and transactions.
 
 ```java
@@ -229,7 +229,7 @@ Using the returned URL, you can let the user import their data. After doing this
             });
 ```                
 
-### Get Accounts of Connection
+### [Get Accounts of Connection](https://docs.saltedge.com/account_information/v5/#accounts-list)
 You can now get all the accounts of the login using the `connectionSecret`.
     
 ```java   
@@ -249,7 +249,7 @@ You can now get all the accounts of the login using the `connectionSecret`.
             });
 ```
 
-### Get Transactions of Account of Connection
+### [Get Transactions of Account of Connection](https://docs.saltedge.com/account_information/v5/#transactions-list)
 For each accounts, you can obtain the list of all transactions.
 
 ```java
@@ -291,7 +291,7 @@ For each accounts, you can obtain the list of all new transactions from specifie
                 });
 ```        
 
-For each accounts, you can obtain the list of all pending transactions.
+For each accounts, you can obtain the list of all [pending transactions](https://docs.saltedge.com/account_information/v5/#transactions-pending).
 
 ```java
         SERequestManager.getInstance().fetchPendingTransactionsOfAccount(
@@ -311,7 +311,7 @@ For each accounts, you can obtain the list of all pending transactions.
                 });
 ```
 
-### Refresh data of Connection
+### [Refresh data of Connection](https://docs.saltedge.com/account_information/v5/#connections-refresh)
 You can refresh the data for a connection. To refresh, you should obtain a connectUrl of Salt Edge Connect.
 
 ```java
@@ -333,7 +333,7 @@ You can refresh the data for a connection. To refresh, you should obtain a conne
                 });
 ```
 
-### Reconnect Connection    
+### [Reconnect Connection](https://docs.saltedge.com/account_information/v5/#connections-reconnect)    
 You can reconnect the connection. You should obtain a connectUrl of Salt Edge Connect.
 ```java    
         SERequestManager.getInstance().createReconnectSession(
@@ -355,7 +355,7 @@ You can reconnect the connection. You should obtain a connectUrl of Salt Edge Co
                 });
 ```           
 
-### Remove Connection   
+### [Remove Connection](https://docs.saltedge.com/account_information/v5/#connections-remove)   
 ```java    
         SERequestManager.getInstance().deleteConnection(
                 customerSecret, 
@@ -419,8 +419,6 @@ If you wish to refresh Connection without Salt Edge Connect Form, you can specia
         }
     }
 ```
-
-[StageData](https://docs.saltedge.com/account_information/v5/#attempts-stages) contains interactive fields name and options which should be used for credentials input  
   
 #### [Sending interactive credentials](https://docs.saltedge.com/account_information/v5/#logins-interactive)
 ```java
@@ -431,7 +429,7 @@ Credentials is `Map<String, Object>` type with content like `"interactive field 
 **Saltedge Connect API requires high security standards for data handling on client’s side. This method is only available for the certified and/or selected partners. For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  
 Please consult the Demo app to see how it works**
 
-### Get Consents   
+### [Get Consents](https://docs.saltedge.com/account_information/v5/#consents-list)  
 ```java    
         SERequestManager.getInstance().fetchConsents(
                 customerSecret, 
@@ -449,7 +447,7 @@ Please consult the Demo app to see how it works**
                 });
 ```
 
-### Revoke Consents   
+### [Revoke Consents](https://docs.saltedge.com/account_information/v5/#consents-revoke)   
 ```java    
         SERequestManager.getInstance().fetchConsents(
                 customerSecret, 
@@ -474,13 +472,16 @@ Please consult the Demo app to see how it works**
 There are some provided models for serializing the objects received in the API responses. These represent the providers, logins, accounts, transactions, provider fields and their options. Whenever you request a resource that returns one of these types, they will always get serialized into Java classes. (For instance, the `listingTransactionsOfAccount(...)` method has a `ArrayList<>` containing `SETransaction` instances in its success callback.)
 Base models contained within the components:
 
-* `SEProvider`
-* `SEProvider`
-* `SEAccount`
-* `SETransaction`
-* `SEConsent`
-* `SEAttempt`
-* `SEStage`
+* [SEProvider](https://docs.saltedge.com/account_information/v5/#providers)
+* [SECustomer](https://docs.saltedge.com/account_information/v5/#customers)
+* [SEConnection](https://docs.saltedge.com/account_information/v5/#connections)
+* [SEAccount](https://docs.saltedge.com/account_information/v5/#accounts)
+* [SETransaction](https://docs.saltedge.com/account_information/v5/#transactions)
+* [SEConsent](https://docs.saltedge.com/account_information/v5/#consents)
+* [SEAttempt](https://docs.saltedge.com/account_information/v5/#attempts)
+* [SEStage](https://docs.saltedge.com/account_information/v5/#attempts-stages) 
+Stage contains interactive fields name and options which should be used for credentials input.
+Possible values of the name of the stage: `start`, `connect`, `interactive`, `fetch_holder_info`, `fetch_accounts`, `fetch_recent`, `fetch_full`, `disconnect`, `finish`.
 
 For a supplementary description of the models listed above that is not included in the sources' docs, feel free to visit the [API Reference](https://docs.saltedge.com/account_information/v5/).
 

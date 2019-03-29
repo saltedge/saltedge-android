@@ -41,9 +41,10 @@ public class SEConstants {
     public static final String KEY_META = "meta";
     public static final String KEY_NEXT_ID = "next_id";
     public static final String KEY_NEXT_PAGE = "next_page";
-    public static final String KEY_ERROR_MESSAGE = "error_message";
+    public static final String KEY_MESSAGE = "message";
     public static final String KEY_ERROR = "error";
-    public static final String KEY_ERROR_CLASS = "error_class";
+    public static final String KEY_CLASS = "class";
+    public static final String KEY_DOCUMENTATION_URL = "documentation_url";
     public static final String KEY_IDENTIFIER = "identifier";
     public static final String KEY_OAUTH = "oauth";
     public static final String KEY_CONNECT_URL = "connect_url";

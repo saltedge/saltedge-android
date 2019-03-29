@@ -24,16 +24,19 @@ package com.saltedge.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
-public class ApiError {
+public class SEApiError {
 
-    @SerializedName(SEConstants.KEY_ERROR_MESSAGE)
+    @SerializedName(SEConstants.KEY_MESSAGE)
     private String errorMessage;
 
     @SerializedName(SEConstants.KEY_ERROR)
     private String error;
 
-    @SerializedName(SEConstants.KEY_ERROR_CLASS)
+    @SerializedName(SEConstants.KEY_CLASS)
     private String errorClass;
+
+    @SerializedName(SEConstants.KEY_DOCUMENTATION_URL)
+    private String documentationUrl;
 
     public String getErrorMessage() {
         return (errorMessage == null) ? error : errorMessage;
@@ -41,5 +44,9 @@ public class ApiError {
 
     public String getErrorClass() {
         return errorClass;
+    }
+
+    public String getDocumentationUrl() {
+        return documentationUrl;
     }
 }
