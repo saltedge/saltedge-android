@@ -33,9 +33,16 @@ public class DeleteConnectionResponse {
         return data.removed;
     }
 
+    public String getRemovedId() {
+        return data.id;
+    }
+
     private class DeleteConnectionData {
 
         @SerializedName(SEConstants.KEY_REMOVED)
         Boolean removed;
+
+        @SerializedName(SEConstants.KEY_ID)
+        String id;
     }
 }

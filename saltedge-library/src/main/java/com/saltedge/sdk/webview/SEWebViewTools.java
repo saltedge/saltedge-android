@@ -26,11 +26,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.network.SEApiConstants;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEJsonTools;
@@ -103,6 +105,9 @@ public class SEWebViewTools {
     private class CustomWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (SaltEdgeSDK.isLoggingEnabled()) {
+                Log.d("SEWebViewTools", "load url: " + url);
+            }
             if (view != null && urlIsSaltedgeRedirection(url)) {
                 view.loadUrl(url);
             }

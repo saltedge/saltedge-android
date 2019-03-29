@@ -204,11 +204,11 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_connection));
         SERequestManager.getInstance().deleteConnection(customerSecret, currentConnection.getSecret(),
-                new DeleteConnectionResult() {
+                new DeleteEntryResult() {
                     @Override
-                    public void onSuccess(Boolean isRemoved) {
-                        if (isRemoved) {
-                            onDeleteConnectionSuccess();
+                    public void onSuccess(Boolean entryIsRemoved, String entryId) {
+                        if (entryIsRemoved) {
+                            onDeleteConnectionSuccess(entryId);
                         }
                     }
 
@@ -219,9 +219,9 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
-    private void onDeleteConnectionSuccess() {
+    private void onDeleteConnectionSuccess(String entryId) {
         try {
-            PreferencesTools.removeConnectionSecret(this, currentConnection.getId());
+            PreferencesTools.removeConnectionSecret(this, entryId);
             UITools.destroyAlertDialog(progressDialog);
             this.finish();
         } catch (Exception e) {

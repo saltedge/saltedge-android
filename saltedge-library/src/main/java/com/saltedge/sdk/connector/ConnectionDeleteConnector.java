@@ -60,7 +60,9 @@ public class ConnectionDeleteConnector extends BasePinnedConnector implements Ca
     @Override
     public void onResponse(Call<DeleteConnectionResponse> call, Response<DeleteConnectionResponse> response) {
         DeleteConnectionResponse responseBody = response.body();
-        if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.isRemoved());
+        if (response.isSuccessful() && responseBody != null) {
+            callback.onSuccess(responseBody.isRemoved(), responseBody.getRemovedId());
+        }
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 

@@ -26,27 +26,29 @@ import com.saltedge.sdk.utils.SEConstants;
 
 public class SEApiError {
 
-    @SerializedName(SEConstants.KEY_MESSAGE)
-    private String errorMessage;
-
     @SerializedName(SEConstants.KEY_ERROR)
-    private String error;
-
-    @SerializedName(SEConstants.KEY_CLASS)
-    private String errorClass;
-
-    @SerializedName(SEConstants.KEY_DOCUMENTATION_URL)
-    private String documentationUrl;
+    private ApiErrorContent error;
 
     public String getErrorMessage() {
-        return (errorMessage == null) ? error : errorMessage;
+        return error.errorMessage;
     }
 
     public String getErrorClass() {
-        return errorClass;
+        return error.errorClass;
     }
 
     public String getDocumentationUrl() {
-        return documentationUrl;
+        return error.documentationUrl;
+    }
+
+    private class ApiErrorContent {
+        @SerializedName(SEConstants.KEY_MESSAGE)
+        private String errorMessage;
+
+        @SerializedName(SEConstants.KEY_CLASS)
+        private String errorClass;
+
+        @SerializedName(SEConstants.KEY_DOCUMENTATION_URL)
+        private String documentationUrl;
     }
 }
