@@ -21,24 +21,26 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.utils;
 
-import android.test.suitebuilder.annotation.SmallTest;
-
-import junit.framework.TestCase;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Test;
 
-public class SEJSONToolsTest extends TestCase {
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-    @SmallTest
+public class SEJSONToolsTest {
+
+    @Test
     public void testGetString() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "value");
 
-        assertEquals("value", SEJsonTools.getString(jsonObject, "name"));
+        assertThat(SEJsonTools.getString(jsonObject, "name"), equalTo("value"));
     }
 
-    @SmallTest
+    @Test
     public void testGetInt() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameInt", 12);
@@ -46,23 +48,23 @@ public class SEJSONToolsTest extends TestCase {
         assertEquals(12, SEJsonTools.getInt(jsonObject, "nameInt"));
     }
 
-    @SmallTest
+    @Test
     public void testGetBoolean() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameBoolean", true);
 
-        assertEquals(true, SEJsonTools.getBoolean(jsonObject, "nameBoolean").booleanValue());
+        assertTrue(SEJsonTools.getBoolean(jsonObject, "nameBoolean"));
     }
 
-    @SmallTest
+    @Test
     public void testGetDouble() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameDouble", 12.12);
 
-        assertEquals(12.12, SEJsonTools.getDouble(jsonObject, "nameDouble"));
+        assertThat(SEJsonTools.getDouble(jsonObject, "nameDouble"), equalTo(12.12));
     }
 
-    @SmallTest
+    @Test
     public void testGetJsonArray() throws Exception {
         JSONObject jsonObject = new JSONObject();
         JSONArray array = new JSONArray();
@@ -76,7 +78,7 @@ public class SEJSONToolsTest extends TestCase {
         assertEquals("test2", SEJsonTools.getJSONArray(jsonObject, "nameArray").get(1));
     }
 
-    @SmallTest
+    @Test
     public void testGetJsonObject() throws Exception {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("nameJsonObject", new JSONObject());
@@ -84,18 +86,9 @@ public class SEJSONToolsTest extends TestCase {
         assertEquals(JSONObject.class, SEJsonTools.getObject(jsonObject, "nameJsonObject").getClass());
     }
 
-    @SmallTest
+    @Test
     public void testStringToJSON() throws Exception {
 
         assertEquals(JSONObject.class, SEJsonTools.stringToJSON("{\"data\":customerId\"}").getClass());
     }
-
-    @SmallTest
-    public void testGetErrorMessage() throws Exception {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put(SEConstants.KEY_ERROR_MESSAGE, "error message");
-
-        assertEquals("error message", SEJsonTools.getErrorMessage(jsonObject));
-    }
-
 }

@@ -80,14 +80,6 @@ public class SEJsonTools {
         return new JSONObject();
     }
 
-    public static String getErrorMessage(JSONObject error) {
-        String result = SEConstants.REQUEST_ERROR;
-        if (!SEJsonTools.getString(error, SEConstants.KEY_ERROR_MESSAGE).isEmpty()) {
-            result = SEJsonTools.getString(error, SEConstants.KEY_ERROR_MESSAGE);
-        }
-        return result;
-    }
-
     public static String getErrorMessage(ResponseBody error) {
         return getErrorMessage(error, SEConstants.REQUEST_ERROR);
     }
