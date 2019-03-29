@@ -117,7 +117,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     }
 
     /**
-     * Fail callback after Token create request
+     * Fail callback after connect_url create request
      * @param errorMessage - error message
      */
     @Override
@@ -131,7 +131,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
      * @param connectionSecret - connection secret code
      */
     @Override
-    public void onConnectionSecretFetchSuccess(String stage, String connectionId, String connectionSecret) {
+    public void onConnectSessionSuccess(String stage, String connectionId, String connectionSecret) {
         PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
         UITools.showShortToast(this, R.string.connection_connected);
         closeActivity(true);
@@ -141,7 +141,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
      * Connection data updated callback.
      */
     @Override
-    public void onConnectionRefreshSuccess() {
+    public void onConnectionUpdate() {
         UITools.showShortToast(this, R.string.connection_updated);
         closeActivity(true);
     }
@@ -159,11 +159,11 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
 
     /**
      * Error callback of provider connect flow
-     * @param statusResponse - error message from connect page
+     * @param stage - error stage from connect page
      */
     @Override
-    public void onConnectionSecretFetchError(String statusResponse) {
-        UITools.showAlertDialog(this, statusResponse, this);
+    public void onConnectSessionError(String stage) {
+        UITools.showAlertDialog(this, stage, this);
     }
 
     /**

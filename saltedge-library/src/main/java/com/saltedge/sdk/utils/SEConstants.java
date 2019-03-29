@@ -28,13 +28,14 @@ public class SEConstants {
     public static final String KEY_CREATED_AT = "created_at";
     public static final String KEY_UPDATED_AT = "updated_at";
 
-    //WebView statuses
+    //WebView/Saltbridge keys
     public static final String KEY_STAGE = "stage";
     public static final String KEY_STAGES = "stages";
     public static final String STATUS_FETCHING = "fetching";
     public static final String STATUS_SYNC = "sync";
     public static final String STATUS_ERROR = "error";
     public static final String STATUS_SUCCESS = "success";
+    public static final String KEY_API_STAGE = "api_stage";
 
     //JSON keys
     public static final String KEY_DATA = "data";

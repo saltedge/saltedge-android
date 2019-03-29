@@ -42,6 +42,7 @@ public class SERestClient {
     private static final String TAG = "SERestClient";
 
     public SEApiInterface service = createRetrofit().create(SEApiInterface.class);
+    public static Gson gson = createDefaultGson();
     private static SERestClient instance;
 
     public static SERestClient getInstance() {
@@ -60,12 +61,12 @@ public class SERestClient {
         return new Retrofit.Builder()
                 .baseUrl(SEApiConstants.API_BASE_URL)
                 .client(createOkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create(createDefaultGson()))
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
     }
 
     @NotNull
-    private Gson createDefaultGson() {
+    private static Gson createDefaultGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(JSONObject.class, new ExtraJsonDataAdapter())
                 .create();

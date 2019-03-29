@@ -187,23 +187,23 @@ Using the returned URL, you can let the user import their data. After doing this
         SEWebViewTools.getInstance().initializeWithUrl(activityContext, webView, connectUrl, returnUrl, 
             new SEWebViewTools.WebViewRedirectListener() {
                 @Override
-                public void onConnectionSecretFetchSuccess(String responseStatus, String connectionId, String connectionSecret) {
+                public void onConnectSessionSuccess(String connectionId, String connectionSecret, String stage) {
                     //connection finished sucessfully. save connectionId and connectionSecret.
                 }
     
                 @Override
-                public void onConnectionSecretFetchError(String errorResponse) {
+                public void onConnectSessionError(String stage) {
                     //connection finished with error. Show the error. 
                 }
                 
                 @Override
-                public void onConnectionRefreshSuccess() {
+                public void onConnectionUpdate() {
                     //Connection model updated due to some actions 
                 }
                 
                 @Override
-                public void onLoginFetchingStage(String connectionId, String connectionSecret) {
-                    //connection is on FETCH stage. save connectionId and connectionSecret for connection process resume.
+                public void onConnectSessionStageChange(String connectionId, String connectionSecret, String stage, String apiStage) {
+                    //connection is on fetching stage. save connectionId and connectionSecret for connection process resume.
                 }
             });
     }
