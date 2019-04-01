@@ -68,7 +68,7 @@ Open Android Studio and create a new app.
 Add module (Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import) 
 or add external dependency (`implementation 'com.saltedge.sdk:saltedge-library:x.x.x@aar'`)
 
-### Init SDK.  
+### Init SDK  
 Before any usage of SDK you should provide clientAppId and clientAppSecret.  
 ```java
     SaltEdgeSDK.getInstance().init(applicationContext, clientAppId, clientAppSecret);
@@ -498,7 +498,7 @@ A few utility classes are bundled within the components, and are used internally
 
 ## License
 
-See the LICENSE file.
+See the [LICENSE](LICENSE) file.
 
 ## References
 
