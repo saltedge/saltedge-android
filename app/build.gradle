@@ -28,8 +28,7 @@ android {
 
 repositories {
     maven {
-//        url 'https://raw.github.com/saltedge/saltedge-android/master/repo/'
-        url '../repo'
+        url 'https://raw.github.com/saltedge/saltedge-android/master/repo/'
     }
 }
 

@@ -1,7 +1,8 @@
 # SaltEdge Android SDK & Sample application
 
-A handful of classes to help you interact with the Salt Edge API from your Android app.  
-Current SDK is based on Salt Edge API v5.
+A handful of classes to help you interact with the Saltegde API from your Android app.  
+Current SDK is based on Saltegde API v5.
+When you migrating to the new Saltegde Android SDK, please read carefully [CHANGELOG](CHANGELOG.MD) since many changes have been made.
 
 ## Requirements
 
