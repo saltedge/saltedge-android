@@ -1,8 +1,8 @@
 # SaltEdge Android SDK & Sample application
 
-A handful of classes to help you interact with the Saltegde API from your Android app.  
-Current SDK is based on Saltegde API v5.
-When you migrating to the new Saltegde Android SDK, please read carefully [CHANGELOG](CHANGELOG.MD) since many changes have been made.
+A handful of classes to help you interact with the Salt Edge API from your Android app.  
+Current SDK is based on Salt Edge API v5.
+When you migrating to the new Salt Edge Android SDK, please read carefully [CHANGELOG](CHANGELOG.MD) since many changes have been made.
 
 ## Requirements
 
@@ -209,6 +209,10 @@ Using the returned URL, you can let the user import their data. After doing this
             });
     }
 ```
+  
+Possible `stage` values for each callback type are `fetching`, `success` and `error`.  
+Parameter `api_stage` shows detailed information of the fetching process.   
+Possible `api_stage` values are attempts stages: `start`, `connect`, `interactive`, `fetch_holder_info`, `fetch_accounts`, `fetch_recent`, `fetch_full`, `disconnect`, `finish`.
 
 ### [Get Connection status](https://docs.saltedge.com/account_information/v5/#connections-show)
 `connectionSecret` can be used to get the status of the Connection, its accounts and transactions.
