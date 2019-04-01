@@ -37,7 +37,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.saltedge.sdk.interfaces.DeleteConnectionResult;
+import com.saltedge.sdk.interfaces.DeleteEntryResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.interfaces.RefreshConnectionResult;
 import com.saltedge.sdk.model.SEAccount;
