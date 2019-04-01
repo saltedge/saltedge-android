@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
-import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.model.SETransaction;
 import com.saltedge.sdk.model.response.TransactionsResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
@@ -38,9 +38,9 @@ import retrofit2.Response;
 public class TransactionsConnector extends BasePinnedConnector implements Callback<TransactionsResponse> {
 
     private final FetchTransactionsResult callback;
-    private ArrayList<TransactionData> transactionsList = new ArrayList<>();
+    private ArrayList<SETransaction> transactionsList = new ArrayList<>();
     private String customerSecret = "";
-    private String loginSecret = "";
+    private String connectionSecret = "";
     private String accountId = "";
     private String fromId = "";
     private boolean fetchPendingTransactions = false;
@@ -51,13 +51,13 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     }
 
     public void fetchTransactions(String customerSecret,
-                                  String loginSecret,
+                                  String connectionSecret,
                                   String accountId,
                                   String fromId,
                                   boolean fetchPendingTransactions,
                                   boolean fetchAllTransactionsFromId) {
         this.customerSecret = customerSecret;
-        this.loginSecret = loginSecret;
+        this.connectionSecret = connectionSecret;
         this.accountId = accountId;
         this.fromId = fromId;
         this.fetchPendingTransactions = fetchPendingTransactions;
@@ -69,11 +69,11 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     void enqueueCall() {
         if (fetchPendingTransactions) {
             SERestClient.getInstance().service
-                    .getPendingTransactions(customerSecret, loginSecret, accountId, fromId)
+                    .getPendingTransactions(customerSecret, connectionSecret, accountId, fromId)
                     .enqueue(this);
         } else {
             SERestClient.getInstance().service
-                    .getTransactions(customerSecret, loginSecret, accountId, fromId)
+                    .getTransactions(customerSecret, connectionSecret, accountId, fromId)
                     .enqueue(this);
         }
     }
@@ -87,7 +87,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     public void onResponse(Call<TransactionsResponse> call, Response<TransactionsResponse> response) {
         TransactionsResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) {
-            List<TransactionData> newTransactions = responseBody.getData();
+            List<SETransaction> newTransactions = responseBody.getData();
             if (newTransactions != null) transactionsList.addAll(newTransactions);
             fromId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();

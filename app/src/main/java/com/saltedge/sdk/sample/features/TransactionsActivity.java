@@ -32,10 +32,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
-import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.model.SETransaction;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.TransactionsAdapter;
@@ -49,16 +48,16 @@ import java.util.ArrayList;
 public class TransactionsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, FetchTransactionsResult {
 
     private ProgressDialog progressDialog;
-    private ArrayList<TransactionData> transactions;
+    private ArrayList<SETransaction> transactions;
     private String accountId;
-    private String loginSecret;
+    private String connectionSecret;
     private boolean pendingTransactionsMode = false;
 
-    public static Intent newIntent(Activity activity, String accountId, String loginSecret,
+    public static Intent newIntent(Activity activity, String accountId, String connectionSecret,
                                    boolean showPendingTransactions) {
         Intent intent = new Intent(activity, TransactionsActivity.class);
         intent.putExtra(SEConstants.KEY_ACCOUNT_ID, accountId);
-        intent.putExtra(Constants.KEY_LOGIN_SECRET, loginSecret);
+        intent.putExtra(Constants.KEY_CONNECTION_SECRET, connectionSecret);
         intent.putExtra(Constants.KEY_PENDING, showPendingTransactions);
         return intent;
     }
@@ -69,7 +68,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         setContentView(R.layout.fragment_list_view);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(R.string.transactions);
+            actionBar.setTitle(pendingTransactionsMode ? R.string.pending_transactions : R.string.transactions);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         setInitialData();
@@ -78,7 +77,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     private void setInitialData() {
         Intent intent = this.getIntent();
         accountId = intent.getStringExtra(SEConstants.KEY_ACCOUNT_ID);
-        loginSecret = intent.getStringExtra(Constants.KEY_LOGIN_SECRET);
+        connectionSecret = intent.getStringExtra(Constants.KEY_CONNECTION_SECRET);
         pendingTransactionsMode = intent.getBooleanExtra(Constants.KEY_PENDING, false);
     }
 
@@ -108,11 +107,11 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         String message = "Click ListItem Number " + String.valueOf(i);
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        UITools.showLongToast(this, message);
     }
 
     @Override
-    public void onSuccess(ArrayList<TransactionData> transactionsList) {
+    public void onSuccess(ArrayList<SETransaction> transactionsList) {
         UITools.destroyAlertDialog(progressDialog);
         transactions = transactionsList;
         updateTransactionsList();
@@ -129,9 +128,9 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
         UITools.destroyProgressDialog(progressDialog);
         progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
         if (pendingTransactionsMode) {
-            SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, loginSecret, accountId, this);
+            SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, connectionSecret, accountId, this);
         } else {
-            SERequestManager.getInstance().fetchAllTransactions(customerSecret, loginSecret, accountId, this);
+            SERequestManager.getInstance().fetchAllTransactions(customerSecret, connectionSecret, accountId, this);
         }
     }
 

@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.utils;
 
 import com.google.gson.Gson;
-import com.saltedge.sdk.model.ApiError;
+import com.saltedge.sdk.model.SEApiError;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,21 +80,13 @@ public class SEJsonTools {
         return new JSONObject();
     }
 
-    public static String getErrorMessage(JSONObject error) {
-        String result = SEConstants.REQUEST_ERROR;
-        if (!SEJsonTools.getString(error, SEConstants.KEY_ERROR_MESSAGE).isEmpty()) {
-            result = SEJsonTools.getString(error, SEConstants.KEY_ERROR_MESSAGE);
-        }
-        return result;
-    }
-
     public static String getErrorMessage(ResponseBody error) {
         return getErrorMessage(error, SEConstants.REQUEST_ERROR);
     }
 
     public static String getErrorMessage(ResponseBody error, String defaultMessage) {
         try {
-            ApiError apiError = new Gson().fromJson(error.string(), ApiError.class);
+            SEApiError apiError = new Gson().fromJson(error.string(), SEApiError.class);
             String result = (apiError != null) ? apiError.getErrorMessage() : defaultMessage;
             return (result != null) ? result : defaultMessage;
         } catch (Exception e) {

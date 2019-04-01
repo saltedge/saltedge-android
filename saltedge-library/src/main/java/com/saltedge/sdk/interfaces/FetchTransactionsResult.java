@@ -21,11 +21,11 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.TransactionData;
+import com.saltedge.sdk.model.SETransaction;
 
 import java.util.ArrayList;
 
 public interface FetchTransactionsResult {
-    void onSuccess(ArrayList<TransactionData> transactionsList);
+    void onSuccess(ArrayList<SETransaction> transactionsList);
     void onFailure(String errorMessage);
 }

@@ -25,8 +25,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.google.gson.Gson;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,39 +43,39 @@ public class PreferencesTools {
         getDefaultSharedPreferences(context).edit().remove(key).apply();
     }
 
-    public static void putLoginSecret(Context context, String loginId, String loginSecret) {
-        putStringToPreferences(context, loginId, loginSecret);
-        putStringToArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
+    public static void putConnectionSecret(Context context, String connectionId, String connectionSecret) {
+        putStringToPreferences(context, connectionId, connectionSecret);
+        putStringToArrayPreferences(context, Constants.CONNECTIONS_SECRETS_ARRAY, connectionSecret);
     }
 
-    public static String[] getLoginSecrets(Context context) {
-        return getArrayFromPreferences(context, Constants.LOGIN_SECRET_ARRAY);
+    public static String[] getConnectionSecrets(Context context) {
+        return getArrayFromPreferences(context, Constants.CONNECTIONS_SECRETS_ARRAY);
     }
 
-    public static void removeLoginSecret(Context context, String loginId) {
-        String loginSecret = getStringFromPreferences(context, loginId);
-        if (!loginSecret.isEmpty()) {
-            removeStringFromArrayPreferences(context, Constants.LOGIN_SECRET_ARRAY, loginSecret);
+    public static void removeConnectionSecret(Context context, String connectionId) {
+        String connectionSecret = getStringFromPreferences(context, connectionId);
+        if (!connectionSecret.isEmpty()) {
+            removeStringFromArrayPreferences(context, Constants.CONNECTIONS_SECRETS_ARRAY, connectionSecret);
         }
-        removeRecordFromPreferences(context, loginId);
+        removeRecordFromPreferences(context, connectionId);
     }
 
-    public static boolean loginSecretIsSaved(Context context, String loginId, String loginSecret) {
-        return !loginId.isEmpty() && !loginSecret.isEmpty()
-                && getStringFromPreferences(context, loginId).equals(loginSecret)
-                && Arrays.asList(getLoginSecrets(context)).contains(loginSecret);
+    public static boolean connectionSecretIsSaved(Context context, String connectionId, String connectionSecret) {
+        return !connectionId.isEmpty() && !connectionSecret.isEmpty()
+                && getStringFromPreferences(context, connectionId).equals(connectionSecret)
+                && Arrays.asList(getConnectionSecrets(context)).contains(connectionSecret);
     }
 
     private static void putStringToArrayPreferences(Context context, String arrayKey, String value) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
-        Set<String> set = preferences.getStringSet(arrayKey, new HashSet<String>());
+        Set<String> set = preferences.getStringSet(arrayKey, new HashSet<>());
         set.add(value);
         preferences.edit().putStringSet(arrayKey, set).apply();
     }
 
     private static void removeStringFromArrayPreferences(Context context, String arrayKey, String value) {
         SharedPreferences preferences = getDefaultSharedPreferences(context);
-        Set<String> set = preferences.getStringSet(arrayKey, new HashSet<String>());
+        Set<String> set = preferences.getStringSet(arrayKey, new HashSet<>());
         set.remove(value);
         preferences.edit().putStringSet(arrayKey, set).apply();
     }
@@ -87,7 +85,7 @@ public class PreferencesTools {
     }
 
     private static String[] getArrayFromPreferences(Context context, String key) {
-        Set set = getDefaultSharedPreferences(context).getStringSet(key, new HashSet<String>());
+        Set set = getDefaultSharedPreferences(context).getStringSet(key, new HashSet<>());
         return (String[]) set.toArray(new String[set.size()]);
     }
 }

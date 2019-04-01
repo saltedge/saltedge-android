@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.connector;
 
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
-import com.saltedge.sdk.model.AccountData;
+import com.saltedge.sdk.model.SEAccount;
 import com.saltedge.sdk.model.response.AccountsResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
@@ -40,23 +40,23 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
 
     private final FetchAccountsResult callback;
     private String nextPageId = "";
-    private ArrayList<AccountData> accountsList = new ArrayList<>();
+    private ArrayList<SEAccount> accountsList = new ArrayList<>();
     private String customerSecret = "";
-    private String loginSecret = "";
+    private String connectionSecret = "";
 
     public AccountsConnector(FetchAccountsResult callback) {
         this.callback = callback;
     }
 
-    public void fetchAccounts(String customerSecret, String loginSecret) {
+    public void fetchAccounts(String customerSecret, String connectionSecret) {
         this.customerSecret = customerSecret;
-        this.loginSecret = loginSecret;
+        this.connectionSecret = connectionSecret;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.getAccounts(customerSecret, loginSecret, nextPageId).enqueue(this);
+        SERestClient.getInstance().service.getAccounts(customerSecret, connectionSecret, nextPageId).enqueue(this);
     }
 
     @Override
@@ -82,12 +82,7 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
-            Collections.sort(accountsList, new Comparator<AccountData>() {
-                @Override
-                public int compare(AccountData a1, AccountData a2) {
-                    return a1.getName().compareTo(a2.getName());
-                }
-            });
+            Collections.sort(accountsList, (a1, a2) -> a1.getName().compareTo(a2.getName()));
             callback.onSuccess(accountsList);
         } else enqueueCall();
     }

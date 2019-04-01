@@ -28,29 +28,33 @@ public class SEConstants {
     public static final String KEY_CREATED_AT = "created_at";
     public static final String KEY_UPDATED_AT = "updated_at";
 
-    //WebView statuses
+    //WebView/Saltbridge keys
     public static final String KEY_STAGE = "stage";
     public static final String KEY_STAGES = "stages";
     public static final String STATUS_FETCHING = "fetching";
     public static final String STATUS_SYNC = "sync";
     public static final String STATUS_ERROR = "error";
     public static final String STATUS_SUCCESS = "success";
+    public static final String KEY_API_STAGE = "api_stage";
 
     //JSON keys
     public static final String KEY_DATA = "data";
     public static final String KEY_META = "meta";
     public static final String KEY_NEXT_ID = "next_id";
     public static final String KEY_NEXT_PAGE = "next_page";
-    public static final String KEY_ERROR_MESSAGE = "error_message";
+    public static final String KEY_MESSAGE = "message";
     public static final String KEY_ERROR = "error";
-    public static final String KEY_ERROR_CLASS = "error_class";
+    public static final String KEY_CLASS = "class";
+    public static final String KEY_DOCUMENTATION_URL = "documentation_url";
     public static final String KEY_IDENTIFIER = "identifier";
     public static final String KEY_OAUTH = "oauth";
     public static final String KEY_CONNECT_URL = "connect_url";
-    public static final String KEY_TOKEN = "token";
     public static final String KEY_EXPIRES_AT = "expires_at";
+    public static final String KEY_REVOKED_AT = "revoked_at";
     public static final String KEY_REMOVED = "removed";
+    public static final String KEY_COLLECTED_BY = "collected_by";
     public static final String KEY_FETCH_SCOPES = "fetch_scopes";
+    public static final String KEY_SCOPES = "scopes";
 
     //String resources
     public static final String REQUEST_ERROR = "Request error";
@@ -82,7 +86,7 @@ public class SEConstants {
     public static final String KEY_MAX_CONSENT_DAYS = "max_consent_days";
     public static final String KEY_INCLUDE_FAKE_PROVIDERS = "include_fake_providers";
 
-    //Login keys
+    //Connections keys
     public static final String KEY_SECRET = "secret";
     public static final String KEY_DAILY_REFRESH = "daily_refresh";
     public static final String KEY_FINISHED = "finished";
@@ -109,13 +113,14 @@ public class SEConstants {
     public static final String KEY_CONSENT_EXPIRES_AT = "consent_expires_at";
     public static final String KEY_LAST_ATTEMPT = "last_attempt";
     public static final String KEY_LAST_STAGE = "last_stage";
+    public static final String KEY_CONSENT = "consent";
+    public static final String KEY_ATTEMPT = "attempt";
 
     //Account keys
     public static final String KEY_NATURE = "nature";
     public static final String KEY_BALANCE = "balance";
     public static final String KEY_CURRENCY_CODE = "currency_code";
     public static final String KEY_EXTRA = "extra";
-    public static final String KEY_LOGIN_ID = "login_id";
 
     //Transaction keys
     public static final String KEY_DUPLICATED = "duplicated";
@@ -126,6 +131,8 @@ public class SEConstants {
     public static final String KEY_ACCOUNT_ID = "account_id";
 
     //Other keys
+    public static final String KEY_CUSTOMER_ID = "customer_id";
+    public static final String KEY_CONNECTION_ID = "connection_id";
     public static final String KEY_API_MODE = "api_mode";
     public static final String KEY_API_VERSION = "api_version";
     public static final String KEY_CATEGORIZATION = "categorization";
@@ -154,14 +161,16 @@ public class SEConstants {
     public static final String KEY_OVERRIDE_CREDENTIALS_STRATEGY = "override_credentials_strategy";
     public static final String KEY_RETURN_TO = "return_to";
     public static final String KEY_LOCALE = "locale";
-    public static final String KEY_RETURN_LOGIN_ID = "return_login_id";
     public static final String KEY_PROVIDER_MODES = "provider_modes";
     public static final String KEY_FROM_ID = "from_id";
     public static final String KEY_FROM_DATE = "from_date";
     public static final String KEY_TO_DATE = "to_date";
-    public static final String URL_EMPTY = "URL is empty";
-    public static final String JAVASCRIPT_CALLBACK = "javascript_callback_type";
+    public static final String KEY_PERIOD_DAYS = "period_days";
+    public static final String KEY_CONSENT_ID = "consent_id";
+
+    public static final String KEY_JAVASCRIPT_CALLBACK_TYPE = "javascript_callback_type";
     public static final String IFRAME = "iframe";
+    public static final String URL_EMPTY = "URL is empty";
 
     //ERRORS
     public static final String ERROR_INVALID_REFRESH_SECRETS = "Invalid refresh secrets";

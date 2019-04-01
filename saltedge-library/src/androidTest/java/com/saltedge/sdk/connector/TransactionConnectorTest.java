@@ -27,8 +27,8 @@ import android.support.test.runner.AndroidJUnit4;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.TestTools;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
-import com.saltedge.sdk.model.TransactionData;
-import com.saltedge.sdk.network.ApiInterface;
+import com.saltedge.sdk.model.SETransaction;
+import com.saltedge.sdk.network.SEApiInterface;
 import com.saltedge.sdk.network.SERestClient;
 
 import org.junit.After;
@@ -60,7 +60,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
 
         new TransactionsConnector(this).fetchTransactions("customer_secret", "logon_secret","2", "", false);
         doneSignal.await(5, TimeUnit.SECONDS);
-        TransactionData transaction = transactionsList.get(0);
+        SETransaction transaction = transactionsList.get(0);
 
         Assert.assertNull(errorMessage);
         assertThat(transactionsList.size(), equalTo(1));
@@ -89,7 +89,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
 
         new TransactionsConnector(this).fetchTransactions("customer_secret", "logon_secret", "2", "3", true);
         doneSignal.await(5, TimeUnit.SECONDS);
-        TransactionData transaction = transactionsList.get(0);
+        SETransaction transaction = transactionsList.get(0);
 
         Assert.assertNull(errorMessage);
         assertThat(transactionsList.size(), equalTo(1));
@@ -115,7 +115,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
     private CountDownLatch doneSignal;
     private MockWebServer mockWebServer;
     private Retrofit mockRetrofit;
-    private List<TransactionData> transactionsList;
+    private List<SETransaction> transactionsList;
     private String errorMessage;
     private String successResponse = "{\"data\":[{\"id\":\"3\",\"account_id\":\"2\",\"duplicated\":false,\"mode\":\"normal\",\"status\":\"posted\",\"made_on\":\"2018-04-01\",\"amount\":100.0,\"currency_code\":\"EUR\",\"description\":\"Income for MasterCard\",\"category\":\"transfer\",\"extra\":{\"categorization_confidence\":1.0},\"created_at\":\"2018-05-28T08:07:07Z\",\"updated_at\":\"2018-05-28T08:07:07Z\"}],\"meta\":{\"next_id\":null,\"next_page\":null}}";
 
@@ -129,7 +129,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
         mockWebServer.start();
         HttpUrl url = mockWebServer.url("/");
         mockRetrofit = TestTools.createMockRetrofit(url);
-        SERestClient.getInstance().service = mockRetrofit.create(ApiInterface.class);
+        SERestClient.getInstance().service = mockRetrofit.create(SEApiInterface.class);
         doneSignal = new CountDownLatch(1);
     }
 
@@ -139,7 +139,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
     }
 
     @Override
-    public void onSuccess(ArrayList<TransactionData> transactionsList) {
+    public void onSuccess(ArrayList<SETransaction> transactionsList) {
         this.transactionsList = transactionsList;
         doneSignal.countDown();
     }
