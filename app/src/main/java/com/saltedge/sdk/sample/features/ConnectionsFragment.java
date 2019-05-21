@@ -29,6 +29,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,7 +60,7 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
     private ProgressDialog progressDialog;
     private ArrayList<SEProvider> providers;
     private ArrayList<SEConnection> connectionsList;
-    private String applicationLanguage = "";
+    private String applicationCountryCode = "XF";
     private ListView listView;
     private TextView emptyView;
 
@@ -67,21 +68,24 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        applicationLanguage = getResources().getConfiguration().locale.getLanguage();
-    }
+        applicationCountryCode = getResources().getConfiguration().locale.getCountry();
+;    }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_list_view, null);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listView = getView().findViewById(R.id.listView);
-        emptyView = getView().findViewById(R.id.emptyView);
-        listView.setOnItemClickListener(this);
-        emptyView.setOnClickListener(this);
+        View fragmentView = getView();
+        if (fragmentView != null) {
+            listView = fragmentView.findViewById(R.id.listView);
+            emptyView = fragmentView.findViewById(R.id.emptyView);
+            listView.setOnItemClickListener(this);
+            emptyView.setOnClickListener(this);
+        }
     }
 
     @Override
@@ -98,7 +102,7 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
 
     @Override
     public void onProviderSelected(SEProvider provider) {
-        UITools.showShortToast(getActivity(), "Selected " + String.valueOf(provider.getName()));
+        UITools.showShortToast(getActivity(), "Selected " + provider.getName());
         showConnectActivity(provider.getCode());
     }
 
@@ -110,13 +114,11 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_provider_list:
-                fetchAndShowProviders();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_provider_list) {
+            fetchAndShowProviders();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -184,7 +186,7 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
         if (providers == null || providers.isEmpty()) {
             UITools.destroyProgressDialog(progressDialog);
             progressDialog = UITools.showProgressDialog(getActivity(), getString(R.string.fetching_providers));
-            String countryCode = applicationLanguage;//"XF" for fake providers
+            String countryCode = applicationCountryCode;//"XF" for fake providers
             SERequestManager.getInstance().fetchProviders(countryCode, new ProvidersResult() {
                 @Override
                 public void onSuccess(ArrayList<SEProvider> providersList) {
@@ -213,9 +215,12 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
 
     private void showProvidersListDialog() {
         if (providers != null && !providers.isEmpty()) {
-            UITools.showShortToast(getActivity(), "Fetched " + String.valueOf(providers.size()));
+            UITools.showShortToast(getActivity(), "Fetched " + providers.size());
             if (isVisible()) {
-                ProvidersDialog.newInstance(providers, this).show(getFragmentManager(), "");
+                FragmentManager fragmentManager = getFragmentManager();
+                if (fragmentManager != null) {
+                    ProvidersDialog.newInstance(providers, this).show(fragmentManager, "");
+                }
             }
         } else {
             if (isVisible()) {
