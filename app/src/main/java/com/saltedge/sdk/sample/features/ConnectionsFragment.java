@@ -69,7 +69,7 @@ public class ConnectionsFragment extends Fragment implements ProvidersDialog.Pro
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         applicationCountryCode = getResources().getConfiguration().locale.getCountry();
-;    }
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

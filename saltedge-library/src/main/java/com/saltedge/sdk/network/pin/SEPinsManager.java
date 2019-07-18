@@ -137,7 +137,7 @@ public class SEPinsManager implements Callback<Void> {
                 }
             } else {
                 String errorMessage = SEJsonTools.getErrorMessage(response.errorBody(),
-                        SEErrorTools.ERROR_MSG_SECURITY_REQUEST_ERROR);
+                        SEErrorTools.ERROR_MSG_SECURITY_REQUEST_ERROR) + "(" + response.code() + ")";
                 onPinLoadFailure(errorMessage);
             }
         } catch (Exception e) {
