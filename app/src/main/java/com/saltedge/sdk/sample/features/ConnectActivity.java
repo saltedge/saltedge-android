@@ -26,9 +26,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.network.SERequestManager;
@@ -40,7 +41,8 @@ import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.webview.SEWebViewTools;
 
 public class ConnectActivity extends AppCompatActivity implements SEWebViewTools.WebViewRedirectListener,
-        DialogInterface.OnClickListener, ConnectSessionResult {
+        DialogInterface.OnClickListener,
+        ConnectSessionResult {
 
     private ProgressDialog progressDialog;
     private WebView webView;
