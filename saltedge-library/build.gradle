@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 
 apply plugin: 'maven'
 
-def appVersionCode = 13
-def appVersionName = "2.0.0"
+def appVersionCode = 14
+def appVersionName = "2.0.1"
 
 android {
     compileSdkVersion 28
@@ -47,7 +47,7 @@ dependencies {
     }
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.google.android.gms:play-services-safetynet:16.0.0'
+    implementation 'com.google.android.gms:play-services-safetynet:17.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'//Don't update while support Android SDK < 20

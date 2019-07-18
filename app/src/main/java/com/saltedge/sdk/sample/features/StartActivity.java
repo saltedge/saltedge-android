@@ -62,7 +62,7 @@ public class StartActivity extends AppCompatActivity {
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
 
         if (customerIdentifier.isEmpty()) {
-            customerIdentifier = customerIdentifierPrefix + String.valueOf(new Date().getTime());
+            customerIdentifier = customerIdentifierPrefix + new Date().getTime();
             PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_IDENTIFIER, customerIdentifier);
         }
 

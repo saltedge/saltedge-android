@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.0.1] - 2019-07-18
+### Changed
+- Updated a few dependencies
+- Updated error message format
+
 ## [2.0.0] - 2019-04-01
 ### Added
 - Added prefix `SE` to all base models (e.g. `SEProvider`, `SEConnection`, `SEAccount`, `SETransaction`, `SEStage`, `SEAttempt`, `SEApiError`)
