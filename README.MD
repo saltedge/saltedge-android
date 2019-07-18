@@ -41,7 +41,7 @@ repositories {
 
 Add SDK dependency  
 ```groovy
-implementation 'com.saltedge.sdk:saltedge-library:2.0.0@aar'
+implementation 'com.saltedge.sdk:saltedge-library:2.0.1@aar'
 ```
 
 Saltedge SDK library require extra dependencies:
