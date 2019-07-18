@@ -23,9 +23,10 @@ package com.saltedge.sdk.sample.features;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.widget.EditText;
+
+import androidx.appcompat.app.AlertDialog;
 
 public class InputValueDialogHelper {
 
