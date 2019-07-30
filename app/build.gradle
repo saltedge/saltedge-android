@@ -34,7 +34,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    api 'com.saltedge.sdk:saltedge-library:2.0.1@aar'
+    implementation project(path: ':saltedge-library')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
 
