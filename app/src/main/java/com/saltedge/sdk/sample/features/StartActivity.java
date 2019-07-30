@@ -40,7 +40,7 @@ import java.util.Date;
 
 public class StartActivity extends AppCompatActivity {
 
-    private final static String customerIdentifierPrefix = "ANDROID_APP_EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
+    private final static String customerIdentifierPrefix = "ANDROID_APP_EXAMPLE_IDENTIFIER_"; // Random name, each installation - new name
     private final static String clientAppId = "";//TODO SET APP ID
     private final static String clientAppSecret = "";//TODO SET APP SECRET
     private ProgressDialog progressDialog;
