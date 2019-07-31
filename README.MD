@@ -41,7 +41,9 @@ repositories {
 
 Add SDK dependency  
 ```groovy
-implementation 'com.saltedge.sdk:saltedge-library:2.0.1@aar'
+implementation ('com.saltedge.sdk:saltedge-library:2.0.2@aar') {
+        transitive = true
+    }
 ```
 
 ## Using the Sample application
@@ -58,7 +60,9 @@ implementation 'com.saltedge.sdk:saltedge-library:2.0.1@aar'
 
 Open Android Studio and create a new app.  
 Add module (Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import) 
-or add external dependency (`implementation 'com.saltedge.sdk:saltedge-library:x.x.x@aar'`)
+or add external dependency (`implementation ('com.saltedge.sdk:saltedge-library:x.x.x@aar') {
+                                     transitive = true
+                                 }'`)
 
 ### Init SDK  
 Before any usage of SDK you should provide clientAppId and clientAppSecret.  
