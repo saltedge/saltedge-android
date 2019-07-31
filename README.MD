@@ -500,3 +500,5 @@ See the [LICENSE](LICENSE) file.
 
 1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)
 2. [Salt Edge API Reference](https://docs.saltedge.com/account_information/v5/)
+
+## [Deploy flow for saltedge-library](DEPLOY.md) (for contributors)

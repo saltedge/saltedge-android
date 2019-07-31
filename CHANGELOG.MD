@@ -7,6 +7,7 @@
 
 ### Added
 - `transitive = true` property for `saltedge-library` dependency declaration in the `build-gradle` of the `app` module
+- DEPLOY.md for contributors
 
 ## [2.0.1] - 2019-07-18
 ### Changed
