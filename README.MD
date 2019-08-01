@@ -41,15 +41,9 @@ repositories {
 
 Add SDK dependency  
 ```groovy
-api 'com.saltedge.sdk:saltedge-library:2.0.1@aar'
-```
-
-Saltedge SDK library require extra dependencies:
-```groovy
-implementation 'com.google.android.gms:play-services-safetynet:17.0.0'//Security utils
-implementation 'com.squareup.retrofit2:retrofit:2.5.0'//Network communication
-implementation 'com.squareup.retrofit2:converter-gson:2.5.0'//model serializer/deserializer
-implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'//Network communication logging
+implementation ('com.saltedge.sdk:saltedge-library:2.0.2@aar') {
+        transitive = true
+    }
 ```
 
 ## Using the Sample application
@@ -66,7 +60,9 @@ implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'//Network commun
 
 Open Android Studio and create a new app.  
 Add module (Android Studio -> File -> Import Module -> find module named "saltedge-library" -> Import) 
-or add external dependency (`api 'com.saltedge.sdk:saltedge-library:x.x.x@aar'`)
+or add external dependency (`implementation ('com.saltedge.sdk:saltedge-library:x.x.x@aar') {
+                                     transitive = true
+                                 }'`)
 
 ### Init SDK  
 Before any usage of SDK you should provide clientAppId and clientAppSecret.  
