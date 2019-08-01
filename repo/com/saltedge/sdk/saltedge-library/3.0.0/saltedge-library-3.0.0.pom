@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.saltedge.sdk</groupId>
   <artifactId>saltedge-library</artifactId>
-  <version>3.0.0-alpha8</version>
+  <version>3.0.0</version>
   <packaging>aar</packaging>
   <dependencies>
     <dependency>
