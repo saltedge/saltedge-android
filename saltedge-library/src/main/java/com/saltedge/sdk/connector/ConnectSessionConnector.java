@@ -51,14 +51,16 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
                                      String providerCode,
                                      String[] consentScopes,
                                      String localeCode,
-                                     String returnToUrl) {
+                                     String returnToUrl
+    ) {
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
                 new SEAttempt(localeCode, returnToUrl),
                 new String[0],
                 providerCode,
                 SEConstants.IFRAME,
-                null);
+                null
+        );
         call = SERestClient.getInstance().service.createConnectSession(customerSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
@@ -81,7 +83,8 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
                 null,
                 null,
                 SEConstants.IFRAME,
-                overrideCredentials ? "override" : null);
+                overrideCredentials ? "override" : null
+        );
         call = SERestClient.getInstance().service.createReconnectSession(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }

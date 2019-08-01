@@ -19,38 +19,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample.features;
+package com.saltedge.sdk.errors;
 
-import android.os.Bundle;
+public class SDKFeatureException extends RuntimeException {
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.saltedge.sdk.sample.R;
-
-public class MainActivity extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        setupActionBar();
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, new ConnectionsFragment()).commit();
-        }
-        setupContent();
-    }
-
-    private void setupContent() {
-
-    }
-
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setLogo(R.drawable.ic_launcher);
-            actionBar.setDisplayUseLogoEnabled(true);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
+    public SDKFeatureException() {
+        super("Feature is not supported. (https://docs.saltedge.com/account_information/v5/)");
     }
 }

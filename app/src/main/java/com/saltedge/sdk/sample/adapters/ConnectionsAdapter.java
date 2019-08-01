@@ -25,7 +25,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.saltedge.sdk.model.SEConnection;
@@ -33,38 +33,24 @@ import com.saltedge.sdk.sample.R;
 
 import java.util.ArrayList;
 
-public class ConnectionsAdapter extends BaseAdapter {
+public class ConnectionsAdapter extends ArrayAdapter<SEConnection> {
 
-    private LayoutInflater layoutInflater;
-    private ArrayList<SEConnection> connectionsList;
-
-    public ConnectionsAdapter(Context context, ArrayList<SEConnection> connectionsList) {
-        layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.connectionsList = connectionsList;
-    }
-
-    @Override
-    public int getCount() {
-        return connectionsList.size();
-    }
-
-    @Override
-    public SEConnection getItem(int position) {
-        return connectionsList.get(position);
-    }
-
-    @Override
-    public long getItemId(int id) {
-        return id;
+    public ConnectionsAdapter(Context context, ArrayList<SEConnection> connections) {
+        super(context, 0, connections);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = layoutInflater.inflate(R.layout.list_item_connection, parent, false);
-        TextView title = rowView.findViewById(R.id.title);
-        SEConnection connectionData = getItem(position);
-        title.setText(connectionData.getProviderName());
-        return rowView;
+        SEConnection connection = getItem(position);
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_connection, parent, false);
+        }
+        // Lookup view for data population
+        TextView title = convertView.findViewById(R.id.title);
+        // Populate the data into the template view using the data object
+        title.setText(connection != null ? connection.getProviderName() : "Invalid entry");
+        // Return the completed view to render on screen
+        return convertView;
     }
 }

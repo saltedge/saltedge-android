@@ -25,50 +25,78 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.sample.R;
+import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProvidersAdapter extends BaseAdapter {
+public class ProvidersAdapter extends ArrayAdapter<SEProvider> implements Filterable {
 
-    private LayoutInflater layoutInflater;
-    private List<SEProvider> providersList;
+    private ArrayList<SEProvider> allAproviders = new ArrayList<>();
 
-    public ProvidersAdapter(Context context) {
-         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    public void setListItems(List<SEProvider> providersList) {
-        this.providersList = providersList;
-    }
-
-    @Override
-    public int getCount() {
-        return providersList.size();
-    }
-
-    @Override
-    public SEProvider getItem(int position) {
-        return (position < 0 || position >= providersList.size()) ? null : providersList.get(position);
-    }
-
-    @Override
-    public long getItemId(int id) {
-        return id;
+    public ProvidersAdapter(Context context, ArrayList<SEProvider> providers) {
+        super(context, 0, providers);
+        allAproviders = new ArrayList<>(providers);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = layoutInflater.inflate(R.layout.list_item_provider, parent, false);
-        TextView textView = rowView.findViewById(R.id.providerTitle);
         SEProvider item = getItem(position);
-        if (item != null) {
-            textView.setText(getItem(position).getName());
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_provider, parent, false);
         }
-        return rowView;
+        // Lookup view for data population
+        ImageView logo = convertView.findViewById(R.id.logo);
+        TextView title = convertView.findViewById(R.id.title);
+        // Populate the data into the template view using the data object
+        String logoUrl = item != null ? item.getLogoUrl() : "";
+        Picasso.get().load(logoUrl).fit().centerCrop().error(R.drawable.ic_bank_24dp).placeholder(R.drawable.ic_bank_24dp).into(logo);
+        title.setText(item != null ? item.getName() : "Invalid entry");
+        // Return the completed view to render on screen
+        return convertView;
+    }
+
+    @NonNull
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                ArrayList<SEProvider> filteredProviders = new ArrayList<>();
+                FilterResults results = new FilterResults();
+                if (constraint == null || constraint.length() == 0) {
+                    filteredProviders = allAproviders;
+                } else {
+                    constraint = constraint.toString().toLowerCase();
+                    for (SEProvider provider : allAproviders) {
+                        if (provider.getName().toLowerCase().contains(constraint.toString())) {
+                            filteredProviders.add(provider);
+                        }
+                    }
+                }
+                results.count = filteredProviders.size();
+                results.values = filteredProviders;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                List<SEProvider> collection = (List<SEProvider>) results.values;
+                clear();
+                addAll(collection);
+            }
+        };
     }
 }

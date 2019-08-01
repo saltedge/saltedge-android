@@ -13,10 +13,12 @@ android {
         applicationId "com.saltedge.sdk.sample"
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 5
-        versionName "2.0.1"
+        versionCode 6
+        versionName "3.0.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -34,13 +36,15 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.saltedge.sdk:saltedge-library:2.0.1@aar'
+    implementation 'com.saltedge.sdk:saltedge-library:3.0.0@aar'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.android.gms:play-services-safetynet:17.0.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.2'//Don't update while support Android SDK < 20
+
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

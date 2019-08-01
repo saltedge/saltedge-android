@@ -30,7 +30,6 @@ import com.saltedge.sdk.utils.SEJsonTools;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import retrofit2.Call;
 import retrofit2.Callback;

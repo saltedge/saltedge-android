@@ -32,10 +32,10 @@ public class SEConstants {
     public static final String KEY_STAGE = "stage";
     public static final String KEY_STAGES = "stages";
     public static final String STATUS_FETCHING = "fetching";
-    public static final String STATUS_SYNC = "sync";
     public static final String STATUS_ERROR = "error";
     public static final String STATUS_SUCCESS = "success";
     public static final String KEY_API_STAGE = "api_stage";
+    public static final String KEY_CUSTOM_FIELDS = "custom_fields";
 
     //JSON keys
     public static final String KEY_DATA = "data";
@@ -47,9 +47,10 @@ public class SEConstants {
     public static final String KEY_CLASS = "class";
     public static final String KEY_DOCUMENTATION_URL = "documentation_url";
     public static final String KEY_IDENTIFIER = "identifier";
-    public static final String KEY_OAUTH = "oauth";
     public static final String KEY_CONNECT_URL = "connect_url";
+    public static final String KEY_REDIRECT_URL = "redirect_url";
     public static final String KEY_EXPIRES_AT = "expires_at";
+    public static final String KEY_REVOKED_BY = "revoked_by";
     public static final String KEY_REVOKED_AT = "revoked_at";
     public static final String KEY_REMOVED = "removed";
     public static final String KEY_COLLECTED_BY = "collected_by";
@@ -57,14 +58,8 @@ public class SEConstants {
     public static final String KEY_SCOPES = "scopes";
 
     //String resources
-    public static final String REQUEST_ERROR = "Request error";
-    public static final String PARSE_ERROR = "Parse error";
     public static final String LOADING = "Loading";
     public static final String WARNING = "Warning";
-    public static final String CANNOT_BE_NULL = "cannot be null";
-    public static final String COULD_NOT_CONNECT_ACCOUNT = "Could not connect account";
-    public static final String ERROR_CLIENT_APP_ID_IS_NULL = "Client App Id cannot be null or empty";
-    public static final String ERROR_CLIENT_APP_SECRET_IS_NULL = "Client App Secret cannot be null or empty";
 
     //Providers keys
     public static final String KEY_NAME = "name";
@@ -78,7 +73,6 @@ public class SEConstants {
     public static final String KEY_INSTRUCTION = "instruction";
     public static final String KEY_HOME_URL = "home_url";
     public static final String KEY_LOGIN_URL = "login_url";
-    public static final String KEY_FORUM_URL = "forum_url";
     public static final String KEY_LOGO_URL = "logo_url";
     public static final String KEY_ALLOWED_COUNTRIES = "allowed_countries";
     public static final String KEY_REFRESH_TIMEOUT = "refresh_timeout";
@@ -97,6 +91,7 @@ public class SEConstants {
     public static final String KEY_PROVIDER_CODE = "provider_code";
     public static final String KEY_PROVIDER_NAME = "provider_name";
     public static final String KEY_LAST_FAIL_AT = "last_fail_at";
+    public static final String KEY_FAIL = "fail";
     public static final String KEY_FAIL_AT = "fail_at";
     public static final String KEY_LAST_FAIL_MESSAGE = "last_fail_message";
     public static final String KEY_FAIL_MESSAGE = "fail_message";
@@ -124,6 +119,7 @@ public class SEConstants {
 
     //Transaction keys
     public static final String KEY_DUPLICATED = "duplicated";
+    public static final String KEY_UNDUPLICATED = "unduplicated";
     public static final String KEY_MADE_ON = "made_on";
     public static final String KEY_AMOUNT = "amount";
     public static final String KEY_DESCRIPTION = "description";
@@ -167,14 +163,26 @@ public class SEConstants {
     public static final String KEY_TO_DATE = "to_date";
     public static final String KEY_PERIOD_DAYS = "period_days";
     public static final String KEY_CONSENT_ID = "consent_id";
+    public static final String KEY_DATE = "date";
 
     public static final String KEY_JAVASCRIPT_CALLBACK_TYPE = "javascript_callback_type";
     public static final String IFRAME = "iframe";
-    public static final String URL_EMPTY = "URL is empty";
+    public static final String KEY_RATE = "rate";
+    public static final String KEY_TRANSACTION_IDS = "transaction_ids";
+    public static final String KEY_KEEP_DAYS = "keep_days";
+    public static final String KEY_CLEANUP_STARTED = "cleanup_started";
 
     //ERRORS
+    public static final String REQUEST_ERROR = "Request error";
+    public static final String ERROR_CANNOT_BE_NULL = "cannot be null";
+    public static final String ERROR_COULD_NOT_CONNECT_ACCOUNT = "Could not connect account";
+    public static final String ERROR_CLIENT_APP_ID_IS_NULL = "Client App Id cannot be null or empty";
+    public static final String ERROR_CLIENT_APP_SECRET_IS_NULL = "Client App Secret cannot be null or empty";
+    public static final String ERROR_CUSTOMER_IDENTIFIER_IS_NULL = "Customer identifier cannot be null or empty";
     public static final String ERROR_INVALID_REFRESH_SECRETS = "Invalid refresh secrets";
+    public static final String ERROR_URL_EMPTY = "URL is empty";
 
+    //RESULT CODES
     public static final int FILECHOOSER_RESULT_CODE = 666;
 
 

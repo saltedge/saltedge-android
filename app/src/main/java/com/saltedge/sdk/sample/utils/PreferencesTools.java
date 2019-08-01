@@ -48,7 +48,7 @@ public class PreferencesTools {
         putStringToArrayPreferences(context, Constants.CONNECTIONS_SECRETS_ARRAY, connectionSecret);
     }
 
-    public static String[] getConnectionSecrets(Context context) {
+    public static String[] getAllConnectionsSecrets(Context context) {
         return getArrayFromPreferences(context, Constants.CONNECTIONS_SECRETS_ARRAY);
     }
 
@@ -63,7 +63,7 @@ public class PreferencesTools {
     public static boolean connectionSecretIsSaved(Context context, String connectionId, String connectionSecret) {
         return !connectionId.isEmpty() && !connectionSecret.isEmpty()
                 && getStringFromPreferences(context, connectionId).equals(connectionSecret)
-                && Arrays.asList(getConnectionSecrets(context)).contains(connectionSecret);
+                && Arrays.asList(getAllConnectionsSecrets(context)).contains(connectionSecret);
     }
 
     private static void putStringToArrayPreferences(Context context, String arrayKey, String value) {

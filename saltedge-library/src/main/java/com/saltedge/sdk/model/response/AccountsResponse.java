@@ -22,8 +22,8 @@ THE SOFTWARE.
 package com.saltedge.sdk.model.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.saltedge.sdk.model.SEAccount;
 import com.saltedge.sdk.model.Meta;
+import com.saltedge.sdk.model.SEAccount;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.List;

@@ -30,6 +30,8 @@ import java.util.Date;
 
 public class SEConnection extends BaseModel implements Serializable {
 
+
+
     @SerializedName(SEConstants.KEY_SECRET)
     private String secret;
 

@@ -38,11 +38,15 @@ import com.saltedge.sdk.sample.utils.UITools;
 
 import java.util.Date;
 
+import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
+
+/**
+ * First Activity.
+ * Trying to register new customer if not exist.
+ */
 public class StartActivity extends AppCompatActivity {
 
-    private final static String customerIdentifierPrefix = "ANDROID_APP_EXAMPLE_IDENTIFIER"; // Random name, each installation - new name
-    private final static String clientAppId = "";//TODO SET APP ID
-    private final static String clientAppSecret = "";//TODO SET APP SECRET
+    private final static String customerIdentifierPrefix = "ANDROID_APP_DEV_IDENTIFIER_"; // Random name, each installation - new name
     private ProgressDialog progressDialog;
 
     @Override
@@ -50,15 +54,14 @@ public class StartActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        setupSaltEdgeSDK();
-        createCustomer();
+        if (SaltEdgeSDK.isNotPartner()) {
+            tryToCreateCustomer();
+        } else {
+            showConnectionsActivity();
+        }
     }
 
-    private void setupSaltEdgeSDK() {
-        SaltEdgeSDK.getInstance().init(this.getApplicationContext(), clientAppId, clientAppSecret);
-    }
-
-    private void createCustomer() {
+    private void tryToCreateCustomer() {
         String customerIdentifier = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_IDENTIFIER);
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
 
@@ -72,7 +75,7 @@ public class StartActivity extends AppCompatActivity {
             SERequestManager.getInstance().createCustomer(customerIdentifier, new CreateCustomerResult() {
                 @Override
                 public void onSuccess(String secret) {
-                    onSecretCreateSuccess(secret);
+                    onCreateCustomerSuccess(secret);
                 }
 
                 @Override
@@ -81,25 +84,23 @@ public class StartActivity extends AppCompatActivity {
                 }
             });
         } else {
-            showMainActivity();
+            showConnectionsActivity();
         }
     }
 
     private void onCreateCustomerFailure(String errorResponse) {
-        UITools.destroyAlertDialog(progressDialog);
-        UITools.showAlertDialog(StartActivity.this, errorResponse);
+        refreshProgressDialog(this, progressDialog, errorResponse);
     }
 
-    private void onSecretCreateSuccess(String secret) {
+    private void onCreateCustomerSuccess(String customerSecret) {
         UITools.destroyAlertDialog(progressDialog);
-        PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_SECRET, secret);
-        showMainActivity();
+        PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_SECRET, customerSecret);
+        showConnectionsActivity();
     }
 
-    private void showMainActivity() {
+    private void showConnectionsActivity() {
         try {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, ConnectionsActivity.class));
         } catch (Exception e) {
             e.printStackTrace();
         }

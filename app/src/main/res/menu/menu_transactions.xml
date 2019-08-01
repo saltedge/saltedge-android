@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/show_posted_transactions"
+        android:orderInCategory="1"
+        android:title="@string/posted_transactions" />
+    <item
+        android:id="@+id/show_pending_transactions"
+        android:orderInCategory="2"
+        android:title="@string/pending_transactions" />
+    <item
+        android:id="@+id/show_duplicated_transactions"
+        android:orderInCategory="3"
+        android:title="@string/duplicated_transactions" />
+</menu>

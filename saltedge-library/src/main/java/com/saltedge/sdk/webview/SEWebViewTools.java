@@ -21,12 +21,12 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.webview;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.util.Log;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -45,17 +45,57 @@ import org.jetbrains.annotations.NotNull;
 public class SEWebViewTools {
 
     public static ValueCallback<Uri[]> uploadMessage;
+
     private static SEWebViewTools instance;
+
     private ProgressDialog progressDialog;
     private Activity activity;
     private WebViewRedirectListener webViewListener;
     private String returnUrl;
 
     public interface WebViewRedirectListener {
-        void onConnectSessionSuccess(String connectionId, String connectionSecret, String stage);
-        void onConnectSessionError(String stage);
-        void onConnectionUpdate();
-        void onConnectSessionStageChange(String connectionId, String connectionSecret, String stage, String apiStage);
+
+        /**
+         * Received SUCCESS stage callback of provider connect flow
+         *
+         * @param connectionId - connection id
+         * @param connectionSecret - connection secret code
+         * @param rawJsonData - raw JSON result data
+         */
+        void onConnectSessionSuccessStage(String connectionId, String connectionSecret, String rawJsonData);
+
+        /**
+         * Received ERROR stage callback of provider connect flow
+         *
+         * @param rawJsonData - raw JSON result data
+         */
+        void onConnectSessionErrorStage(String rawJsonData);
+
+        /**
+         * Received FETCHING stage callback of provider connect flow
+         *
+         * @param connectionId - connection id
+         * @param connectionSecret - connection secret code
+         * @param apiStage - api stage string
+         * @param rawJsonData - raw JSON result data
+         */
+        void onConnectSessionFetchingStage(String connectionId, String connectionSecret, String apiStage, String rawJsonData);
+
+        /**
+         * New Stage callback of provider connect flow
+         * (Not SUCCESS, not ERROR, not FETCHING)
+         *
+         * @param result - parsed Saltbridge result object
+         * @param rawJsonData - raw JSON result data
+         */
+        void onConnectSessionStageChange(Saltbridge result, String rawJsonData);
+
+        /**
+         * Connect session redirected to Return URL. Means that Connection was updated.
+         *
+         * @return true if WebView should be redirected to Return URL, otherwise return false.
+         */
+        boolean onConnectSessionRedirectToReturnUrl();
     }
 
     public static SEWebViewTools getInstance() {
@@ -65,6 +105,7 @@ public class SEWebViewTools {
         return instance;
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     public void initializeWithUrl(Activity activity,
                                   WebView webView,
                                   String url,
@@ -106,9 +147,7 @@ public class SEWebViewTools {
     private class CustomWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (SaltEdgeSDK.isLoggingEnabled()) {
-                Log.d("SEWebViewTools", "load url: " + url);
-            }
+            SaltEdgeSDK.printToLogcat("SEWebViewTools", "load url: " + url);
             if (view != null && urlIsSaltedgeRedirection(url)) {
                 view.loadUrl(url);
             }
@@ -135,39 +174,61 @@ public class SEWebViewTools {
 
     private boolean urlIsSaltedgeRedirection(String url) {
         if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
-            if (webViewListener != null) webViewListener.onConnectionUpdate();
-        } else if (url != null && url.contains(SEApiConstants.PREFIX_SALTBRIDGE)) {
-            onStageChanged(extractSaltbridgeObjectFromUrl(url));
+            if (webViewListener != null) {
+                return webViewListener.onConnectSessionRedirectToReturnUrl();
+            }
+        } else if (isSaltbridgeUrl(url)) {
+            String rawJsonData = extractRawSaltbridgeData(url);
+            onStageChanged(parseSaltbridgeObject(url), rawJsonData);
             return false;
         }
         return true;
     }
 
-    private Saltbridge extractSaltbridgeObjectFromUrl(@NotNull String url) {
+    private boolean isSaltbridgeUrl(String url) {
+        return url != null && url.contains(SEApiConstants.PREFIX_SALTBRIDGE);
+    }
+
+    private String extractRawSaltbridgeData(@NotNull String url) {
+        return url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length());
+    }
+
+    private Saltbridge parseSaltbridgeObject(@NotNull String rawJsonData) {
         SaltbridgeResponse response = null;
         try {
-            String jsonData = url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length());
-            response = SERestClient.gson.fromJson(jsonData, SaltbridgeResponse.class);
+            response = SERestClient.gson.fromJson(rawJsonData, SaltbridgeResponse.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return response == null ? null : response.getData();
     }
 
-    private void onStageChanged(Saltbridge saltbridge) {
+    private void onStageChanged(Saltbridge saltbridge, String rawJsonData) {
         if (webViewListener == null || saltbridge == null) return;
         String stage = saltbridge.getStage();
         String connectionId = saltbridge.getConnectionId();
         String connectionSecret = saltbridge.getSecret();
         switch (stage) {
             case SEConstants.STATUS_SUCCESS:
-                webViewListener.onConnectSessionSuccess(connectionId, connectionSecret, stage);
+                webViewListener.onConnectSessionSuccessStage(
+                        connectionId,
+                        connectionSecret,
+                        rawJsonData
+                );
                 break;
             case SEConstants.STATUS_ERROR:
-                webViewListener.onConnectSessionError(stage);
+                webViewListener.onConnectSessionErrorStage(rawJsonData);
                 break;
             case SEConstants.STATUS_FETCHING:
-                webViewListener.onConnectSessionStageChange(connectionId, connectionSecret, stage, saltbridge.getApiStage());
+                webViewListener.onConnectSessionFetchingStage(
+                        connectionId,
+                        connectionSecret,
+                        saltbridge.getApiStage(),
+                        rawJsonData
+                );
+                break;
+            default:
+                webViewListener.onConnectSessionStageChange(saltbridge, rawJsonData);
                 break;
         }
     }

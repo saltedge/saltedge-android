@@ -44,9 +44,9 @@ import java.util.ArrayList;
 
 public class ProvidersDialog extends DialogFragment implements DialogInterface.OnClickListener, TextWatcher, AdapterView.OnItemClickListener {
 
+    static final String TAG = "ProvidersDialog";
     private static final String KEY_DATA = "KEY_DATA";
     private ProvidersAdapter adapter;
-    private ArrayList<SEProvider> providers;
     public ProviderSelectListener selectListener;
 
     public static ProvidersDialog newInstance(ArrayList<SEProvider> providers, ProviderSelectListener selectListener) {
@@ -61,7 +61,7 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        providers = (ArrayList<SEProvider>) getArguments().getSerializable(KEY_DATA);
+        ArrayList<SEProvider> providers = (ArrayList<SEProvider>) getArguments().getSerializable(KEY_DATA);
 
         View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_providers, null);
         EditText inputView = dialogView.findViewById(R.id.inputView);
@@ -69,8 +69,7 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
 
         ListView listView = dialogView.findViewById(R.id.listView);
 
-        adapter = new ProvidersAdapter(getActivity());
-        adapter.setListItems(providers);
+        adapter = new ProvidersAdapter(getActivity(), providers);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(this);
 
@@ -111,18 +110,7 @@ public class ProvidersDialog extends DialogFragment implements DialogInterface.O
 
     @Override
     public void afterTextChanged(Editable editable) {
-        adapter.setListItems(getFilteredProviders(providers, editable.toString()));
-        adapter.notifyDataSetChanged();
-    }
-
-    private static ArrayList<SEProvider> getFilteredProviders(ArrayList<SEProvider> providers, String filter) {
-        ArrayList<SEProvider> resultProviders = new ArrayList<>();
-        for (SEProvider provider : providers) {
-            if (provider.getName().toLowerCase().contains(filter.toLowerCase())) {
-                resultProviders.add(provider);
-            }
-        }
-        return filter.isEmpty() ? providers : resultProviders;
+        adapter.getFilter().filter(editable.toString());
     }
 
     public interface ProviderSelectListener {

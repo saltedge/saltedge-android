@@ -33,7 +33,5 @@ public class Constants {
     public static final String KEY_CONNECTION_SECRET = "connection_secret";
     public static final String KEY_REFRESH = "refresh";
     public static final String KEY_OVERRIDE_CREDENTIALS = "override_credentials";
-    public static final String KEY_PENDING = "pending";
-    public static final int CONNECT_REQUEST_CODE = 1001;
     public static final String[] CONSENT_SCOPES = { SEConsent.SCOPE_ACCOUNT_DETAILS, SEConsent.SCOPE_TRANSACTIONS_DETAILS };
 }

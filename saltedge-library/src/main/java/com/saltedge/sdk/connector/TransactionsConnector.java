@@ -39,11 +39,10 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
 
     private final FetchTransactionsResult callback;
     private ArrayList<SETransaction> transactionsList = new ArrayList<>();
-    private String customerSecret = "";
-    private String connectionSecret = "";
-    private String accountId = "";
-    private String fromId = "";
-    private boolean fetchPendingTransactions = false;
+    String customerSecret = "";
+    String connectionSecret = "";
+    String accountId = "";
+    String fromId = "";
     private boolean fetchAllTransactionsFromId = false;
 
     public TransactionsConnector(FetchTransactionsResult callback) {
@@ -54,28 +53,21 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
                                   String connectionSecret,
                                   String accountId,
                                   String fromId,
-                                  boolean fetchPendingTransactions,
-                                  boolean fetchAllTransactionsFromId) {
+                                  boolean fetchAllTransactionsFromId
+    ) {
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
         this.accountId = accountId;
         this.fromId = fromId;
-        this.fetchPendingTransactions = fetchPendingTransactions;
         this.fetchAllTransactionsFromId = fetchAllTransactionsFromId;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        if (fetchPendingTransactions) {
-            SERestClient.getInstance().service
-                    .getPendingTransactions(customerSecret, connectionSecret, accountId, fromId)
-                    .enqueue(this);
-        } else {
-            SERestClient.getInstance().service
-                    .getTransactions(customerSecret, connectionSecret, accountId, fromId)
-                    .enqueue(this);
-        }
+        SERestClient.getInstance().service
+                .getTransactions(customerSecret, connectionSecret, accountId, fromId)
+                .enqueue(this);
     }
 
     @Override
@@ -101,7 +93,7 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
     }
 
     private void fetchNextPageOrFinish() {
-        if (fromId == null || fromId.isEmpty()) {
+        if (fromId == null || fromId.isEmpty() || !fetchAllTransactionsFromId) {
             callback.onSuccess(transactionsList);
         } else enqueueCall();
     }
