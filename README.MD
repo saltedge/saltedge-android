@@ -6,7 +6,7 @@
 
 # Salt Edge Android SDK & Sample application
 
-Salt Edge Android SDK provides [a handful of classes](SDK.MD) to help you interact with the Salt Edge API from your Android app.  
+Salt Edge Android SDK provides [a handful of classes](SDK_GUIDE.MD) to help you interact with the Salt Edge API from your Android app.  
 Current SDK supports access to [Salt Edge API v5](https://docs.saltedge.com/account_information/v5/) or [Salt Edge Partners API v1](https://docs.saltedge.com/partners/v1/).  
 
 **When you migrating to the new version of Salt Edge Android SDK, please read carefully [CHANGELOG](CHANGELOG.MD) since many changes have been made.**
@@ -24,8 +24,9 @@ Current SDK supports access to [Salt Edge API v5](https://docs.saltedge.com/acco
 ## Source
 
 Clone this repository
-
-`$ git clone git@github.com:saltedge/saltedge-android.git`
+```shell
+$ git clone git@github.com:saltedge/saltedge-android.git
+```
 
 ## How to build sample
 
@@ -68,7 +69,7 @@ implementation ('com.saltedge.sdk:saltedge-library:3.0.0@aar') {
 }
 ```
 
-### [Invoke SDK methods](SDK.MD) 
+### [Invoke SDK methods](SDK_GUIDE.MD) 
   
 ## [Changelog](CHANGELOG.MD)
 
@@ -78,7 +79,7 @@ See the [LICENSE](LICENSE) file.
 
 ## References
 
-1. [SDK Description](SDK.MD)
+1. [Salt Edge Android SDK Guide](SDK_GUIDE.MD)
 1. [Salt Edge API](https://docs.saltedge.com/account_information/v5/)
 1. [Salt Edge Partners API](https://docs.saltedge.com/partners/v1/)
 1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)
