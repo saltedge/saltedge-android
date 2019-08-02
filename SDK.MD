@@ -5,7 +5,7 @@
 * [Providers](#fetch-list-of-available-providers)
 * [Connections](#connections)
   * [Create Connect Session](#create-connect-session)
-  * [Create Lead session](#create-lead-session) *** Only for Partners ***
+  * [Create Lead session](#create-lead-session) ***(Only for Partners)***
   * [Salt Edge Connect](#salt-edge-connect)
   * [Show connections](#show-connections)
   * [Show connection](#show-connection)
