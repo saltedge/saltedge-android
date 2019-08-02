@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.saltedge.com/products/spectre">
-    <img src="docs/images/saltedge_logo.png" alt="Salt Egde Logo" width="96" height="96">
+    <img src="https://raw.githubusercontent.com/saltedge/sca-identity-service-example/master/docs/images/saltedge_logo.png" alt="Salt Egde Logo" width="96" height="96">
   </a>
 </p>
 
