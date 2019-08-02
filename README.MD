@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://www.saltedge.com/products/spectre">
+    <img src="docs/images/saltedge_logo.png" alt="Salt Egde Logo" width="96" height="96">
+  </a>
+</p>
+
 # Salt Edge Android SDK & Sample application
 
 Salt Edge Android SDK provides [a handful of classes](SDK.MD) to help you interact with the Salt Edge API from your Android app.  
