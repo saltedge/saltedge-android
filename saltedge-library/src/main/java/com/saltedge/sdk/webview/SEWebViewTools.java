@@ -82,7 +82,7 @@ public class SEWebViewTools {
         void onConnectSessionFetchingStage(String connectionId, String connectionSecret, String apiStage, String rawJsonData);
 
         /**
-         * New Stage callback of provider connect flow
+         * Received new Stage callback of provider connect flow
          * (Not SUCCESS, not ERROR, not FETCHING)
          *
          * @param result - parsed Saltbridge result object
