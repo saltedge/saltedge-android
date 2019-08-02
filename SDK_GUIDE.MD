@@ -883,4 +883,4 @@ For a supplementary description of the models listed above that is not included 
 A few utility classes are bundled within the components, and are used internally, but you could also use them if you find that necessary.
 
 ---
-Copyright © 2014 - 2019 Salt Edge. https://www.saltedge.com
+Copyright © 2014 - 2019 Salt Edge Inc. https://www.saltedge.com
