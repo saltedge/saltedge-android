@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -46,40 +47,36 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 
+import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
+
 public class TransactionsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, FetchTransactionsResult {
+
+    private enum ViewMode {
+        POSTED_TRANSACTIONS, PENDING_TRANSACTIONS, DUPLICATED_TRANSACTIONS
+    }
 
     private ProgressDialog progressDialog;
     private ArrayList<SETransaction> transactions;
     private String accountId;
     private String connectionSecret;
-    private boolean pendingTransactionsMode = false;
+    private String customerSecret = "";
+    private ViewMode viewMode = ViewMode.POSTED_TRANSACTIONS;
 
-    public static Intent newIntent(Activity activity, String accountId, String connectionSecret,
-                                   boolean showPendingTransactions) {
+    public static Intent newIntent(Activity activity, String accountId, String connectionSecret) {
         Intent intent = new Intent(activity, TransactionsActivity.class);
         intent.putExtra(SEConstants.KEY_ACCOUNT_ID, accountId);
         intent.putExtra(Constants.KEY_CONNECTION_SECRET, connectionSecret);
-        intent.putExtra(Constants.KEY_PENDING, showPendingTransactions);
         return intent;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_list_view);
+        setContentView(R.layout.activity_list_view);
         ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(pendingTransactionsMode ? R.string.pending_transactions : R.string.transactions);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+        updateActivityTitle();
         setInitialData();
-    }
-
-    private void setInitialData() {
-        Intent intent = this.getIntent();
-        accountId = intent.getStringExtra(SEConstants.KEY_ACCOUNT_ID);
-        connectionSecret = intent.getStringExtra(Constants.KEY_CONNECTION_SECRET);
-        pendingTransactionsMode = intent.getBooleanExtra(Constants.KEY_PENDING, false);
     }
 
     @Override
@@ -95,11 +92,25 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_transactions, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
+            case android.R.id.home:// Respond to the action bar's Up/Home button
                 finish();
+                return true;
+            case R.id.show_posted_transactions:
+                tryToUpdateViewMode(ViewMode.POSTED_TRANSACTIONS);
+                return true;
+            case R.id.show_pending_transactions:
+                tryToUpdateViewMode(ViewMode.PENDING_TRANSACTIONS);
+                return true;
+            case R.id.show_duplicated_transactions:
+                tryToUpdateViewMode(ViewMode.DUPLICATED_TRANSACTIONS);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -107,8 +118,7 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        String message = "Click ListItem Number " + String.valueOf(i);
-        UITools.showLongToast(this, message);
+        //TODO
     }
 
     @Override
@@ -124,14 +134,20 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     }
 
     private void fetchTransactions() {
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        progressDialog = refreshProgressDialog(this, progressDialog, R.string.fetching_transactions);
+
         transactions = new ArrayList<>();
-        UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_transactions));
-        if (pendingTransactionsMode) {
-            SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, connectionSecret, accountId, this);
-        } else {
-            SERequestManager.getInstance().fetchAllTransactions(customerSecret, connectionSecret, accountId, this);
+
+        switch (viewMode) {
+            case POSTED_TRANSACTIONS:
+                SERequestManager.getInstance().fetchAllTransactions(customerSecret, connectionSecret, accountId, this);
+                break;
+            case PENDING_TRANSACTIONS:
+                SERequestManager.getInstance().fetchPendingTransactionsOfAccount(customerSecret, connectionSecret, accountId, this);
+                break;
+            case DUPLICATED_TRANSACTIONS:
+                SERequestManager.getInstance().fetchDuplicatedTransactionsOfAccount(customerSecret, connectionSecret, accountId, this);
+                break;
         }
     }
 
@@ -143,17 +159,61 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     private void updateTransactionsList() {
         try {
             ListView listView = findViewById(R.id.listView);
-            TextView emptyView = findViewById(R.id.emptyView);
+            View emptyView = findViewById(R.id.emptyView);
+            emptyView.setVisibility(transactions.isEmpty() ? View.VISIBLE : View.GONE);
+            TextView emptyLabelView = findViewById(R.id.emptyLabelView);
             if (transactions.isEmpty()) {
-                emptyView.setVisibility(View.VISIBLE);
-                emptyView.setText(pendingTransactionsMode ? R.string.no_pending_transactions : R.string.no_transactions);
+                emptyLabelView.setText(getEmptyViewTitleResId());
             } else {
-                emptyView.setVisibility(View.GONE);
                 listView.setAdapter(new TransactionsAdapter(this, transactions));
                 listView.setOnItemClickListener(this);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setInitialData() {
+        Intent intent = this.getIntent();
+        accountId = intent.getStringExtra(SEConstants.KEY_ACCOUNT_ID);
+        connectionSecret = intent.getStringExtra(Constants.KEY_CONNECTION_SECRET);
+        customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+    }
+
+    private void tryToUpdateViewMode(ViewMode newViewMode) {
+        if (viewMode != newViewMode) {
+            viewMode = newViewMode;
+            updateActivityTitle();
+            fetchTransactions();
+        }
+    }
+
+    private void updateActivityTitle() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            switch (viewMode) {
+                case POSTED_TRANSACTIONS:
+                    actionBar.setTitle(R.string.transactions);
+                    break;
+                case PENDING_TRANSACTIONS:
+                    actionBar.setTitle(R.string.pending_transactions);
+                    break;
+                case DUPLICATED_TRANSACTIONS:
+                    actionBar.setTitle(R.string.duplicated_transactions);
+                    break;
+            }
+        }
+    }
+
+    private int getEmptyViewTitleResId() {
+        switch (viewMode) {
+            case POSTED_TRANSACTIONS:
+                return R.string.no_transactions;
+            case PENDING_TRANSACTIONS:
+                return R.string.no_pending_transactions;
+            case DUPLICATED_TRANSACTIONS:
+                return R.string.no_duplicated_transactions;
+        }
+        return R.string.no_transactions;
     }
 }

@@ -55,8 +55,11 @@ public class ProvidersConnector extends BasePinnedConnector implements Callback<
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service
-                .getProviders(countryCode, shouldIncludeFakeProviders(), nextPageId).enqueue(this);
+        SERestClient.getInstance().service.getProviders(
+                countryCode,
+                shouldIncludeFakeProviders(),
+                nextPageId
+        ).enqueue(this);
     }
 
     @Override

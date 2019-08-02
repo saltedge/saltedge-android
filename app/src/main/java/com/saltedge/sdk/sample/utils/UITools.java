@@ -52,9 +52,22 @@ public class UITools {
         }
     }
 
-    public static ProgressDialog showProgressDialog(Context context, String title) {
+    public static ProgressDialog refreshProgressDialog(Context context, ProgressDialog dialog, int messageResId) {
+        return refreshProgressDialog(context, dialog, context.getString(messageResId));
+    }
+
+    public static ProgressDialog refreshProgressDialog(Context context, ProgressDialog dialog, String message) {
+        destroyProgressDialog(dialog);
+        dialog = new ProgressDialog(context);
+        dialog.setMessage(message);
+        dialog.setIndeterminate(true);
+        dialog.show();
+        return dialog;
+    }
+
+    public static ProgressDialog showProgressDialog(Context context, String message) {
         ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setMessage(title);
+        dialog.setMessage(message);
         dialog.setIndeterminate(true);
         dialog.show();
         return dialog;

@@ -27,7 +27,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -37,8 +36,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.saltedge.sdk.interfaces.DeleteEntryResult;
+import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.interfaces.RefreshConnectionResult;
 import com.saltedge.sdk.model.SEAccount;
@@ -56,15 +54,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-public class AccountsActivity extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, RefreshConnectionResult, InputValueResult {
+import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
 
+public class AccountsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
+        RefreshConnectionResult,
+        InputValueResult
+{
     private ProgressDialog progressDialog;
     private ArrayList<SEAccount> accounts;
     private SEConnection currentConnection;
-    private BottomSheetDialog mBottomSheetDialog;
     private ListView listView;
-    private TextView emptyView;
+    private View emptyView;
+    private TextView emptyLabelView;
     private MenuItem refreshMenuItem;
     private String customerSecret = "";
     private SERefreshService refreshService;
@@ -79,11 +80,11 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_list_view);
+        setContentView(R.layout.activity_list_view);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            getSupportActionBar().setTitle(R.string.accounts);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(R.string.accounts);
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
         setupViews();
         setInitialData();
@@ -96,8 +97,13 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onDestroy() {
+    protected void onStop() {
         UITools.destroyProgressDialog(progressDialog);
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
         if (refreshService != null) {
             refreshService.cancel();
         }
@@ -106,9 +112,10 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_accounts, menu);
-        refreshMenuItem = menu.findItem(R.id.action_refresh);
+        if (SaltEdgeSDK.isNotPartner()) {
+            getMenuInflater().inflate(R.menu.menu_accounts, menu);
+            refreshMenuItem = menu.findItem(R.id.action_refresh);
+        }
         return true;
     }
 
@@ -117,9 +124,6 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         switch (item.getItemId()) {
             case android.R.id.home:// Respond to the action bar's Up/Home button
                 finish();
-                return true;
-            case R.id.action_delete:
-                deleteConnection();
                 return true;
             case R.id.action_reconnect:
                 showConnectActivity(false);
@@ -135,21 +139,8 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.transactionsOption:
-                showTransactionsList((String) view.getTag(), false);
-                break;
-            case R.id.pendingTransactionsOption:
-                showTransactionsList((String) view.getTag(), true);
-                break;
-        }
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        SEAccount account= accounts.get(position);
-        showAccountOptions(account.getId());
+        showTransactionsList(accounts.get(position).getId());
     }
 
     @Override
@@ -166,7 +157,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onRefreshFailure(String errorMessage) {
-        refreshMenuItem.setVisible(!accounts.isEmpty());
+        if (refreshMenuItem != null) refreshMenuItem.setVisible(!accounts.isEmpty());
         UITools.showShortToast(this, "Refresh error: " + errorMessage);
     }
 
@@ -201,43 +192,13 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         refreshService.sendInteractiveData(credentials);
     }
 
-    private void deleteConnection() {
-        UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.removing_connection));
-        SERequestManager.getInstance().deleteConnection(customerSecret, currentConnection.getSecret(),
-                new DeleteEntryResult() {
-                    @Override
-                    public void onSuccess(Boolean entryIsRemoved, String entryId) {
-                        if (entryIsRemoved) {
-                            onDeleteConnectionSuccess(entryId);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(String errorResponse) {
-                        onConnectionError(errorResponse);
-                    }
-        });
-    }
-
-    private void onDeleteConnectionSuccess(String entryId) {
-        try {
-            PreferencesTools.removeConnectionSecret(this, entryId);
-            UITools.destroyAlertDialog(progressDialog);
-            this.finish();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void fetchAccounts() {
-        if (TextUtils.isEmpty(currentConnection.getSecret()) || TextUtils.isEmpty(customerSecret)) {
+        if (TextUtils.isEmpty(currentConnection.getSecret())) {
             return;
         }
         accounts = new ArrayList<>();
-        UITools.destroyProgressDialog(progressDialog);
         fetchingAccounts = true;
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.fetching_accounts));
+        progressDialog = refreshProgressDialog(this, progressDialog, R.string.fetching_accounts);
         SERequestManager.getInstance().fetchAccounts(customerSecret, currentConnection.getSecret(),
                 new FetchAccountsResult() {
                     @Override
@@ -267,10 +228,10 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void updateViewsContent() {
-        refreshMenuItem.setVisible(!accounts.isEmpty());
+        if (refreshMenuItem != null) refreshMenuItem.setVisible(!accounts.isEmpty());
         emptyView.setVisibility(accounts.isEmpty() ? View.VISIBLE : View.GONE);
         if (accounts.isEmpty()) {
-            emptyView.setText(R.string.no_accounts);
+            emptyLabelView.setText(R.string.no_accounts);
         } else {
             listView.setAdapter(new AccountAdapter(this, accounts));
         }
@@ -279,30 +240,18 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
     private void setupViews() {
         listView = findViewById(R.id.listView);
         emptyView = findViewById(R.id.emptyView);
-        emptyView.setText(R.string.fetching_accounts);
+        emptyLabelView = findViewById(R.id.emptyLabelView);
+        emptyLabelView.setText(R.string.fetching_accounts);
         listView.setOnItemClickListener(this);
     }
 
-    private void showAccountOptions(String accountId) {
-        mBottomSheetDialog = new BottomSheetDialog(this);
-        View sheetView = getLayoutInflater().inflate(R.layout.dialog_account_options, null);
-        View transactionsOption = sheetView.findViewById(R.id.transactionsOption);
-        transactionsOption.setTag(accountId);
-        transactionsOption.setOnClickListener(this);
-        View pendingTransactionsOption = sheetView.findViewById(R.id.pendingTransactionsOption);
-        pendingTransactionsOption.setTag(accountId);
-        pendingTransactionsOption.setOnClickListener(this);
-        mBottomSheetDialog.setContentView(sheetView);
-        mBottomSheetDialog.show();
-    }
-
-    private void showTransactionsList(String accountId, boolean showPendingTransactions) {
-        if (mBottomSheetDialog != null) {
-            mBottomSheetDialog.dismiss();
-        }
+    private void showTransactionsList(String accountId) {
         if (accountId != null && !accountId.isEmpty()) {
-            Intent transactionsIntent = TransactionsActivity.newIntent(this, accountId,
-                    currentConnection.getSecret(), showPendingTransactions);
+            Intent transactionsIntent = TransactionsActivity.newIntent(
+                    this,
+                    accountId,
+                    currentConnection.getSecret()
+            );
             startActivity(transactionsIntent);
         }
     }
@@ -311,7 +260,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         try {
             boolean overrideCredentials = !tryToRefresh && currentConnection.getLastSuccessAt() == null;
             startActivityForResult(ConnectActivity.newIntent(this, currentConnection.getProviderCode(),
-                    currentConnection.getSecret(), tryToRefresh, overrideCredentials), Constants.CONNECT_REQUEST_CODE);
+                    currentConnection.getSecret(), tryToRefresh, overrideCredentials), ConnectActivity.CONNECT_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -323,7 +272,7 @@ public class AccountsActivity extends AppCompatActivity implements View.OnClickL
         } else if (currentConnection.getNextRefreshPossibleAt() == null) {
             UITools.showShortToast(this, R.string.refresh_not_allowed_reconnect);
         } else if (currentConnection.getNextRefreshPossibleAtDate().before(new Date())) {
-            refreshMenuItem.setVisible(false);
+            if (refreshMenuItem != null) refreshMenuItem.setVisible(false);
             refreshService = SERequestManager.getInstance().refreshConnectionWithSecret(customerSecret,
                     currentConnection, Constants.CONSENT_SCOPES, this);
         } else {

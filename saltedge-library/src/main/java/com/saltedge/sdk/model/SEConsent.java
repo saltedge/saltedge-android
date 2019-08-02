@@ -32,11 +32,22 @@ public class SEConsent extends BaseModel implements Serializable {
     public final static String SCOPE_ACCOUNT_DETAILS = "account_details";
     public final static String SCOPE_TRANSACTIONS_DETAILS = "transactions_details";
 
+    public enum STATUS {
+        ACTIVE, REVOKED
+    }
+
+    public enum REVOKED_BY {
+        PARTNER, LEAD, SALTEDGE
+    }
+
     @SerializedName(SEConstants.KEY_CONNECTION_ID)
     private String connectionId;
 
     @SerializedName(SEConstants.KEY_CUSTOMER_ID)
     private String customerId;
+
+    @SerializedName(SEConstants.KEY_STATUS)
+    private String status;
 
     @SerializedName(SEConstants.KEY_SCOPES)
     private String[] scopes;
@@ -52,6 +63,9 @@ public class SEConsent extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_EXPIRES_AT)
     private String expiresAt;
+
+    @SerializedName(SEConstants.KEY_REVOKED_BY)
+    private String revokedBy;
 
     @SerializedName(SEConstants.KEY_REVOKED_AT)
     private String revokedAt;
@@ -137,5 +151,21 @@ public class SEConsent extends BaseModel implements Serializable {
 
     public void setCollectedBy(String collectedBy) {
         this.collectedBy = collectedBy;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getRevokedBy() {
+        return revokedBy;
+    }
+
+    public void setRevokedBy(String revokedBy) {
+        this.revokedBy = revokedBy;
     }
 }

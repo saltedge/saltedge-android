@@ -25,7 +25,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.saltedge.sdk.model.SEAccount;
@@ -33,40 +33,32 @@ import com.saltedge.sdk.sample.R;
 
 import java.util.ArrayList;
 
-public class AccountAdapter extends BaseAdapter {
+public class AccountAdapter extends ArrayAdapter<SEAccount> {
 
-    private LayoutInflater layoutInflater;
-    private ArrayList<SEAccount> accountList;
-
-    public AccountAdapter(Context context, ArrayList<SEAccount> accountList) {
-        layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.accountList = accountList;
-    }
-
-    @Override
-    public int getCount() {
-        return accountList.size();
-    }
-
-    @Override
-    public SEAccount getItem(int position) {
-        return accountList.get(position);
-    }
-
-    @Override
-    public long getItemId(int id) {
-        return id;
+    public AccountAdapter(Context context, ArrayList<SEAccount> accounts) {
+        super(context, 0, accounts);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = layoutInflater.inflate(R.layout.list_item_account, parent, false);
-        TextView title = rowView.findViewById(R.id.title);
-        TextView subtitle = rowView.findViewById(R.id.subtitle);
         SEAccount account = getItem(position);
-        title.setText(account.getName());
-        subtitle.setText(String.valueOf(account.getBalance()) + " " +account.getCurrencyCode());
-        return rowView;
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_account, parent, false);
+        }
+        // Lookup view for data population
+        TextView title = convertView.findViewById(R.id.title);
+        TextView subtitle = convertView.findViewById(R.id.subtitle);
+        // Populate the data into the template view using the data object
+        String titleText = "Invalid entry";
+        String subtitleText = "";
+        if (account != null) {
+            titleText = account.getName();
+            subtitleText = account.getBalance() + " " +account.getCurrencyCode();
+        }
+        title.setText(titleText);
+        subtitle.setText(subtitleText);
+        // Return the completed view to render on screen
+        return convertView;
     }
 }

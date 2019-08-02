@@ -21,17 +21,22 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk;
 
+import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import com.saltedge.sdk.utils.SEConstants;
+
+import org.jetbrains.annotations.NotNull;
 
 public class SaltEdgeSDK {
 
     private static SaltEdgeSDK instance;
-    private static Context context;
-    private static String appId;
-    private static String appSecret;
-    private static boolean loggingEnabled;
+    private Application application;
+    private String appId;
+    private String appSecret;
+    private boolean usePartnersApi;
+    private boolean loggingEnabled;
 
     public static SaltEdgeSDK getInstance() {
         if (instance == null) {
@@ -40,48 +45,78 @@ public class SaltEdgeSDK {
         return instance;
     }
 
-    public String getAppSecret() {
-        return appSecret;
-    }
-
     public String getAppId() {
         return appId;
     }
 
+    public String getAppSecret() {
+        return appSecret;
+    }
+
+    public static boolean isPartner() {
+        return getInstance().usePartnersApi;
+    }
+
+    public static boolean isNotPartner() {
+        return !isPartner();
+    }
+
     public static boolean isLoggingEnabled() {
-        return loggingEnabled;
-    }
-
-    public void init(Context context, String clientAppId, String clientAppSecret) {
-        init(context, clientAppId, clientAppSecret, false);
-    }
-
-    public void init(Context context, String clientAppId, String clientAppSecret, boolean enableLogging) {
-        if (clientAppId == null || clientAppId.isEmpty()) {
-            throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_ID_IS_NULL);
-        }
-        if (clientAppSecret == null || clientAppSecret.isEmpty()) {
-            throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_SECRET_IS_NULL);
-        }
-        SaltEdgeSDK.context = context;
-        setAppSecret(clientAppSecret);
-        setAppId(clientAppId);
-        setLoggingEnabled(enableLogging);
+        return getInstance().loggingEnabled;
     }
 
     public Context getContext() {
-        return context;
+        return application.getApplicationContext();
     }
 
-    private void setAppSecret(String clientAppSecret) {
-        SaltEdgeSDK.appSecret = clientAppSecret;
+    public void init(@NotNull Application application,
+                     @NotNull String clientAppId,
+                     @NotNull String clientAppSecret) {
+        init(application, clientAppId, clientAppSecret, false);
     }
 
-    private void setAppId(String clientAppId) {
-        SaltEdgeSDK.appId = clientAppId;
+    public void init(@NotNull Application application,
+                     @NotNull String clientAppId,
+                     @NotNull String clientAppSecret,
+                     boolean enableLogging) {
+        init(application, clientAppId, clientAppSecret, false, enableLogging);
     }
 
-    private static void setLoggingEnabled(boolean loggingEnabled) {
-        SaltEdgeSDK.loggingEnabled = loggingEnabled;
+    public void initPartner(@NotNull Application application,
+                            @NotNull String clientAppId,
+                            @NotNull String clientAppSecret) {
+        initPartner(application, clientAppId, clientAppSecret, false);
+    }
+
+    public void initPartner(@NotNull Application application,
+                            @NotNull String clientAppId,
+                            @NotNull String clientAppSecret,
+                            boolean enableLogging) {
+        init(application, clientAppId, clientAppSecret, true, enableLogging);
+    }
+
+    private void init(@NotNull Application application,
+                     @NotNull String clientAppId,
+                     @NotNull String clientAppSecret,
+                     boolean actAsPartner,
+                     boolean enableLogging
+    ) {
+        if (clientAppId.isEmpty()) {
+            throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_ID_IS_NULL);
+        }
+        if (clientAppSecret.isEmpty()) {
+            throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_SECRET_IS_NULL);
+        }
+        this.application = application;
+        this.appId = clientAppId;
+        this.appSecret = clientAppSecret;
+        this.usePartnersApi = actAsPartner;
+        this.loggingEnabled = enableLogging;
+    }
+
+    public static void printToLogcat(@NotNull String tag, @NotNull String message) {
+        if (isLoggingEnabled()) {
+            Log.d(tag, message);
+        }
     }
 }

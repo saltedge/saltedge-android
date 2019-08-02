@@ -26,8 +26,8 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.Map;
 
-/*
-    PUT Interactive Credentials API model
+/**
+ * PUT Interactive Credentials API model
  */
 public class PutConnectionCredentialsRequest {
 

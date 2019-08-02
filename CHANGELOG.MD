@@ -1,5 +1,18 @@
 # Salt Edge SDK library changelog
 
+## [3.0.0] - 2019-08-01
+### Added
+- Added Partners API v1 support;
+- Added Duplicated transactions actions:
+  * fetchDuplicatedTransactionsOfAccount(...);
+  * markTransactionsAsDuplicated(...);
+  * markTransactionsAsNotDuplicated(...);
+  * removeTransactions(...).
+
+### Changed
+- modified SEWebViewTools.WebViewRedirectListener;
+- Updated documentation.
+  
 ## [2.0.2] - 2019-07-31
 ### Changed
 - Have been changed some dependencies declaration from `implementation` to `api` type in the `build.gradle` of the `saltedge-library`

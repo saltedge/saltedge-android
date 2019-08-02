@@ -1,38 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp">
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:lines="1"
-        android:textSize="20sp"
-        android:ellipsize="end"/>
-
-    <RelativeLayout
+    <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/subtitleLeft"
+            android:id="@+id/dateLabel"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:lines="1"
             android:textSize="18sp"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            tools:text="01 JULY 2019"/>
 
         <TextView
-            android:id="@+id/subtitleRight"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:id="@+id/amountLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:gravity="end"
             android:lines="1"
+            android:textColor="@android:color/black"
             android:textSize="18sp"
-            android:ellipsize="end"/>
-    </RelativeLayout>
+            android:ellipsize="end"
+            tools:text="GBP 19.99"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:maxLines="2"
+        android:textSize="14sp"
+        android:ellipsize="end"
+        tools:text="Payment for Salt Edge subscription"/>
 </LinearLayout>

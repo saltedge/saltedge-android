@@ -25,7 +25,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.saltedge.sdk.model.SETransaction;
@@ -34,43 +34,36 @@ import com.saltedge.sdk.sample.utils.DateTools;
 
 import java.util.ArrayList;
 
-public class TransactionsAdapter extends BaseAdapter {
+public class TransactionsAdapter extends ArrayAdapter<SETransaction> {
 
-    private LayoutInflater layoutInflater;
-    private ArrayList<SETransaction> transactionsList;
-
-    public TransactionsAdapter(Context context, ArrayList<SETransaction> transactionsList) {
-        layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.transactionsList = transactionsList;
-    }
-
-    @Override
-    public int getCount() {
-        return transactionsList.size();
-    }
-
-    @Override
-    public SETransaction getItem(int position) {
-        return transactionsList.get(position);
-    }
-
-    @Override
-    public long getItemId(int id) {
-        return id;
+    public TransactionsAdapter(Context context, ArrayList<SETransaction> transactions) {
+        super(context, 0, transactions);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rowView = layoutInflater.inflate(R.layout.list_item_transaction, parent, false);
-        TextView title = rowView.findViewById(R.id.title);
-        TextView subtitleLeft = rowView.findViewById(R.id.subtitleLeft);
-        TextView subtitleRight = rowView.findViewById(R.id.subtitleRight);
         SETransaction transaction = getItem(position);
-        title.setText(transaction.getDescription());
-        subtitleLeft.setText(DateTools.formatDateToString(transaction.getMadeOnDate()));
-        String subTitle = transaction.getCurrencyCode() + " " + transaction.getAmount();
-        subtitleRight.setText(subTitle);
-        return rowView;
+        // Check if an existing view is being reused, otherwise inflate the view
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_transaction, parent, false);
+        }
+        // Lookup view for data population
+        TextView dateLabel = convertView.findViewById(R.id.dateLabel);
+        TextView amountLabel = convertView.findViewById(R.id.amountLabel);
+        TextView descriptionLabel = convertView.findViewById(R.id.description);
+        // Populate the data into the template view using the data object
+        String dateText = "Invalid entry";
+        String amountText = "";
+        String descriptionText = "";
+        if (transaction != null) {
+            dateText = DateTools.formatDateToString(transaction.getMadeOnDate());
+            amountText = transaction.getCurrencyCode() + " " + transaction.getAmount();
+            descriptionText = transaction.getDescription();
+        }
+        dateLabel.setText(dateText);
+        descriptionLabel.setText(descriptionText);
+        amountLabel.setText(amountText);
+        // Return the completed view to render on screen
+        return convertView;
     }
 }

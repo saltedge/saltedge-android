@@ -58,8 +58,12 @@ public class SERestClient {
 
     @NotNull
     private Retrofit createRetrofit() {
+        String baseUrl = SEApiConstants.API_BASE_URL + (SaltEdgeSDK.isPartner()
+                ? SEApiConstants.PARTNERS_API_PATH
+                : SEApiConstants.BASE_API_PATH
+        );
         return new Retrofit.Builder()
-                .baseUrl(SEApiConstants.API_BASE_URL)
+                .baseUrl(baseUrl)
                 .client(createOkHttpClient())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
@@ -113,7 +117,9 @@ public class SERestClient {
 
     private HttpLoggingInterceptor prepareLoggingInterceptor() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(SaltEdgeSDK.isLoggingEnabled() ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+        interceptor.setLevel(SaltEdgeSDK.isLoggingEnabled()
+                ? HttpLoggingInterceptor.Level.BODY
+                : HttpLoggingInterceptor.Level.NONE);
         return interceptor;
     }
 }

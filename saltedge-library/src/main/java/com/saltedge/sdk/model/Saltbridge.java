@@ -24,6 +24,8 @@ package com.saltedge.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
+import java.util.Map;
+
 public class Saltbridge {
 
     @SerializedName(SEConstants.KEY_CONNECTION_ID)
@@ -37,6 +39,9 @@ public class Saltbridge {
 
     @SerializedName(SEConstants.KEY_API_STAGE)
     private String apiStage;
+
+    @SerializedName(SEConstants.KEY_CUSTOM_FIELDS)
+    private Map<String, Object> customFields;
 
     public String getConnectionId() {
         return connectionId;
@@ -52,5 +57,9 @@ public class Saltbridge {
 
     public String getApiStage() {
         return apiStage;
+    }
+
+    public Map<String, Object> getCustomFields() {
+        return customFields;
     }
 }

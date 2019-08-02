@@ -31,7 +31,9 @@ import android.webkit.WebView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
+import com.saltedge.sdk.model.Saltbridge;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
@@ -40,10 +42,12 @@ import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.webview.SEWebViewTools;
 
-public class ConnectActivity extends AppCompatActivity implements SEWebViewTools.WebViewRedirectListener,
-        DialogInterface.OnClickListener,
-        ConnectSessionResult {
+import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
 
+public class ConnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener,
+        SEWebViewTools.WebViewRedirectListener {
+
+    public static final int CONNECT_REQUEST_CODE = 1001;
     private ProgressDialog progressDialog;
     private WebView webView;
     private String providerCode;
@@ -54,6 +58,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
 
     /**
      * ConnectActivity intent creator for the provider reconnect or refresh procedure
+     *
      * @param activity - host activity
      * @param providerCode - provider code which should be connected
      * @return new Intent
@@ -66,6 +71,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
 
     /**
      * ConnectActivity intent creator for the new provider connection
+     *
      * @param activity - host activity
      * @param providerCode - provider code which should be connected
      * @param connectionSecret - connection secret which should reconnected
@@ -104,61 +110,20 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         }
     }
 
-    /**
-     * Success callback after Session create request. Url is used to redirect the user
-     * @param connectUrl - url of Saltedge Connect Page.
-     */
     @Override
-    public void onSuccess(String connectUrl) {
-        try {
-            UITools.destroyAlertDialog(progressDialog);
-            loadConnectUrl(connectUrl);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Fail callback after connect_url create request
-     * @param errorMessage - error message
-     */
-    @Override
-    public void onFailure(String errorMessage) {
-        handleConnectionError(errorMessage);
-    }
-
-    /**
-     * Success callback of provider connect flow
-     * @param stage - last connect flow stage
-     * @param connectionSecret - connection secret code
-     */
-    @Override
-    public void onConnectSessionSuccess(String connectionId, String connectionSecret, String stage) {
+    public void onConnectSessionSuccessStage(String connectionId, String connectionSecret, String rawJsonData) {
         PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
         UITools.showShortToast(this, R.string.connection_connected);
         closeActivity(true);
     }
 
-    /**
-     * Error callback of provider connect flow
-     * @param stage - error stage from connect page
-     */
     @Override
-    public void onConnectSessionError(String stage) {
-        UITools.showAlertDialog(this, stage, this);
-    }
-
-    /**
-     * Connection data updated callback.
-     */
-    @Override
-    public void onConnectionUpdate() {
-        UITools.showShortToast(this, R.string.connection_updated);
-        closeActivity(true);
+    public void onConnectSessionErrorStage(String rawJsonData) {
+        UITools.showAlertDialog(this, "Connect error", this);
     }
 
     @Override
-    public void onConnectSessionStageChange(String connectionId, String connectionSecret, String stage, String apiStage) {
+    public void onConnectSessionFetchingStage(String connectionId, String connectionSecret, String apiStage, String rawJsonData) {
         if (connectionId == null || connectionSecret == null) return;
         if (this.connectionSecret == null || !this.connectionSecret.equals(connectionSecret)) {
             this.connectionSecret = connectionSecret;
@@ -166,6 +131,18 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
                 PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
             }
         }
+    }
+
+    @Override
+    public void onConnectSessionStageChange(Saltbridge result, String rawJsonData) {
+        //TODO
+    }
+
+    @Override
+    public boolean onConnectSessionRedirectToReturnUrl() {
+        UITools.showShortToast(this, R.string.connection_updated);
+        closeActivity(true);
+        return false;
     }
 
     /**
@@ -192,7 +169,9 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
     }
 
     private void fetchConnectionToken() {
-        if (isRefreshMode()) {
+        if (SaltEdgeSDK.isPartner()) {
+            createLeadSessionUrl();
+        } else if (isRefreshMode()) {
             createRefreshSessionUrl();
         } else if (isReconnectViewMode()) {
             boolean overrideCredentials = this.getIntent()
@@ -211,9 +190,39 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
         return tryToRefresh != null && connectionSecret != null && !tryToRefresh;
     }
 
+    private ConnectSessionResult connectSessionResult = new ConnectSessionResult() {
+
+        @Override
+        public void onSuccess(String connectUrl) {
+            try {
+                UITools.destroyAlertDialog(progressDialog);
+                loadConnectUrl(connectUrl);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onFailure(String errorMessage) {
+            handleConnectionError(errorMessage);
+        }
+    };
+
+    private void createLeadSessionUrl() {
+        progressDialog = refreshProgressDialog(this, progressDialog, R.string.creating_lead_token);
+
+        SERequestManager.getInstance().createLeadSession(
+                providerCode,
+                Constants.CONSENT_SCOPES,
+                localeCode,
+                callbackUrl,
+                connectSessionResult
+        );
+    }
+
     private void createConnectSessionUrl() {
-        UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, getString(R.string.creating_token));
+        progressDialog = refreshProgressDialog(this, progressDialog, R.string.creating_token);
+
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().createConnectSession(
                 customerSecret,
@@ -221,25 +230,26 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
                 Constants.CONSENT_SCOPES,
                 localeCode,
                 callbackUrl,
-                this);
+                connectSessionResult
+        );
     }
 
     private void createRefreshSessionUrl() {
+        progressDialog = refreshProgressDialog(this, progressDialog, R.string.refresh_provider);
+
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
-        UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.refresh_provider));
         SERequestManager.getInstance().createRefreshSession(
                 customerSecret,
                 connectionSecret,
                 localeCode,
                 callbackUrl,
-                this);
+                connectSessionResult);
     }
 
     private void createReconnectSessionUrl(boolean overrideCredentials) {
+        progressDialog = refreshProgressDialog(this, progressDialog, R.string.reconnect_provider);
+
         String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
-        UITools.destroyProgressDialog(progressDialog);
-        progressDialog = UITools.showProgressDialog(this, this.getString(R.string.reconnect_provider));
         SERequestManager.getInstance().createReconnectSession(
                 customerSecret,
                 connectionSecret,
@@ -247,7 +257,7 @@ public class ConnectActivity extends AppCompatActivity implements SEWebViewTools
                 localeCode,
                 callbackUrl,
                 overrideCredentials,
-                this);
+                connectSessionResult);
     }
 
     private void handleConnectionError(String errorMessage) {
