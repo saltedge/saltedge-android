@@ -31,25 +31,15 @@
   
 ## Init SDK  
 
-Before any usage of SDK you should provide clientAppId and clientAppSecret.
-  
-```java
-SaltEdgeSDK.getInstance().init(application, clientAppId, clientAppSecret);
-```
+Before any usage of SDK you should provide set clientAppId and clientAppSecret.
 
-or provide clientAppId and clientAppSecret and enable logging
+#### For initializing access to **Salt Edge API** use:
 
 ```java
 SaltEdgeSDK.getInstance().init(application, clientAppId, clientAppSecret, loggingIsEnabled);
 ```
 
-For initializing access to **Partners API** use:
-
-```java
-SaltEdgeSDK.getInstance().initPartner(application, clientAppId, clientAppSecret);
-```
-
-or  
+#### For initializing access to **Salt Edge Partners API** use:
 
 ```java
 SaltEdgeSDK.getInstance().initPartner(application, clientAppId, clientAppSecret, loggingIsEnabled);
@@ -57,7 +47,7 @@ SaltEdgeSDK.getInstance().initPartner(application, clientAppId, clientAppSecret,
   
 ---
 ## [Create new customer](https://docs.saltedge.com/account_information/v5/#customers-create).
-** Note: Customer creation is not available for Partners API. **
+**Note: Customer creation is not available for Partners API.**
 
 A customer represents a single end-user of the Salt Edge API. The customer uses the API to create Connections, i.e. bank connections, that are further used to aggregate the customer’s financial data.  
 You should create customer and receive customer's secret token.
@@ -125,7 +115,7 @@ or
 [Create Lead session for Partners applications](#create-lead-session) 
   
 ### [Create Connect Session](https://docs.saltedge.com/account_information/v5/#connect_sessions-create)
-** Note: `Create Connect Session` feature is not available for Partners API. ** 
+**Note: `Create Connect Session` feature is not available for Partners API.** 
 
 Allows you to create a connect session, which will be used to access Salt Edge Connect for connection creation. You will receive a connect_url field, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
 
@@ -189,7 +179,7 @@ or call `createConnectSession(...)` with custom map of params
 ```
 
 ### [Create Lead Session](https://docs.saltedge.com/partners/v1/#lead_sessions-create) 
-** Note: `Create Lead Session` feature is available only for Partners API. **
+**Note: `Create Lead Session` feature is available only for Partners API.**
 
 Allows you to create a lead session for Partner application, which will be used to access Salt Edge Connect for connection creation. You will receive a connect_url field, which allows you to enter directly to Salt Edge Connect with your newly generated lead session.
 
@@ -307,10 +297,10 @@ private void goToURL(String connectUrl, String returnUrl, View view) {
     );
 }
 ```
-  
-Possible `stage` values for each callback type are `fetching`, `success` and `error`.  
-Parameter `api_stage` shows detailed information of the fetching process.  
-Possible `api_stage` values are attempts stages: `start`, `connect`, `interactive`, `fetch_holder_info`, `fetch_accounts`, `fetch_recent`, `fetch_full`, `disconnect`, `finish`.  
+Notes:  
+1. Possible `stage` values for each callback type are `fetching`, `success` and `error`.  
+1. Parameter `api_stage` shows detailed information of the fetching process.  
+1. Possible `api_stage` values are attempts stages: `start`, `connect`, `interactive`, `fetch_holder_info`, `fetch_accounts`, `fetch_recent`, `fetch_full`, `disconnect`, `finish`.  
   
 ### [Show Connections](https://docs.saltedge.com/account_information/v5/#connections-show)
 
@@ -371,7 +361,7 @@ SERequestManager.getInstance().fetchConnection(
 ```
 
 ### [Remove Connection](https://docs.saltedge.com/account_information/v5/#connections-remove)
-** Note: Connect Session is not available for Partners API. **
+**Note: Connect Session is not available for Partners API.**
 
 Removes a connection from our system and revokes the consent. All the associated accounts and transactions to that connection will be destroyed as well.
 
@@ -401,7 +391,7 @@ SERequestManager.getInstance().deleteConnection(
 ```
 
 ### [Reconnect Connection](https://docs.saltedge.com/account_information/v5/#connections-reconnect)
-** Note: Reconnect Session is not available for Partners API. **
+**Note: Reconnect Session is not available for Partners API.**
 
 You can reconnect the connection. You should obtain a connectUrl of Salt Edge Connect.
 
@@ -437,7 +427,7 @@ SERequestManager.getInstance().createReconnectSession(
 ```
 
 ### [Refresh Connection](https://docs.saltedge.com/account_information/v5/#connections-refresh)
-** Note: Connect Session is not available for Partners API. **
+**Note: Connect Session is not available for Partners API.**
 
 You can refresh the data for a connection. To refresh, you should obtain a connectUrl of Salt Edge Connect.
 
@@ -472,7 +462,7 @@ SERequestManager.getInstance().createRefreshSession(
 ```              
 
 ### [Refresh Connection through Connect API](https://docs.saltedge.com/account_information/v5/#connections-refresh)
-** Note: Refresh thorough Connect API is not available for Partners API. **
+**Note: Refresh thorough Connect API is not available for Partners API.**
 
 If you wish to refresh Connection without Salt Edge Connect WebView, you can use dedicated service `SERefreshService`.
 
@@ -533,7 +523,8 @@ refreshService.sendInteractiveData(credentials);
 
 Credentials data type is `Map<String, Object>`, with content like `{"interactive field name from StageData": "input value"}`.
 
-**Saltedge Connect API requires high security standards for data handling on client’s side. This method is only available for the certified and/or selected partners. For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  
+**Saltedge Connect API requires high security standards for data handling on client’s side. This method is only available for the certified and/or selected partners. 
+For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  
 Please consult the Demo app to see how it works**
   
 ---
@@ -671,7 +662,7 @@ SERequestManager.getInstance().fetchDuplicatedTransactionsOfAccount(
 ```
 
 ### [Mark transactions as duplicated](https://docs.saltedge.com/account_information/v5/#transactions-duplicate).
-** Note: `Revoke Consent` feature is not available for Partners API. **
+**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Mark a list of transactions as `duplicated`.
 
@@ -703,7 +694,7 @@ SERequestManager.getInstance().markTransactionsAsDuplicated(
 ```
 
 ### [Remove duplicated flag from transactions](https://docs.saltedge.com/account_information/v5/#transactions-unduplicate).
-** Note: `Revoke Consent` feature is not available for Partners API. **
+**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Remove `duplicated` flag from a list of transactions.
 
@@ -735,7 +726,7 @@ SERequestManager.getInstance().markTransactionsAsNotDuplicated(
 ```
 
 ### [Remove transactions](https://docs.saltedge.com/account_information/v5/#transactions-remove).
-** Note: `Revoke Consent` feature is not available for Partners API. **
+**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Remove transactions older than a specified period.
 
@@ -770,6 +761,7 @@ SERequestManager.getInstance().removeTransactions(
 
 ---
 ## [Consents](https://docs.saltedge.com/account_information/v5/#consents)
+
 A consent represents the access to data and the limits of this access agreed on by a customer and is required to access the accounts, transactions and holder information through a specific provider.
 
 The limits of a consent are represented by:
@@ -807,7 +799,7 @@ SERequestManager.getInstance().fetchConsents(
 ```
 
 ### [Show Partners Consents](https://docs.saltedge.com/partners/v1/#partner_consents)
-** Note: `Get Partners Consent` feature is available only for Partners API. **
+**Note: `Get Partners Consent` feature is available only for Partners API.**
 
 Partner consent is a part of combined consent, shown to the customer that allows Salt Edge to share account, transaction and holder info data with the registered partner, based on the right to data portability enforced by the EU General Data Protection Regulation (GDPR)
 
@@ -835,7 +827,7 @@ SERequestManager.getInstance().fetchPartnerConsents(
 ```
 
 ### [Revoke Consent](https://docs.saltedge.com/account_information/v5/#consents-revoke)
-** Note: `Revoke Consent` feature is not available for Partners API. **
+**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Consent revoke is an option that allows you to revoke a consent for a connection of customer.
 
