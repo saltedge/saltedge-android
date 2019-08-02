@@ -1,4 +1,4 @@
-# Salt Edge Android SDK
+# Salt Edge Android SDK Guide
   
 * [Init SDK](#init-sdk)
 * [Customer](#create-new-customer)
