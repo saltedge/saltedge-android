@@ -62,6 +62,18 @@ dependencies {
     androidTestImplementation 'com.squareup.okhttp3:mockwebserver:3.12.2'//Don't update while support Android SDK < 20
 }
 
+// build a jar with source files
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+
+    include("**/SERequestManager.java")
+    include("**/SEWebViewTools.java")
+}
+artifacts {
+    archives sourcesJar
+}
+
 group 'com.saltedge.sdk'
 version appVersionName
 

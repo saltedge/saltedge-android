@@ -58,26 +58,26 @@ public class SEWebViewTools {
         /**
          * Received SUCCESS stage callback of provider connect flow
          *
-         * @param connectionId - connection id
-         * @param connectionSecret - connection secret code
-         * @param rawJsonData - raw JSON result data
+         * @param connectionId connection id
+         * @param connectionSecret connection secret code
+         * @param rawJsonData raw JSON result data
          */
         void onConnectSessionSuccessStage(String connectionId, String connectionSecret, String rawJsonData);
 
         /**
          * Received ERROR stage callback of provider connect flow
          *
-         * @param rawJsonData - raw JSON result data
+         * @param rawJsonData raw JSON result data
          */
         void onConnectSessionErrorStage(String rawJsonData);
 
         /**
          * Received FETCHING stage callback of provider connect flow
          *
-         * @param connectionId - connection id
-         * @param connectionSecret - connection secret code
-         * @param apiStage - api stage string
-         * @param rawJsonData - raw JSON result data
+         * @param connectionId connection id
+         * @param connectionSecret connection secret code
+         * @param apiStage api stage string
+         * @param rawJsonData raw JSON result data
          */
         void onConnectSessionFetchingStage(String connectionId, String connectionSecret, String apiStage, String rawJsonData);
 
@@ -85,8 +85,8 @@ public class SEWebViewTools {
          * Received new Stage callback of provider connect flow
          * (Not SUCCESS, not ERROR, not FETCHING)
          *
-         * @param result - parsed Saltbridge result object
-         * @param rawJsonData - raw JSON result data
+         * @param result parsed Saltbridge result object
+         * @param rawJsonData raw JSON result data
          */
         void onConnectSessionStageChange(Saltbridge result, String rawJsonData);
 
