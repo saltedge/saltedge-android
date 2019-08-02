@@ -77,5 +77,7 @@ See the [LICENSE](LICENSE) file.
 1. [Salt Edge Partners API](https://docs.saltedge.com/partners/v1/)
 1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)
 
+For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  
+
 ---
 Copyright © 2014 - 2019 Salt Edge. https://www.saltedge.com
