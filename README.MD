@@ -87,4 +87,4 @@ See the [LICENSE](LICENSE) file.
 For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  
 
 ---
-Copyright © 2014 - 2019 Salt Edge. https://www.saltedge.com
+Copyright © 2014 - 2019 Salt Edge Inc. https://www.saltedge.com
