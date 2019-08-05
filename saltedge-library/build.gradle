@@ -86,3 +86,5 @@ uploadArchives {
         }
     }
 }
+
+uploadArchives.dependsOn sourcesJar
