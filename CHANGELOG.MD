@@ -1,5 +1,9 @@
 # Salt Edge SDK library changelog
 
+## [3.0.1] - 2019-08-05
+### Added
+- Added sources to repository
+  
 ## [3.0.0] - 2019-08-01
 ### Added
 - Added Partners API v1 support;
