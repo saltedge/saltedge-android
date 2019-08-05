@@ -78,9 +78,9 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret [optional] - current Customer secret code
-     * @param ratesDate - date for which collection of currencies rates should be returned
-     * @param callback - callback for request result
+     * @param customerSecret [optional] current Customer secret code
+     * @param ratesDate date for which collection of currencies rates should be returned
+     * @param callback callback for request result
      */
     public void fetchCurrenciesRates(
             String customerSecret,
@@ -97,8 +97,8 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerIdentifier - a unique identifier of the new Customer
-     * @param callback - callback for request result
+     * @param customerIdentifier a unique identifier of the new Customer
+     * @param callback callback for request result
      */
     public void createCustomer(
             @NotNull String customerIdentifier,
@@ -115,8 +115,8 @@ public class SERequestManager {
      * Return list of available Providers.
      * Result is returned through callback.
      *
-     * @param countryCode - code of the provider’s country
-     * @param callback - callback for request result
+     * @param countryCode code of the provider’s country
+     * @param callback callback for request result
      */
     public void fetchProviders(@NotNull String countryCode, ProvidersResult callback) {
         new ProvidersConnector(callback).fetchProviders(countryCode);
@@ -129,12 +129,12 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param providerCode - the code of the desired Provider
-     * @param consentScopes - fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
-     * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param providerCode the code of the desired Provider
+     * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
+     * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
+     * @param callback callback for request result
      */
     public void createConnectSession(
             @NotNull String customerSecret,
@@ -161,9 +161,9 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param dataMap - custom params map
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param dataMap custom params map
+     * @param callback callback for request result
      */
     public void createConnectSession(
             @NotNull String customerSecret,
@@ -181,12 +181,12 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection which you want to reconnect
-     * @param consentScopes - fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
-     * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection which you want to reconnect
+     * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
+     * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
+     * @param callback callback for request result
      */
     public void createReconnectSession(
             @NotNull String customerSecret,
@@ -214,13 +214,13 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection which you want to reconnect
-     * @param consentScopes - fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
-     * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
-     * @param overrideCredentials - override credentials strategy. If true, the new credentials will automatically override the old ones.
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection which you want to reconnect
+     * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
+     * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
+     * @param overrideCredentials override credentials strategy. If true, the new credentials will automatically override the old ones.
+     * @param callback callback for request result
      */
     public void createReconnectSession(
             @NotNull String customerSecret,
@@ -249,11 +249,11 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection which you want to reconnect
-     * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection which you want to reconnect
+     * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
+     * @param callback callback for request result
      */
     public void createRefreshSession(
             @NotNull String customerSecret,
@@ -277,11 +277,11 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionData - Connection data for refresh
-     * @param refreshScopes - array of refresh scopes, e.g. {"accounts", "transactions"}
-     * @param callback - callback for request result
-     * @return SERefreshService - refresh service object
+     * @param customerSecret current Customer secret code
+     * @param connectionData Connection data for refresh
+     * @param refreshScopes array of refresh scopes, e.g. {"accounts", "transactions"}
+     * @param callback callback for request result
+     * @return SERefreshService refresh service object
      */
     public SERefreshService refreshConnectionWithSecret(
             @NotNull String customerSecret,
@@ -300,11 +300,11 @@ public class SERequestManager {
      *
      * Feature is available only for Partner Application.
      *
-     * @param providerCode - the code of the desired Provider
-     * @param consentScopes - fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
-     * @param localeCode - the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl - the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
-     * @param callback - callback for request result
+     * @param providerCode the code of the desired Provider
+     * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
+     * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
+     * @param callback callback for request result
      */
     public void createLeadSession(
             String providerCode,
@@ -329,8 +329,8 @@ public class SERequestManager {
      *
      * Feature is available only for Partner Application.
      *
-     * @param dataMap - custom params map
-     * @param callback - callback for request result
+     * @param dataMap custom params map
+     * @param callback callback for request result
      */
     public void createLeadSession(
             Map<String, Object> dataMap,
@@ -346,9 +346,9 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection which should be returned if exist
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection which should be returned if exist
+     * @param callback callback for request result
      */
     public void fetchConnection(
             String customerSecret,
@@ -365,9 +365,9 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionsSecretsArray - array of secrets of the Connections which should be returned if exist
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionsSecretsArray array of secrets of the Connections which should be returned if exist
+     * @param callback callback for request result
      */
     public void fetchConnections(
             String customerSecret,
@@ -380,9 +380,9 @@ public class SERequestManager {
      * Delete Connection.
      * Result is returned through callback.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection which should be deleted if exist
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection which should be deleted if exist
+     * @param callback callback for request result
      *
      * Feature is not available for Partners Applications.
      */
@@ -402,9 +402,9 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection
+     * @param callback callback for request result
      */
     public void fetchAccounts(
             String customerSecret,
@@ -421,10 +421,10 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection
-     * @param accountId - Account ID
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection
+     * @param accountId Account ID
+     * @param callback callback for request result
      */
     public void fetchAllTransactions(
             String customerSecret,
@@ -450,11 +450,11 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection
-     * @param accountId - Account ID
-     * @param fromTransactionId - the id from which the result list should starts
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection
+     * @param accountId Account ID
+     * @param fromTransactionId the id from which the result list should starts
+     * @param callback callback for request result
      */
     public void fetchAllTransactions(
             String customerSecret,
@@ -482,11 +482,11 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection
-     * @param accountId - Account ID
-     * @param fromTransactionId - the ID from which the next page of transactions starts
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection
+     * @param accountId Account ID
+     * @param fromTransactionId the ID from which the next page of transactions starts
+     * @param callback callback for request result
      */
     public void fetchTransactions(
             String customerSecret,
@@ -512,13 +512,13 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection
-     * @param accountId - Account ID
-     * @param fromTransactionId - the ID from which the next page of transactions starts
-     * @param fetchPendingTransactions - flag which indicates what type of transactions should be fetched (Normal or Pending)
-     * @param fetchAllTransactionsFromId - flag which indicates that should be fetched one page or all
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection
+     * @param accountId Account ID
+     * @param fromTransactionId the ID from which the next page of transactions starts
+     * @param fetchPendingTransactions flag which indicates what type of transactions should be fetched (Normal or Pending)
+     * @param fetchAllTransactionsFromId flag which indicates that should be fetched one page or all
+     * @param callback callback for request result
      */
     public void fetchTransactions(
             String customerSecret,
@@ -554,10 +554,10 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection
-     * @param accountId - Account ID
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection
+     * @param accountId Account ID
+     * @param callback callback for request result
      */
     public void fetchPendingTransactionsOfAccount(
             String customerSecret,
@@ -579,11 +579,11 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection
-     * @param accountId - Account ID
-     * @param fromTransactionId - the id from which the result list should starts
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection
+     * @param accountId Account ID
+     * @param fromTransactionId the id from which the result list should starts
+     * @param callback callback for request result
      */
     public void fetchPendingTransactionsOfAccount(
             String customerSecret,
@@ -607,10 +607,10 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection
-     * @param accountId - Account ID
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection
+     * @param accountId Account ID
+     * @param callback callback for request result
      */
     public void fetchDuplicatedTransactionsOfAccount(
             String customerSecret,
@@ -632,11 +632,11 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection
-     * @param accountId - Account ID
-     * @param fromTransactionId - the id from which the result list should starts
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection
+     * @param accountId Account ID
+     * @param fromTransactionId the id from which the result list should starts
+     * @param callback callback for request result
      */
     public void fetchDuplicatedTransactionsOfAccount(
             String customerSecret,
@@ -660,10 +660,10 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection
-     * @param transactionsIds - the ids of transactions, that should be marked as duplicated
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection
+     * @param transactionsIds the ids of transactions, that should be marked as duplicated
+     * @param callback callback for request result
      */
     public void markTransactionsAsDuplicated(
             String customerSecret,
@@ -685,10 +685,10 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection
-     * @param transactionsIds - the ids of transactions, that should be marked as not-duplicated
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection
+     * @param transactionsIds the ids of transactions, that should be marked as not-duplicated
+     * @param callback callback for request result
      */
     public void markTransactionsAsNotDuplicated(
             String customerSecret,
@@ -710,11 +710,11 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret of the Connection
-     * @param accountId - the id of the account
-     * @param keepDays - the amount of days for which the transactions will be kept. Transactions older than that will be irreversibly removed. Value should be greater than or equal to 60.
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret of the Connection
+     * @param accountId the id of the account
+     * @param keepDays the amount of days for which the transactions will be kept. Transactions older than that will be irreversibly removed. Value should be greater than or equal to 60.
+     * @param callback callback for request result
      */
     public void removeTransactions(
             String customerSecret,
@@ -740,9 +740,9 @@ public class SERequestManager {
      *
      * Feature is available for Partners and non-Partner Applications.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection
+     * @param callback callback for request result
      */
     public void fetchConsents(
             String customerSecret,
@@ -758,10 +758,10 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param customerSecret - current Customer secret code
-     * @param connectionSecret - secret code of the Connection which should be deleted if exist
-     * @param consentId - id of Consent which should be revoked
-     * @param callback - callback for request result
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection which should be deleted if exist
+     * @param consentId id of Consent which should be revoked
+     * @param callback callback for request result
      */
     public void revokeConsent(
             @NotNull String customerSecret,
@@ -780,8 +780,8 @@ public class SERequestManager {
      *
      * Feature is not available for Partner Application.
      *
-     * @param connectionSecret - secret code of the Connection
-     * @param callback - callback for request result
+     * @param connectionSecret secret code of the Connection
+     * @param callback callback for request result
      */
     public void fetchPartnerConsents(
             @NotNull String connectionSecret,
