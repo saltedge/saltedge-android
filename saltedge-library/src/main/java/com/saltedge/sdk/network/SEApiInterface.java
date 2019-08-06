@@ -203,4 +203,10 @@ public interface SEApiInterface {
             @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
             @Path(value = SEConstants.KEY_CONSENT_ID, encoded = true) String consentId
     );
+
+    @PUT(SEApiConstants.API_PARTNER_CONSENT_REVOKE_PATH)
+    Call<ConsentResponse> revokePartnerConsent(
+            @Query(value = SEConstants.KEY_CONNECTION_ID) String connectionId,
+            @Path(value = SEConstants.KEY_CONSENT_ID, encoded = true) String consentId
+    );
 }

@@ -31,6 +31,7 @@ import com.saltedge.sdk.connector.CurrenciesConnector;
 import com.saltedge.sdk.connector.CustomerConnector;
 import com.saltedge.sdk.connector.DuplicatedTransactionsFetchConnector;
 import com.saltedge.sdk.connector.LeadSessionConnector;
+import com.saltedge.sdk.connector.PartnerConsentRevokeConnector;
 import com.saltedge.sdk.connector.PartnerConsentsConnector;
 import com.saltedge.sdk.connector.PendingTransactionsFetchConnector;
 import com.saltedge.sdk.connector.ProvidersConnector;
@@ -759,8 +760,8 @@ public class SERequestManager {
      * Feature is not available for Partner Application.
      *
      * @param customerSecret current Customer secret code
-     * @param connectionSecret secret code of the Connection which should be deleted if exist
-     * @param consentId id of Consent which should be revoked
+     * @param connectionSecret secret code of the Connection containing the consents
+     * @param consentId unique ID of Consent which should be revoked
      * @param callback callback for request result
      */
     public void revokeConsent(
@@ -778,7 +779,7 @@ public class SERequestManager {
      * The consents are sorted in ascending order of their ID, so the newest consent will come last.
      * Result is returned through callback.
      *
-     * Feature is not available for Partner Application.
+     * Feature is available only for Partner Application.
      *
      * @param connectionSecret secret code of the Connection
      * @param callback callback for request result
@@ -789,6 +790,25 @@ public class SERequestManager {
     ) {
         featureIsAvailableForPartnerOnly();
         new PartnerConsentsConnector(callback).fetchPartnerConsents(connectionSecret);
+    }
+
+    /**
+     * Partner consent revoke is an action that allows you to revoke a partner consent given by a specific customer.
+     * Result is returned through callback.
+     *
+     * Feature is available only for Partner Application.
+     *
+     * @param connectionId unique ID of the Connection containing the consents
+     * @param consentId unique ID of Consent which should be revoked
+     * @param callback callback for request result
+     */
+    public void revokePartnerConsent(
+            @NotNull String connectionId,
+            @NotNull String consentId,
+            DeleteEntryResult callback
+    ) {
+        featureIsAvailableForPartnerOnly();
+        new PartnerConsentRevokeConnector(callback).revokePartnerConsent(connectionId, consentId);
     }
 
     private void featureIsAvailableForPartnerOnly() {
