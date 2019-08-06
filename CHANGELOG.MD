@@ -1,8 +1,8 @@
 # Salt Edge SDK library changelog
 
-## [3.0.1] - 2019-08-05
+## [3.0.2] - 2019-08-06
 ### Added
-- Added sources to repository
+- Added documented sources to maven repository
   
 ## [3.0.0] - 2019-08-01
 ### Added
