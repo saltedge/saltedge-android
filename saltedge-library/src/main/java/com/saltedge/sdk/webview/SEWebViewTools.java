@@ -182,7 +182,7 @@ public class SEWebViewTools {
             }
         } else if (isSaltbridgeUrl(url)) {
             String rawJsonData = extractRawSaltbridgeData(url);
-            onStageChanged(parseSaltbridgeObject(url), rawJsonData);
+            onStageChanged(parseSaltbridgeObject(rawJsonData), rawJsonData);
             return false;
         }
         return true;
@@ -192,8 +192,10 @@ public class SEWebViewTools {
         return url != null && url.contains(SEApiConstants.PREFIX_SALTBRIDGE);
     }
 
-    private String extractRawSaltbridgeData(@NotNull String url) {
-        return url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length());
+    public String extractRawSaltbridgeData(@NotNull String url) {
+        return url.contains(SEApiConstants.PREFIX_SALTBRIDGE)
+                ? url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length())
+                : "";
     }
 
     private Saltbridge parseSaltbridgeObject(@NotNull String rawJsonData) {
