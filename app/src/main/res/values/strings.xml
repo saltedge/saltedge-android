@@ -14,7 +14,7 @@
     <string name="fetching_currencies">Fetching Currencies Rates</string>
 
     <string name="creating_lead_token">Creating lead session</string>
-    <string name="creating_token">jhreating session</string>
+    <string name="creating_token">Creating session</string>
 
     <string name="fetching_providers">Fetching Providers</string>
     <string name="add_provider">Add Provider</string>

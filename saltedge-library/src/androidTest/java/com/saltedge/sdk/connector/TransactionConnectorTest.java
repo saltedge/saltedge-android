@@ -139,8 +139,8 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
     }
 
     @Override
-    public void onSuccess(ArrayList<SETransaction> transactionsList) {
-        this.transactionsList = transactionsList;
+    public void onSuccess(List<SETransaction> transactions) {
+        this.transactionsList = transactions;
         doneSignal.countDown();
     }
 

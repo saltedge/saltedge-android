@@ -21,7 +21,6 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -35,7 +34,7 @@ import org.jetbrains.annotations.NotNull;
 public class SaltEdgeSDK {
 
     private static SaltEdgeSDK instance;
-    private Application application;
+    private Context applicationContext;
     private String appId;
     private String appSecret;
     private boolean usePartnersApi;
@@ -69,70 +68,70 @@ public class SaltEdgeSDK {
     }
 
     public Context getContext() {
-        return application.getApplicationContext();
+        return applicationContext;
     }
 
     /**
      * Initialize Salt Edge SDK for access to Salt Edge API
      *
-     * @param application Application instance
+     * @param applicationContext Application context
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
      */
-    public void init(@NotNull Application application,
+    public void init(Context applicationContext,
                      @NotNull String clientAppId,
                      @NotNull String clientAppSecret
     ) {
-        init(application, clientAppId, clientAppSecret, false);
+        init(applicationContext, clientAppId, clientAppSecret, false);
     }
 
     /**
      * Initialize Salt Edge SDK for access to Salt Edge API
      *
-     * @param application Application instance
+     * @param applicationContext Application context
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
      * @param enableLogging flag, which enable or disable network logging
      */
-    public void init(@NotNull Application application,
+    public void init(Context applicationContext,
                      @NotNull String clientAppId,
                      @NotNull String clientAppSecret,
                      boolean enableLogging
     ) {
-        init(application, clientAppId, clientAppSecret, false, enableLogging);
+        init(applicationContext, clientAppId, clientAppSecret, false, enableLogging);
     }
 
     /**
      * Initialize Salt Edge SDK for access to Salt Edge Partner API
      *
-     * @param application Application instance
+     * @param applicationContext Application context
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
      */
-    public void initPartner(@NotNull Application application,
+    public void initPartner(Context applicationContext,
                             @NotNull String clientAppId,
                             @NotNull String clientAppSecret
     ) {
-        initPartner(application, clientAppId, clientAppSecret, false);
+        initPartner(applicationContext, clientAppId, clientAppSecret, false);
     }
 
     /**
      * Initialize Salt Edge SDK for access to Salt Edge Partner API
      *
-     * @param application Application instance
+     * @param applicationContext Application context
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
      * @param enableLogging flag, which enable or disable network logging
      */
-    public void initPartner(@NotNull Application application,
+    public void initPartner(Context applicationContext,
                             @NotNull String clientAppId,
                             @NotNull String clientAppSecret,
                             boolean enableLogging
     ) {
-        init(application, clientAppId, clientAppSecret, true, enableLogging);
+        init(applicationContext, clientAppId, clientAppSecret, true, enableLogging);
     }
 
-    private void init(@NotNull Application application,
+    private void init(Context applicationContext,
                      @NotNull String clientAppId,
                      @NotNull String clientAppSecret,
                      boolean actAsPartner,
@@ -144,7 +143,7 @@ public class SaltEdgeSDK {
         if (clientAppSecret.isEmpty()) {
             throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_SECRET_IS_NULL);
         }
-        this.application = application;
+        this.applicationContext = applicationContext;
         this.appId = clientAppId;
         this.appSecret = clientAppSecret;
         this.usePartnersApi = actAsPartner;
