@@ -53,6 +53,7 @@ import com.saltedge.sdk.sample.utils.UITools;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
 
@@ -202,9 +203,9 @@ public class AccountsActivity extends AppCompatActivity implements AdapterView.O
         SERequestManager.getInstance().fetchAccounts(customerSecret, currentConnection.getSecret(),
                 new FetchAccountsResult() {
                     @Override
-                    public void onSuccess(ArrayList<SEAccount> accountsList) {
+                    public void onSuccess(List<SEAccount> accountsList) {
                         fetchingAccounts = false;
-                        onFetchAccountsSuccess(accountsList);
+                        onFetchAccountsSuccess(new ArrayList<>(accountsList));
                     }
 
                     @Override

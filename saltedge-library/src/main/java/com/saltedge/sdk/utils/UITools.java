@@ -42,5 +42,4 @@ public class UITools {
     public static void showProgress(ProgressDialog dialog) {
         dialog.show();
     }
-
 }

@@ -21,6 +21,9 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.errors;
 
+/**
+ * The class SDKFeatureException is thrown while feature is not available for Salt Edge API
+ */
 public class SDKFeatureException extends RuntimeException {
 
     public SDKFeatureException() {

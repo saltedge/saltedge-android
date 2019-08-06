@@ -26,6 +26,11 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import org.json.JSONObject;
 
+/**
+ * Model for Account
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#accounts-attributes">Account Attributes</a>
+ */
 public class SEAccount extends BaseModel {
 
     @SerializedName(SEConstants.KEY_NAME)

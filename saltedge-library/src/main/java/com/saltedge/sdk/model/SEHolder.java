@@ -26,6 +26,11 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
+/**
+ * Model for Holder Info
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#holder_info-show">Holder Info Attributes</a>
+ */
 public class SEHolder implements Serializable {
 
     @SerializedName(SEConstants.KEY_NAMES)

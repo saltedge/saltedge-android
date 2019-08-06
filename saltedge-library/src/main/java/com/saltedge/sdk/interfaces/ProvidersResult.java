@@ -23,9 +23,24 @@ package com.saltedge.sdk.interfaces;
 
 import com.saltedge.sdk.model.SEProvider;
 
-import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Interface definition for a callback to be invoked when finished Fetch Providers operation
+ */
 public interface ProvidersResult {
-    void onSuccess(ArrayList<SEProvider> providersList);
+
+    /**
+     * Callback method is invoked when Fetch Providers operation finished with success
+     *
+     * @param providers List of SEProvider objects
+     */
+    void onSuccess(List<SEProvider> providers);
+
+    /**
+     * Callback method is invoked when Fetch Providers operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }

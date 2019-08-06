@@ -36,6 +36,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Class for refreshing Connection without Salt Edge Connect WebView
+ */
 public class SERefreshService {
 
     public SERefreshService(RefreshConnectionResult callback) {
@@ -94,6 +97,7 @@ public class SERefreshService {
 
     /**
      * Start refresh connectionData process
+     *
      * @param customerSecret - current customer secret
      * @param connectionData - ConnectionData model which should be refreshed
      * @param refreshScopes - refresh scopes. e.g. `['accounts', 'transactions']`
@@ -117,7 +121,7 @@ public class SERefreshService {
     }
 
     /**
-     * Cancel all communications
+     * Cancel all refresh process
      */
     public void cancel() {
         if (refreshConnector != null) {
@@ -131,6 +135,7 @@ public class SERefreshService {
 
     /**
      * Sends requested interactive credentials or empty map
+     *
      * @param credentials - credentials map. e.g.: `{ "sms": "123456" }`
      */
     public void sendInteractiveData(Map<String, Object> credentials) {

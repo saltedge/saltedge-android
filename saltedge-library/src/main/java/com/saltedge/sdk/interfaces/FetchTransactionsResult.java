@@ -23,9 +23,24 @@ package com.saltedge.sdk.interfaces;
 
 import com.saltedge.sdk.model.SETransaction;
 
-import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Interface definition for a callback to be invoked when finished Fetch Transactions operation
+ */
 public interface FetchTransactionsResult {
-    void onSuccess(ArrayList<SETransaction> transactionsList);
+
+    /**
+     * Callback method is invoked when Fetch Transactions operation finished with success
+     *
+     * @param transactions List of SETransaction objects
+     */
+    void onSuccess(List<SETransaction> transactions);
+
+    /**
+     * Callback method is invoked when Fetch Transactions operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }

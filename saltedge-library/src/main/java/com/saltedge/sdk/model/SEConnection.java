@@ -28,9 +28,12 @@ import com.saltedge.sdk.utils.SEDateTools;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Model for Connection
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#connections-attributes">Connection Attributes</a>
+ */
 public class SEConnection extends BaseModel implements Serializable {
-
-
 
     @SerializedName(SEConstants.KEY_SECRET)
     private String secret;

@@ -21,11 +21,26 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
-import com.saltedge.sdk.model.SECurrency;
+import com.saltedge.sdk.model.SECurrencyRate;
 
 import java.util.List;
 
-public interface FetchCurrenciesResult {
-    void onFetchCurrenciesSuccess(List<SECurrency> consentsList);
+/**
+ * Interface definition for a callback to be invoked when finished Fetch Currency Rates operation
+ */
+public interface FetchCurrencyRatesResult {
+
+    /**
+     * Callback method is invoked when Fetch Currency Rates operation finished with success
+     *
+     * @param rates List of SECurrencyRate objects
+     */
+    void onFetchCurrenciesSuccess(List<SECurrencyRate> rates);
+
+    /**
+     * Callback method is invoked when Fetch Currency Rates operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFetchCurrenciesFailure(String errorMessage);
 }

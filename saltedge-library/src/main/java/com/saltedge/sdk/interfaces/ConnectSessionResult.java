@@ -21,7 +21,21 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
+/**
+ * Interface definition for a callback to be invoked when finished Create Connect Session
+ */
 public interface ConnectSessionResult {
+    /**
+     * Callback method is invoked when Create Connect Session operation finished with success
+     *
+     * @param connectUrl String which should be opened in WebView to create connection
+     */
     void onSuccess(String connectUrl);
+
+    /**
+     * Callback method is invoked when Create Connect Session operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }

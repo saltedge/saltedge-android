@@ -21,8 +21,30 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
+/**
+ * Interface definition for a callback to be invoked when finished operation which changed Transactions
+ */
 public interface UpdateTransactionsResult {
+
+    /**
+     * Callback method is invoked when Transactions Update operation finished with success
+     *
+     * @param success Boolean result of operation
+     * @param operationName String, can be "DUPLICATE" and "UNDUPLICATE"
+     */
     void onUpdateTransactionsSuccess(Boolean success, String operationName);
+
+    /**
+     * Callback method is invoked when Transactions Delete operation started
+     *
+     * @param success Boolean result of operation
+     */
     void onTransactionsCleanupStartedSuccess(Boolean success);
+
+    /**
+     * Callback method is invoked when Transactions Update operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onUpdateTransactionsFailure(String errorMessage);
 }

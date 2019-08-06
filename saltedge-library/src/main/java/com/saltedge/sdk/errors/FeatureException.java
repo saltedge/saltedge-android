@@ -21,6 +21,11 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.errors;
 
+/**
+ * The class FeatureException and its subclasses are a form of
+ * that indicates conditions for features that a reasonable
+ * application might want to catch.
+ */
 public class FeatureException extends Exception {
 
     public FeatureException(String message) {

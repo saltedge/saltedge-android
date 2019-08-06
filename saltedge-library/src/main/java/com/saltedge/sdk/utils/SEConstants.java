@@ -21,6 +21,9 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.utils;
 
+/**
+ * Constant used for network interaction
+ */
 public class SEConstants {
 
     //Base model keys

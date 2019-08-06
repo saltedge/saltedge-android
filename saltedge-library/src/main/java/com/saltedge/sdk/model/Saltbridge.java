@@ -26,6 +26,11 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.Map;
 
+/**
+ * Model for Saltbridge redirection data
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#iframe-injection">Saltbridge Attributes</a>
+ */
 public class Saltbridge {
 
     @SerializedName(SEConstants.KEY_CONNECTION_ID)

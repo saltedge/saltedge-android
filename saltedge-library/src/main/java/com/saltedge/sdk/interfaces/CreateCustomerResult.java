@@ -21,7 +21,22 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
+/**
+ * Interface definition for a callback to be invoked when finished Create Customer
+ */
 public interface CreateCustomerResult {
+
+    /**
+     * Callback method is invoked when Create Customer operation finished with success
+     *
+     * @param secret unique String of newly created customer
+     */
     void onSuccess(String secret);
+
+    /**
+     * Callback method is invoked when Create Customer operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }

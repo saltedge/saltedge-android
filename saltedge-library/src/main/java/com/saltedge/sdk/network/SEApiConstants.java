@@ -23,6 +23,9 @@ package com.saltedge.sdk.network;
 
 import com.saltedge.sdk.utils.SEConstants;
 
+/**
+ * Constants for API users
+ */
 public class SEApiConstants {
 
     //Headers

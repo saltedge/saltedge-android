@@ -42,6 +42,9 @@ import com.saltedge.sdk.utils.UITools;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Helper class designated to show Salt Edge Connect Web View and handle it callbacks
+ */
 public class SEWebViewTools {
 
     public static ValueCallback<Uri[]> uploadMessage;

@@ -21,6 +21,9 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.errors;
 
+/**
+ * The class PartnerSDKFeatureException is thrown while feature is not available for Salt Edge Partner API
+ */
 public class PartnerSDKFeatureException extends RuntimeException {
 
     public PartnerSDKFeatureException() {

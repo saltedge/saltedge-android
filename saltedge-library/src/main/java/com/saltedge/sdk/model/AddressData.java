@@ -26,6 +26,11 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
+/**
+ * Model for Address Info of Holder Info
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#holder_info-show">Address Attributes</a>
+ */
 public class AddressData implements Serializable {
 
     @SerializedName(SEConstants.KEY_CITY)
@@ -38,10 +43,10 @@ public class AddressData implements Serializable {
     private String street;
 
     @SerializedName(SEConstants.KEY_COUNTRY_CODE)
-    private String country_code;
+    private String countryCode;
 
     @SerializedName(SEConstants.KEY_POST_CODE)
-    private String post_code;
+    private String postCode;
 
     public String getCity() {
         return city;
@@ -67,19 +72,19 @@ public class AddressData implements Serializable {
         this.street = street;
     }
 
-    public String getCountry_code() {
-        return country_code;
+    public String getCountryCode() {
+        return countryCode;
     }
 
-    public void setCountry_code(String country_code) {
-        this.country_code = country_code;
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
-    public String getPost_code() {
-        return post_code;
+    public String getPostCode() {
+        return postCode;
     }
 
-    public void setPost_code(String post_code) {
-        this.post_code = post_code;
+    public void setPostCode(String postCode) {
+        this.postCode = postCode;
     }
 }

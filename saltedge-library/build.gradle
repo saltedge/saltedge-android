@@ -2,8 +2,8 @@ apply plugin: 'com.android.library'
 
 apply plugin: 'maven'
 
-def appVersionCode = 16
-def appVersionName = "3.0.1"
+def appVersionCode = 17
+def appVersionName = "3.0.2"
 
 android {
     compileSdkVersion 28
@@ -67,8 +67,14 @@ task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 
+    include("**/SaltEdgeSDK.java")
     include("**/SERequestManager.java")
     include("**/SEWebViewTools.java")
+    include("**/SERefreshService.java")
+    include("**/errors/*.java")
+    include("**/interfaces/*.java")
+    include("**/model/*.java")
+    include("**/utils/*.java")
 }
 artifacts {
     archives sourcesJar

@@ -26,16 +26,31 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
+/**
+ * Model for Consent or Partners Consent
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#consents-attributes">Consent Attributes</a>
+ * @see <a href="https://docs.saltedge.com/partners/v1/#partner_consents-attributes">Partners Consent Attributes</a>
+ */
 public class SEConsent extends BaseModel implements Serializable {
 
+    /**
+     * Consent scopes constants
+     */
     public final static String SCOPE_HOLDER_INFORMATION = "holder_information";
     public final static String SCOPE_ACCOUNT_DETAILS = "account_details";
     public final static String SCOPE_TRANSACTIONS_DETAILS = "transactions_details";
 
+    /**
+     * Consent Status possible values
+     */
     public enum STATUS {
         ACTIVE, REVOKED
     }
 
+    /**
+     * Partner Consent revokedBy possible values
+     */
     public enum REVOKED_BY {
         PARTNER, LEAD, SALTEDGE
     }

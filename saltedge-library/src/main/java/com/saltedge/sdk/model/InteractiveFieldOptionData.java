@@ -26,6 +26,11 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
+/**
+ * Model for Interactive Fields
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#callbacks-interactive">Interactive Fields Attributes</a>
+ */
 public class InteractiveFieldOptionData implements Serializable {
 
     @SerializedName(SEConstants.KEY_NAME)

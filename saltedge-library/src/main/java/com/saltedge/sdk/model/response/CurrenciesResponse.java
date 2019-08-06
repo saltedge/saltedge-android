@@ -22,7 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.model.response;
 
 import com.google.gson.annotations.SerializedName;
-import com.saltedge.sdk.model.SECurrency;
+import com.saltedge.sdk.model.SECurrencyRate;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.List;
@@ -30,9 +30,9 @@ import java.util.List;
 public class CurrenciesResponse {
 
     @SerializedName(SEConstants.KEY_DATA)
-    private List<SECurrency> currencies;
+    private List<SECurrencyRate> currencies;
 
-    public List<SECurrency> getCurrencies() {
+    public List<SECurrencyRate> getCurrencies() {
         return currencies;
     }
 }

@@ -26,8 +26,18 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
+/**
+ * Model for Attempt
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#attempts-attributes">Attempt Attributes</a>
+ */
 public class SEAttempt extends BaseModel implements Serializable {
 
+    /**
+     * Attempt fetch scopes constants
+     *
+     * @see <a href="https://docs.saltedge.com/account_information/v5/#transactions-attributes">Transaction Attributes</a>
+     */
     public final static String FETCH_SCOPE_HOLDER_INFO = "holder_info";
     public final static String FETCH_SCOPE_ACCOUNTS = "accounts";
     public final static String FETCH_SCOPE_TRANSACTIONS = "transactions";

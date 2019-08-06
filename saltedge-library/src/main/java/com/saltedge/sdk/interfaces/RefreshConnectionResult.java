@@ -24,10 +24,44 @@ package com.saltedge.sdk.interfaces;
 import com.saltedge.sdk.model.SEConnection;
 import com.saltedge.sdk.model.SEStage;
 
+/**
+ * Interface definition for a callback to be invoked when Refresh Connection operation state changes
+ */
 public interface RefreshConnectionResult {
+
+    /**
+     * Callback method is invoked when Refresh Connection operation finished with success
+     *
+     * @param connection SEConnection objects
+     */
     void onRefreshSuccess(SEConnection connection);
+
+    /**
+     * Callback method is invoked when Refresh Connection operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onRefreshFailure(String errorMessage);
+
+    /**
+     * Callback method is invoked when interactive step of Refresh Connection operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onInteractiveStepFailure(String errorMessage);
+
+    /**
+     * Callback method is invoked when Fetch State step of Refresh Connection operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onConnectionStateFetchError(String errorMessage);
+
+    /**
+     * Callback method is invoked when the currently fetching Connection requires any interactive credentials for fetching.
+     * Call `refreshService.sendInteractiveData(credentials)` when credentials are ready
+     *
+     * @param lastStage SEStage object
+     */
     void provideInteractiveData(SEStage lastStage);
 }
