@@ -31,11 +31,11 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.saltedge.sdk.interfaces.FetchCurrenciesResult;
-import com.saltedge.sdk.model.SECurrency;
+import com.saltedge.sdk.interfaces.FetchCurrencyRatesResult;
+import com.saltedge.sdk.model.SECurrencyRate;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
-import com.saltedge.sdk.sample.adapters.CurreniesRatesAdapter;
+import com.saltedge.sdk.sample.adapters.CurrenciesRatesAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.PreferencesTools;
 import com.saltedge.sdk.sample.utils.UITools;
@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class CurrenciesRatesActivity extends AppCompatActivity implements FetchCurrenciesResult {
+public class CurrenciesRatesActivity extends AppCompatActivity implements FetchCurrencyRatesResult {
 
     private String customerSecret = "";
     private ListView listView;
@@ -90,12 +90,12 @@ public class CurrenciesRatesActivity extends AppCompatActivity implements FetchC
     }
 
     @Override
-    public void onFetchCurrenciesSuccess(List<SECurrency> list) {
-        emptyView.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
-        if (list.isEmpty()) {
+    public void onFetchCurrenciesSuccess(List<SECurrencyRate> rates) {
+        emptyView.setVisibility(rates.isEmpty() ? View.VISIBLE : View.GONE);
+        if (rates.isEmpty()) {
             emptyLabelView.setText(R.string.no_accounts);
         } else {
-            CurreniesRatesAdapter adapter = new CurreniesRatesAdapter(this, new ArrayList<>(list));
+            CurrenciesRatesAdapter adapter = new CurrenciesRatesAdapter(this, new ArrayList<>(rates));
             listView.setAdapter(adapter);
         }
     }

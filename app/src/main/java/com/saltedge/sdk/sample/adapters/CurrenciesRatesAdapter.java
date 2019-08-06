@@ -22,26 +22,28 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.saltedge.sdk.model.SECurrency;
+import com.saltedge.sdk.model.SECurrencyRate;
 import com.saltedge.sdk.sample.R;
 
 import java.util.ArrayList;
 
-public class CurreniesRatesAdapter extends ArrayAdapter<SECurrency> {
+public class CurrenciesRatesAdapter extends ArrayAdapter<SECurrencyRate> {
 
-    public CurreniesRatesAdapter(Context context, ArrayList<SECurrency> accounts) {
+    public CurrenciesRatesAdapter(Context context, ArrayList<SECurrencyRate> accounts) {
         super(context, 0, accounts);
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        SECurrency currency = getItem(position);
+        SECurrencyRate currency = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item_currency, parent, false);
