@@ -70,6 +70,7 @@ public class SEApiConstants {
     static final String API_CONSENTS_PATH = "consents";
     static final String API_CONSENT_REVOKE_PATH = API_CONSENTS_PATH + "/{"  + SEConstants.KEY_CONSENT_ID + "}/revoke";
     static final String API_PARTNER_CONSENTS_PATH = "partner_consents";
+    static final String API_PARTNER_CONSENT_REVOKE_PATH = API_PARTNER_CONSENTS_PATH + "/{"  + SEConstants.KEY_CONSENT_ID + "}/revoke";
 
     //Partners API URLs
     static final String PARTNERS_API_PATH = "api/partners/v1/";

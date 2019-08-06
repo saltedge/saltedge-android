@@ -23,8 +23,9 @@
   * [Remove transactions](#remove-transactions)
 * [Consent](#consent)
   * [Show Consents](#show-consents)
-  * [Show Partners Consents](#show-partners-consents)
   * [Revoke Consent](#revoke-consent)
+  * [Show Partners Consents](#show-partners-consents)
+  * [Revoke Partner Consent](#revoke-partner-consent)
 * [Models](#models)
 * [Utilities](#utilities)
 ---
@@ -798,6 +799,38 @@ SERequestManager.getInstance().fetchConsents(
 );
 ```
 
+### [Revoke Consent](https://docs.saltedge.com/account_information/v5/#consents-revoke)
+**Note: `Revoke Consent` feature is not available for Partners API.**
+
+Consent revoke is an option that allows you to revoke a consent for a connection of customer.
+
+#### Params:
+
+* `customerSecret` - unique customer secret. Not required for Partners API; 
+* `connectionSecret` - secret of connection which data should be fetched.
+* `consentId` - unique ID of Consent which should be revoked
+
+#### Example:
+   
+```java    
+SERequestManager.getInstance().revokeConsent(
+        customerSecret, 
+        connectionSecret,
+        consentId,
+        new DeleteEntryResult() {
+            @Override
+            public void onSuccess(Boolean entryIsRemoved, String entryId) {
+                //show changes
+            }
+
+            @Override
+            public void onFailure(String errorResponse) {
+                //handle error
+            }
+        }
+);
+```
+
 ### [Show Partners Consents](https://docs.saltedge.com/partners/v1/#partner_consents)
 **Note: `Get Partners Consent` feature is available only for Partners API.**
 
@@ -826,26 +859,25 @@ SERequestManager.getInstance().fetchPartnerConsents(
 );
 ```
 
-### [Revoke Consent](https://docs.saltedge.com/account_information/v5/#consents-revoke)
-**Note: `Revoke Consent` feature is not available for Partners API.**
+### [Revoke Partner Consent](https://docs.saltedge.com/partners/v1/#partner_consents-revoke)
+**Note: `Revoke Partner Consent` feature is available only for Partners API.**
 
-Consent revoke is an option that allows you to revoke a consent for a connection of customer.
+Partner Consent revoke is an option that allows you to revoke a consent for a connection of customer (connection).
 
 #### Params:
 
-* `customerSecret` - unique customer secret. Not required for Partners API; 
-* `connectionSecret` - secret of connection which data should be fetched.
+* `connectionId` - unique ID of connection
+* `consentId` - unique ID of Consent which should be revoked
 
 #### Example:
    
 ```java    
-SERequestManager.getInstance().revokeConsent(
-        customerSecret, 
-        connectionSecret,
+SERequestManager.getInstance().revokePartnerConsent(
+        connectionId,
         consentId,
         new DeleteEntryResult() {
             @Override
-            public void onSuccess(Boolean isRemoved) {
+            public void onSuccess(Boolean entryIsRemoved, String entryId) {
                 //show changes
             }
 

@@ -1,6 +1,13 @@
 # Salt Edge SDK library changelog
 
-## [3.0.2] - 2019-08-06
+## [3.0.3] - 2019-08-06
+### Added
+- Added Revoke Partner Consent feature
+
+### Changed
+- Fixed Saltbridge object parse error
+  
+## [3.0.2] - 2019-08-05
 ### Added
 - Added documented sources to maven repository
   

@@ -31,27 +31,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConsentRevokeConnector extends BasePinnedConnector implements Callback<ConsentResponse> {
+public class PartnerConsentRevokeConnector extends BasePinnedConnector implements Callback<ConsentResponse> {
 
     private final DeleteEntryResult callback;
-    private String customerSecret;
-    private String connectionSecret;
+    private String connectionId;
     private String consentId;
 
-    public ConsentRevokeConnector(DeleteEntryResult callback) {
+    public PartnerConsentRevokeConnector(DeleteEntryResult callback) {
         this.callback = callback;
     }
 
-    public void revokeConsent(String customerSecret, String connectionSecret, String consentId) {
-        this.customerSecret = customerSecret;
-        this.connectionSecret = connectionSecret;
+    public void revokePartnerConsent(String connectionId, String consentId) {
+        this.connectionId = connectionId;
         this.consentId = consentId;
         checkAndLoadPinsOrDoRequest();
     }
 
     @Override
     void enqueueCall() {
-        SERestClient.getInstance().service.revokeConsent(customerSecret, connectionSecret, consentId).enqueue(this);
+        SERestClient.getInstance().service.revokePartnerConsent(connectionId, consentId).enqueue(this);
     }
 
     @Override
