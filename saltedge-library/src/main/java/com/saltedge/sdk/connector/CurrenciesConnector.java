@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.interfaces.FetchCurrenciesResult;
-import com.saltedge.sdk.model.SECurrency;
+import com.saltedge.sdk.interfaces.FetchCurrencyRatesResult;
+import com.saltedge.sdk.model.SECurrencyRate;
 import com.saltedge.sdk.model.response.CurrenciesResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
@@ -37,11 +37,11 @@ import retrofit2.Response;
 
 public class CurrenciesConnector extends BasePinnedConnector implements Callback<CurrenciesResponse> {
 
-    private final FetchCurrenciesResult callback;
+    private final FetchCurrencyRatesResult callback;
     private String customerSecret = "";
     private String ratesDate = "";
 
-    public CurrenciesConnector(FetchCurrenciesResult callback) {
+    public CurrenciesConnector(FetchCurrencyRatesResult callback) {
         this.callback = callback;
     }
 
@@ -65,7 +65,7 @@ public class CurrenciesConnector extends BasePinnedConnector implements Callback
     public void onResponse(Call<CurrenciesResponse> call, Response<CurrenciesResponse> response) {
         CurrenciesResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) {
-            ArrayList<SECurrency> currencies = new ArrayList<>(responseBody.getCurrencies());
+            ArrayList<SECurrencyRate> currencies = new ArrayList<>(responseBody.getCurrencies());
             Collections.sort(currencies, (a1, a2) -> a1.getCurrencyCode().compareTo(a2.getCurrencyCode()));
             callback.onFetchCurrenciesSuccess(currencies);
         }

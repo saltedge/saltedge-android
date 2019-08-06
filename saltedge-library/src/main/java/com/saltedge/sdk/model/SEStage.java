@@ -27,6 +27,11 @@ import com.saltedge.sdk.utils.SEConstants;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * Model for Stage of Attempt
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#attempts-stages">Stage Attributes</a>
+ */
 public class SEStage extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_NAME)

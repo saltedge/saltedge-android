@@ -29,6 +29,9 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Helper class for initializing SDK for access to Salt Edge API or Salt Edge Partner API
+ */
 public class SaltEdgeSDK {
 
     private static SaltEdgeSDK instance;
@@ -69,29 +72,63 @@ public class SaltEdgeSDK {
         return application.getApplicationContext();
     }
 
+    /**
+     * Initialize Salt Edge SDK for access to Salt Edge API
+     *
+     * @param application Application instance
+     * @param clientAppId unique app id
+     * @param clientAppSecret unique ap secret
+     */
     public void init(@NotNull Application application,
                      @NotNull String clientAppId,
-                     @NotNull String clientAppSecret) {
+                     @NotNull String clientAppSecret
+    ) {
         init(application, clientAppId, clientAppSecret, false);
     }
 
+    /**
+     * Initialize Salt Edge SDK for access to Salt Edge API
+     *
+     * @param application Application instance
+     * @param clientAppId unique app id
+     * @param clientAppSecret unique ap secret
+     * @param enableLogging flag, which enable or disable network logging
+     */
     public void init(@NotNull Application application,
                      @NotNull String clientAppId,
                      @NotNull String clientAppSecret,
-                     boolean enableLogging) {
+                     boolean enableLogging
+    ) {
         init(application, clientAppId, clientAppSecret, false, enableLogging);
     }
 
+    /**
+     * Initialize Salt Edge SDK for access to Salt Edge Partner API
+     *
+     * @param application Application instance
+     * @param clientAppId unique app id
+     * @param clientAppSecret unique ap secret
+     */
     public void initPartner(@NotNull Application application,
                             @NotNull String clientAppId,
-                            @NotNull String clientAppSecret) {
+                            @NotNull String clientAppSecret
+    ) {
         initPartner(application, clientAppId, clientAppSecret, false);
     }
 
+    /**
+     * Initialize Salt Edge SDK for access to Salt Edge Partner API
+     *
+     * @param application Application instance
+     * @param clientAppId unique app id
+     * @param clientAppSecret unique ap secret
+     * @param enableLogging flag, which enable or disable network logging
+     */
     public void initPartner(@NotNull Application application,
                             @NotNull String clientAppId,
                             @NotNull String clientAppSecret,
-                            boolean enableLogging) {
+                            boolean enableLogging
+    ) {
         init(application, clientAppId, clientAppSecret, true, enableLogging);
     }
 

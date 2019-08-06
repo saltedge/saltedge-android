@@ -21,7 +21,24 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.interfaces;
 
+/**
+ * Interface definition for a callback to be invoked when finished Delete Entry operation
+ * It is used for Deleting of Connection or Revoking of Consent.
+ */
 public interface DeleteEntryResult {
+
+    /**
+     * Callback method is invoked when Delete Entry operation finished with success
+     *
+     * @param entryIsRemoved result of the operation (true or false)
+     * @param entryId unique ID of deleted entry
+     */
     void onSuccess(Boolean entryIsRemoved, String entryId);
+
+    /**
+     * Callback method is invoked when Delete Entry operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }

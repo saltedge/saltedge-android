@@ -25,7 +25,22 @@ import com.saltedge.sdk.model.SEConnection;
 
 import java.util.List;
 
+/**
+ * Interface definition for a callback to be invoked when finished Fetch Connections operation
+ */
 public interface FetchConnectionsResult {
+
+    /**
+     * Callback method is invoked when Fetch Connections operation finished with success
+     *
+     * @param connections List of SEConnection objects
+     */
     void onSuccess(List<SEConnection> connections);
+
+    /**
+     * Callback method is invoked when Fetch Connections operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }

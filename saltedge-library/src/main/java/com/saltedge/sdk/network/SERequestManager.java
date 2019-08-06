@@ -44,7 +44,7 @@ import com.saltedge.sdk.interfaces.DeleteEntryResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.FetchConsentsResult;
-import com.saltedge.sdk.interfaces.FetchCurrenciesResult;
+import com.saltedge.sdk.interfaces.FetchCurrencyRatesResult;
 import com.saltedge.sdk.interfaces.FetchTransactionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
 import com.saltedge.sdk.interfaces.RefreshConnectionResult;
@@ -85,7 +85,7 @@ public class SERequestManager {
     public void fetchCurrenciesRates(
             String customerSecret,
             String ratesDate,
-            FetchCurrenciesResult callback
+            FetchCurrencyRatesResult callback
     ) {
         new CurrenciesConnector(callback).fetchCurrenciesRates(customerSecret, ratesDate);
     }

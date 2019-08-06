@@ -23,9 +23,24 @@ package com.saltedge.sdk.interfaces;
 
 import com.saltedge.sdk.model.SEAccount;
 
-import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Interface definition for a callback to be invoked when finished Fetch Accounts operation
+ */
 public interface FetchAccountsResult {
-    void onSuccess(ArrayList<SEAccount> accountsList);
+
+    /**
+     * Callback method is invoked when Fetch Accounts operation finished with success
+     *
+     * @param accounts List of SEAccount objects
+     */
+    void onSuccess(List<SEAccount> accounts);
+
+    /**
+     * Callback method is invoked when Fetch Accounts operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }

@@ -24,6 +24,11 @@ package com.saltedge.sdk.model;
 import com.google.gson.annotations.SerializedName;
 import com.saltedge.sdk.utils.SEConstants;
 
+/**
+ * Model for Salt Edge API error
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#errors">Error Attributes</a>
+ */
 public class SEApiError {
 
     @SerializedName(SEConstants.KEY_ERROR)

@@ -26,6 +26,11 @@ import com.saltedge.sdk.utils.SEConstants;
 
 import java.io.Serializable;
 
+/**
+ * Model for Provider
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#providers-attributes">Provider Attributes</a>
+ */
 public class SEProvider extends BaseModel implements Serializable {
 
     @SerializedName(SEConstants.KEY_CODE)

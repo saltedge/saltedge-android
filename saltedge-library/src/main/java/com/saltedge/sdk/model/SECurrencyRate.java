@@ -19,49 +19,52 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.network;
+package com.saltedge.sdk.model;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.utils.SEConstants;
 
-class SERefreshPollingService  {
+import java.io.Serializable;
 
-    private final static long POLLING_TIMEOUT = 5000L;
-    private Timer timer;
-    private TimerTask task = new TimerTask() {
-        @Override
-        public void run() {
-            pollingAction();
-        }
-    };
+/**
+ * Model for Currency Rate
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#rates-attributes">Rates Attributes</a>
+ */
+public class SECurrencyRate implements Serializable {
 
-    public void start() {
-        try {
-            timer = new Timer();
-            timer.schedule(task, 0, POLLING_TIMEOUT);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @SerializedName(SEConstants.KEY_CURRENCY_CODE)
+    private String currencyCode;
+
+    @SerializedName(SEConstants.KEY_RATE)
+    private String rate;
+
+    @SerializedName(SEConstants.KEY_FAIL_AT)
+    private Boolean fail;
+
+// GETTER AND SETTERS
+
+    public String getCurrencyCode() {
+        return currencyCode;
     }
 
-    public void stop() {
-        try {
-            if (timer != null) {
-                timer.cancel();
-                timer.purge();
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        timer = null;
+    public void setCurrencyCode(String currencyCode) {
+        this.currencyCode = currencyCode;
     }
 
-    public boolean isRunning() {
-        return timer != null;
+    public String getRate() {
+        return rate;
     }
 
-    void pollingAction() {
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
 
+    public Boolean getFail() {
+        return fail;
+    }
+
+    public void setFail(Boolean fail) {
+        this.fail = fail;
     }
 }

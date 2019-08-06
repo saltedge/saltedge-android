@@ -29,6 +29,11 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
+/**
+ * Model for Transaction
+ *
+ * @see <a href="https://docs.saltedge.com/account_information/v5/#transactions-attributes">Transaction Attributes</a>
+ */
 public class SETransaction extends BaseModel {
 
     @SerializedName(SEConstants.KEY_DUPLICATED)

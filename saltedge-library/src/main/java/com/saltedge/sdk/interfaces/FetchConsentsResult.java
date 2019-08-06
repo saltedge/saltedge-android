@@ -25,7 +25,22 @@ import com.saltedge.sdk.model.SEConsent;
 
 import java.util.List;
 
+/**
+ * Interface definition for a callback to be invoked when finished Fetch Consents operation
+ */
 public interface FetchConsentsResult {
-    void onSuccess(List<SEConsent> consentsList);
+
+    /**
+     * Callback method is invoked when Fetch Consents operation finished with success
+     *
+     * @param consents List of SEConsent objects
+     */
+    void onSuccess(List<SEConsent> consents);
+
+    /**
+     * Callback method is invoked when Fetch Consents operation finished with error
+     *
+     * @param errorMessage String which describes occurred error
+     */
     void onFailure(String errorMessage);
 }
