@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation ('com.saltedge.sdk:saltedge-library:3.0.1@aar') {
+    implementation ('com.saltedge.sdk:saltedge-library:3.0.2@aar') {
         transitive = true
     }
     implementation 'androidx.appcompat:appcompat:1.0.2'

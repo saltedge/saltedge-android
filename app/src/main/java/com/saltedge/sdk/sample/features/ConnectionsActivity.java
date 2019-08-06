@@ -189,8 +189,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
             SERequestManager.getInstance().fetchProviders(applicationCountryCode, new ProvidersResult() {
                 @Override
-                public void onSuccess(ArrayList<SEProvider> providersList) {
-                    onFetchProvidersSuccess(providersList);
+                public void onSuccess(List<SEProvider> providersList) {
+                    onFetchProvidersSuccess(new ArrayList<>(providersList));
                 }
 
                 @Override

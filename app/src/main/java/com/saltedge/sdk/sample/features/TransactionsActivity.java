@@ -46,10 +46,12 @@ import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
 
-public class TransactionsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, FetchTransactionsResult {
+public class TransactionsActivity extends AppCompatActivity
+        implements AdapterView.OnItemClickListener, FetchTransactionsResult {
 
     private enum ViewMode {
         POSTED_TRANSACTIONS, PENDING_TRANSACTIONS, DUPLICATED_TRANSACTIONS
@@ -122,9 +124,9 @@ public class TransactionsActivity extends AppCompatActivity implements AdapterVi
     }
 
     @Override
-    public void onSuccess(ArrayList<SETransaction> transactionsList) {
+    public void onSuccess(List<SETransaction> transactionsList) {
         UITools.destroyAlertDialog(progressDialog);
-        transactions = transactionsList;
+        transactions = new ArrayList<>(transactionsList);
         updateTransactionsList();
     }
 

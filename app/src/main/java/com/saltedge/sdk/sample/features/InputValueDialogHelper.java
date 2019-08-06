@@ -38,12 +38,9 @@ public class InputValueDialogHelper {
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String enteredText = input.getText().toString();
-                callback.inputValueResult(inputFieldKey, enteredText);
-            }
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            String enteredText = input.getText().toString();
+            callback.inputValueResult(inputFieldKey, enteredText);
         });
         builder.setNegativeButton(android.R.string.cancel, null);
         builder.show();
