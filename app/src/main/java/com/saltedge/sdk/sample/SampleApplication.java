@@ -27,7 +27,7 @@ import com.saltedge.sdk.SaltEdgeSDK;
 
 public class SampleApplication extends Application {
 
-    private final static boolean enableLogging = true;
+    private final static boolean enableLogging = false;
     private final static String clientAppId = "";//TODO SET APP ID
     private final static String clientAppSecret = "";//TODO SET APP SECRET
 
