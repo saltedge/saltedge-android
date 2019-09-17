@@ -37,7 +37,7 @@ import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.CurrenciesRatesAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.PreferencesTools;
+import com.saltedge.sdk.sample.utils.PreferenceRepository;
 import com.saltedge.sdk.sample.utils.UITools;
 
 import java.text.DateFormat;
@@ -63,7 +63,7 @@ public class CurrenciesRatesActivity extends AppCompatActivity implements FetchC
             actionBar.setTitle(titleText);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
         setupViews();
     }
 

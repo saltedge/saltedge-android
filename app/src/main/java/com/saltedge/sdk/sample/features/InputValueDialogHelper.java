@@ -22,7 +22,6 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.features;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.text.InputType;
 import android.widget.EditText;
 

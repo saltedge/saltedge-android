@@ -81,7 +81,7 @@ public class SEProvider extends BaseModel implements Serializable {
     @SerializedName(SEConstants.KEY_MAX_CONSENT_DAYS)
     private Integer maxConsentDays;
 
-// GETTER AND SETTERS
+    // GETTER AND SETTERS
 
     public String getCode() {
         return code;
@@ -209,5 +209,11 @@ public class SEProvider extends BaseModel implements Serializable {
 
     public void setMaxConsentDays(Integer maxConsentDays) {
         this.maxConsentDays = maxConsentDays;
+    }
+
+    // EXTRA METHODS
+
+    public boolean isOAuth() {
+        return mode.equals("oauth");
     }
 }

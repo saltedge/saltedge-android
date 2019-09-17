@@ -31,7 +31,7 @@ public class DuplicatedTransactionsFetchConnector extends TransactionsConnector 
     }
 
     @Override
-    void enqueueCall() {
+    public void enqueueCall() {
         SERestClient.getInstance().service
                 .getDuplicatedTransactions(customerSecret, connectionSecret, accountId, fromId)
                 .enqueue(this);

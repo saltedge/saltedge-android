@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
+import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.model.SEAttempt;
 import com.saltedge.sdk.model.SEConsent;
@@ -47,15 +48,15 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
         this.callback = callback;
     }
 
-    public void createConnectSession(String customerSecret,
-                                     String providerCode,
-                                     String[] consentScopes,
-                                     String localeCode,
-                                     String returnToUrl
+    public void createConnectSession(
+            String customerSecret,
+            String providerCode,
+            String[] consentScopes,
+            String localeCode
     ) {
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
-                new SEAttempt(localeCode, returnToUrl),
+                new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
                 new String[0],
                 providerCode,
                 SEConstants.IFRAME,
@@ -71,15 +72,16 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void createReconnectSession(String customerSecret,
-                                       String connectionSecret,
-                                       String[] consentScopes,
-                                       String localeCode,
-                                       String returnToUrl,
-                                       boolean overrideCredentials) {
+    public void createReconnectSession(
+            String customerSecret,
+            String connectionSecret,
+            String[] consentScopes,
+            String localeCode,
+            boolean overrideCredentials
+    ) {
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
-                new SEAttempt(localeCode, returnToUrl),
+                new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
                 null,
                 null,
                 SEConstants.IFRAME,
@@ -89,13 +91,14 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void createRefreshSession(String customerSecret,
-                                     String connectionSecret,
-                                     String localeCode,
-                                     String returnToUrl) {
+    public void createRefreshSession(
+            String customerSecret,
+            String connectionSecret,
+            String localeCode
+    ) {
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 null,
-                new SEAttempt(localeCode, returnToUrl),
+                new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
                 null,
                 null,
                 SEConstants.IFRAME,

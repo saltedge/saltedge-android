@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebView;
 
@@ -33,15 +34,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
+import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.model.Saltbridge;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.PreferencesTools;
+import com.saltedge.sdk.sample.utils.PreferenceRepository;
 import com.saltedge.sdk.sample.utils.UITools;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.webview.SEWebViewTools;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
+import static com.saltedge.sdk.sample.utils.Constants.KEY_CONNECTION_SECRET;
 import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
 
 public class ConnectActivity extends AppCompatActivity implements DialogInterface.OnClickListener,
@@ -52,25 +58,26 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     private WebView webView;
     private String providerCode;
     private String connectionSecret;
-    private Boolean tryToRefresh;
+    private Boolean tryToRefresh = false;
+    private Boolean isOAuthProvider = false;
     private String localeCode = "";
-    private String callbackUrl = Constants.CALLBACK_URL;
 
     /**
-     * ConnectActivity intent creator for the provider reconnect or refresh procedure
+     * ConnectActivity intent creator for the new provider connection
      *
      * @param activity - host activity
-     * @param providerCode - provider code which should be connected
+     * @param provider - provider which should be connected
      * @return new Intent
      */
-    public static Intent newIntent(Activity activity, String providerCode) {
+    public static Intent newIntent(Activity activity, SEProvider provider) {
         Intent intent = new Intent(activity, ConnectActivity.class);
-        intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
+        intent.putExtra(SEConstants.KEY_PROVIDER_CODE, provider.getCode());
+        intent.putExtra(Constants.KEY_OAUTH, provider.isOAuth());
         return intent;
     }
 
     /**
-     * ConnectActivity intent creator for the new provider connection
+     * ConnectActivity intent creator for the provider reconnect or refresh procedure
      *
      * @param activity - host activity
      * @param providerCode - provider code which should be connected
@@ -86,7 +93,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
                                    Boolean overrideCredentials) {
         Intent intent = new Intent(activity, ConnectActivity.class);
         intent.putExtra(SEConstants.KEY_PROVIDER_CODE, providerCode);
-        intent.putExtra(Constants.KEY_CONNECTION_SECRET, connectionSecret);
+        intent.putExtra(KEY_CONNECTION_SECRET, connectionSecret);
         intent.putExtra(Constants.KEY_REFRESH, tryToRefresh);
         intent.putExtra(Constants.KEY_OVERRIDE_CREDENTIALS, overrideCredentials);
         return intent;
@@ -106,13 +113,13 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
         super.onStart();
         String url = webView.getOriginalUrl();
         if (url == null || url.isEmpty()) {
-            fetchConnectionToken();
+            requestConnectUrl();
         }
     }
 
     @Override
     public void onConnectSessionSuccessStage(String connectionId, String connectionSecret, String rawJsonData) {
-        PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
+        PreferenceRepository.putConnectionSecret(connectionSecret);
         UITools.showShortToast(this, R.string.connection_connected);
         closeActivity(true);
     }
@@ -124,13 +131,8 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
 
     @Override
     public void onConnectSessionFetchingStage(String connectionId, String connectionSecret, String apiStage, String rawJsonData) {
-        if (connectionId == null || connectionSecret == null) return;
-        if (this.connectionSecret == null || !this.connectionSecret.equals(connectionSecret)) {
-            this.connectionSecret = connectionSecret;
-            if (!PreferencesTools.connectionSecretIsSaved(this, connectionId, connectionSecret)) {
-                PreferencesTools.putConnectionSecret(this, connectionId, connectionSecret);
-            }
-        }
+        updateConnectionSecret(connectionSecret);
+
     }
 
     @Override
@@ -139,8 +141,18 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     }
 
     @Override
-    public boolean onConnectSessionRedirectToReturnUrl() {
+    public boolean onRedirectToReturnUrl(String url) {
         UITools.showShortToast(this, R.string.connection_updated);
+        if (isOAuthProvider) {
+            String connectionSecret = null;
+            try {
+                Uri uri = Uri.parse(url);
+                connectionSecret = URLDecoder.decode(uri.getQueryParameter(KEY_CONNECTION_SECRET), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            updateConnectionSecret(connectionSecret);
+        }
         closeActivity(true);
         return false;
     }
@@ -155,43 +167,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
         closeActivity(false);
     }
 
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            if (isRefreshMode()) {
-                actionBar.setTitle(R.string.refreshing);
-            } else if (isReconnectViewMode()) {
-                actionBar.setTitle(R.string.reconnecting);
-            } else {
-                actionBar.setTitle(R.string.connecting);
-            }
-        }
-    }
-
-    private void fetchConnectionToken() {
-        if (SaltEdgeSDK.isPartner()) {
-            createLeadSessionUrl();
-        } else if (isRefreshMode()) {
-            createRefreshSessionUrl();
-        } else if (isReconnectViewMode()) {
-            boolean overrideCredentials = this.getIntent()
-                    .getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
-            createReconnectSessionUrl(overrideCredentials);
-        } else {
-            createConnectSessionUrl();
-        }
-    }
-
-    private boolean isRefreshMode() {
-        return tryToRefresh != null && connectionSecret != null && tryToRefresh;
-    }
-
-    private boolean isReconnectViewMode() {
-        return tryToRefresh != null && connectionSecret != null && !tryToRefresh;
-    }
-
     private ConnectSessionResult connectSessionResult = new ConnectSessionResult() {
-
         @Override
         public void onSuccess(String connectUrl) {
             try {
@@ -208,6 +184,47 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
         }
     };
 
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            if (isOAuthProvider) {
+                actionBar.setTitle(R.string.connecting_oauth);
+            } else {
+                if (isRefreshMode()) {
+                    actionBar.setTitle(R.string.refreshing);
+                } else if (isReconnectViewMode()) {
+                    actionBar.setTitle(R.string.reconnecting);
+                } else {
+                    actionBar.setTitle(R.string.connecting);
+                }
+            }
+        }
+    }
+
+    private void requestConnectUrl() {
+        if (SaltEdgeSDK.isPartner()) {
+            createLeadSessionUrl();
+        } else {
+            if (isRefreshMode()) {
+                createRefreshSessionUrl();
+            } else if (isReconnectViewMode()) {
+                boolean overrideCredentials = this.getIntent()
+                        .getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
+                createReconnectSessionUrl(overrideCredentials);
+            } else {
+                createConnectSessionUrl();
+            }
+        }
+    }
+
+    private boolean isRefreshMode() {
+        return connectionSecret != null && (tryToRefresh != null && tryToRefresh);
+    }
+
+    private boolean isReconnectViewMode() {
+        return connectionSecret != null && (tryToRefresh != null && !tryToRefresh);
+    }
+
     private void createLeadSessionUrl() {
         progressDialog = refreshProgressDialog(this, progressDialog, R.string.creating_lead_token);
 
@@ -215,21 +232,20 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
                 providerCode,
                 Constants.CONSENT_SCOPES,
                 localeCode,
-                callbackUrl,
                 connectSessionResult
         );
     }
 
     private void createConnectSessionUrl() {
-        progressDialog = refreshProgressDialog(this, progressDialog, R.string.creating_token);
+        int progressTitle = isOAuthProvider ? R.string.connecting_oauth : R.string.connecting;
+        progressDialog = refreshProgressDialog(this, progressDialog, progressTitle);
 
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        String customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().createConnectSession(
                 customerSecret,
                 providerCode,
                 Constants.CONSENT_SCOPES,
                 localeCode,
-                callbackUrl,
                 connectSessionResult
         );
     }
@@ -237,25 +253,23 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     private void createRefreshSessionUrl() {
         progressDialog = refreshProgressDialog(this, progressDialog, R.string.refresh_provider);
 
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        String customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().createRefreshSession(
                 customerSecret,
                 connectionSecret,
                 localeCode,
-                callbackUrl,
                 connectSessionResult);
     }
 
     private void createReconnectSessionUrl(boolean overrideCredentials) {
         progressDialog = refreshProgressDialog(this, progressDialog, R.string.reconnect_provider);
 
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        String customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
         SERequestManager.getInstance().createReconnectSession(
                 customerSecret,
                 connectionSecret,
                 Constants.CONSENT_SCOPES,
                 localeCode,
-                callbackUrl,
                 overrideCredentials,
                 connectSessionResult);
     }
@@ -266,8 +280,25 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     }
 
     private void loadConnectUrl(String connectUrl) {
-        if (webView != null) {
-            SEWebViewTools.getInstance().initializeWithUrl(this, webView, connectUrl, callbackUrl, this);
+        if (isOAuthProvider) {
+            this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(connectUrl)));
+            closeActivity(true);
+        } else if (webView != null) {
+            SEWebViewTools.getInstance().initializeWithUrl(
+                    this,
+                    webView,
+                    connectUrl,
+                    this
+            );
+        }
+    }
+
+    private void updateConnectionSecret(String connectionSecret) {
+        if (connectionSecret != null && (this.connectionSecret == null || !this.connectionSecret.equals(connectionSecret))) {
+            this.connectionSecret = connectionSecret;
+            if (!PreferenceRepository.connectionSecretIsSaved(connectionSecret)) {
+                PreferenceRepository.putConnectionSecret(connectionSecret);
+            }
         }
     }
 
@@ -284,7 +315,10 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     private void setInitialData() {
         Intent intent = this.getIntent();
         providerCode = intent.getStringExtra(SEConstants.KEY_PROVIDER_CODE);
-        connectionSecret = intent.getStringExtra(Constants.KEY_CONNECTION_SECRET);
+        connectionSecret = intent.getStringExtra(KEY_CONNECTION_SECRET);
+
+        isOAuthProvider = intent.getBooleanExtra(Constants.KEY_OAUTH, false);
+
         if (intent.hasExtra(Constants.KEY_REFRESH)) {
             tryToRefresh = intent.getBooleanExtra(Constants.KEY_REFRESH, false);
         }

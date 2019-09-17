@@ -42,7 +42,7 @@ public class CurrenciesRatesAdapter extends ArrayAdapter<SECurrencyRate> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         SECurrencyRate currency = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {

@@ -19,38 +19,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package com.saltedge.sdk.sample;
+package com.saltedge.sdk.model.request;
 
-import android.app.Application;
+import com.google.gson.annotations.SerializedName;
+import com.saltedge.sdk.utils.SEConstants;
 
-import com.saltedge.sdk.SaltEdgeSDK;
-import com.saltedge.sdk.sample.utils.PreferenceRepository;
+public class ConnectionAuthorizeRequest {
 
-public class SampleApplication extends Application {
+    @SerializedName(SEConstants.KEY_DATA)
+    private ConnectionAuthorizeData data;
 
-    private final static boolean ENABLE_LOGGING = false;
-    private final static String CLIENT_APP_ID = "";//TODO SET APP ID
-    private final static String CLIENT_APP_SECRET = "";//TODO SET APP SECRET
-    private final static String RETURN_TO_URL = "saltedge://saltedge.com/connect";
+    public ConnectionAuthorizeRequest(String query) {
+        data = new ConnectionAuthorizeData();
+        data.query = query;
+    }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        SaltEdgeSDK.getInstance().init(
-                this,
-                CLIENT_APP_ID,
-                CLIENT_APP_SECRET,
-                RETURN_TO_URL,
-                ENABLE_LOGGING
-        );//Init Base Salt Edge API
+    private class ConnectionAuthorizeData {
 
-//        SaltEdgeSDK.getInstance().initPartner(
-//                this,
-//                CLIENT_APP_ID,
-//                CLIENT_APP_SECRET,
-//                ENABLE_LOGGING
-//        );//Init Salt Edge Partner API
-
-        PreferenceRepository.init(this);
+        @SerializedName(SEConstants.KEY_QUERY_STRING)
+        String query;
     }
 }

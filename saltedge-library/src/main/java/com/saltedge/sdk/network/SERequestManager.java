@@ -22,6 +22,8 @@ import android.text.TextUtils;
 
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.connector.AccountsConnector;
+import com.saltedge.sdk.connector.AuthorizeOAuthConnector;
+import com.saltedge.sdk.connector.ConnectOAuthConnector;
 import com.saltedge.sdk.connector.ConnectSessionConnector;
 import com.saltedge.sdk.connector.ConnectionDeleteConnector;
 import com.saltedge.sdk.connector.ConnectionsConnector;
@@ -43,6 +45,7 @@ import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.interfaces.DeleteEntryResult;
 import com.saltedge.sdk.interfaces.FetchAccountsResult;
+import com.saltedge.sdk.interfaces.FetchConnectionResult;
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.FetchConsentsResult;
 import com.saltedge.sdk.interfaces.FetchCurrencyRatesResult;
@@ -134,7 +137,6 @@ public class SERequestManager {
      * @param providerCode the code of the desired Provider
      * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
      * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param callback callback for request result
      */
     public void createConnectSession(
@@ -142,7 +144,6 @@ public class SERequestManager {
             String providerCode,
             String[] consentScopes,
             String localeCode,
-            @NotNull String returnToUrl,
             ConnectSessionResult callback
     ) {
         featureIsAvailableForNonPartnerOnly();
@@ -150,8 +151,7 @@ public class SERequestManager {
                 customerSecret,
                 providerCode,
                 consentScopes,
-                localeCode,
-                returnToUrl
+                localeCode
         );
     }
 
@@ -186,7 +186,6 @@ public class SERequestManager {
      * @param connectionSecret secret of the Connection which you want to reconnect
      * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
      * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param callback callback for request result
      */
     public void createReconnectSession(
@@ -194,7 +193,6 @@ public class SERequestManager {
             String connectionSecret,
             String[] consentScopes,
             String localeCode,
-            @NotNull String returnToUrl,
             ConnectSessionResult callback
     ) {
         featureIsAvailableForNonPartnerOnly();
@@ -203,7 +201,6 @@ public class SERequestManager {
                 connectionSecret,
                 consentScopes,
                 localeCode,
-                returnToUrl,
                 false
         );
     }
@@ -219,7 +216,6 @@ public class SERequestManager {
      * @param connectionSecret secret of the Connection which you want to reconnect
      * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
      * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param overrideCredentials override credentials strategy. If true, the new credentials will automatically override the old ones.
      * @param callback callback for request result
      */
@@ -228,7 +224,6 @@ public class SERequestManager {
             String connectionSecret,
             String[] consentScopes,
             String localeCode,
-            @NotNull String returnToUrl,
             boolean overrideCredentials,
             ConnectSessionResult callback
     ) {
@@ -238,7 +233,6 @@ public class SERequestManager {
                 connectionSecret,
                 consentScopes,
                 localeCode,
-                returnToUrl,
                 overrideCredentials
         );
     }
@@ -253,22 +247,19 @@ public class SERequestManager {
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection which you want to reconnect
      * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param callback callback for request result
      */
     public void createRefreshSession(
             @NotNull String customerSecret,
             String connectionSecret,
             String localeCode,
-            @NotNull String returnToUrl,
             ConnectSessionResult callback
     ) {
         featureIsAvailableForNonPartnerOnly();
         new ConnectSessionConnector(callback).createRefreshSession(
                 customerSecret,
                 connectionSecret,
-                localeCode,
-                returnToUrl
+                localeCode
         );
     }
 
@@ -295,6 +286,102 @@ public class SERequestManager {
     }
 
     /**
+     * Used to create a connection for an OAuth provider.
+     * Client will receive a redirect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
+     * All non-saltedge redirects should be opened in external app.
+     * On finish the customer will be redirected to return_to URL.
+     * Note that clients receive a connection_secret parameter in the return_to URL if the connection was successfully connected and an error_message parameter.
+     *
+     * Result is returned through callback.
+     *
+     * Feature is not available for Partner Application.
+     *
+     * @param customerSecret current Customer secret code
+     * @param providerCode the code of the desired Provider
+     * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
+     * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param callback callback for request result
+     */
+    public void createOAuthConnectSession(
+            @NotNull String customerSecret,
+            @NotNull String providerCode,
+            String[] consentScopes,
+            @NotNull String localeCode,
+            ConnectSessionResult callback
+    ) {
+        featureIsAvailableForNonPartnerOnly();
+        new ConnectOAuthConnector(callback).createConnectSession(
+                customerSecret,
+                providerCode,
+                consentScopes,
+                localeCode
+        );
+    }
+
+    /**
+     * Used to reconnect a connection for an OAuth provider
+     * Client will receive a redirect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
+     * All non-saltedge redirects should be opened in external app.
+     * On finish the customer will be redirected to return_to URL.
+     * Note that clients receive a connection_secret parameter in the return_to URL if the connection was successfully connected and an error_message parameter.
+     *
+     * Result is returned through callback.
+     *
+     * Feature is not available for Partner Application.
+     *
+     * @param customerSecret current Customer secret code
+     * @param providerCode the code of the desired Provider
+     * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
+     * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
+     * @param callback callback for request result
+     */
+    public void createOAuthReconnectSession(
+            @NotNull String customerSecret,
+            @NotNull String providerCode,
+            String[] consentScopes,
+            @NotNull String localeCode,
+            ConnectSessionResult callback
+    ) {
+        featureIsAvailableForNonPartnerOnly();
+        new ConnectOAuthConnector(callback).createConnectSession(
+                customerSecret,
+                providerCode,
+                consentScopes,
+                localeCode
+        );
+    }
+
+    /**
+     * Used to authorize a connection for an OAuth provider when using client owned provider keys.
+     * @see [https://docs.saltedge.com/general/#client_provider_keys]
+     *
+     * Examples: `<return_to url>?access_token=bc4521d3&state=Pd8b4d0eb`, `<return_to url>#access_token=bc4521d3&state=Pd8b4d0eb`.
+     * For both cases, the authorizeQuery that is needed to authorize the connection is `access_token=bc4521d3&state=Pd8b4d0eb`.
+     *
+     * Result is returned through callback.
+     *
+     * Feature is not available for Partner Application.
+     *
+     * @param customerSecret current Customer secret code
+     * @param connectionSecret secret code of the Connection which you want to reconnect
+     * @param authorizeQuery authorization query string
+     * @param callback callback for request result
+     */
+    public void authorizeOAuthConnection(
+            @NotNull String customerSecret,
+            @NotNull String connectionSecret,
+            @NotNull String authorizeQuery,
+            FetchConnectionResult callback
+    ) {
+        featureIsAvailableForNonPartnerOnly();
+        new AuthorizeOAuthConnector(callback).authorizeConnection(
+                customerSecret,
+                connectionSecret,
+                authorizeQuery
+        );
+    }
+
+    /**
      * Allows you to create a lead session, which will be used to access Salt Edge Connect for Connection creation.
      * You will receive a redirect_url, which allows you to enter directly to Salt Edge Connect with your newly generated lead session.
      * Result is returned through callback.
@@ -304,22 +391,19 @@ public class SERequestManager {
      * @param providerCode the code of the desired Provider
      * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
      * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
-     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param callback callback for request result
      */
     public void createLeadSession(
             String providerCode,
             @NotNull String[] consentScopes,
             String localeCode,
-            @NotNull String returnToUrl,
             ConnectSessionResult callback
     ) {
         featureIsAvailableForPartnerOnly();
         new LeadSessionConnector(callback).createLeadSession(
                 providerCode,
                 consentScopes,
-                localeCode,
-                returnToUrl
+                localeCode
         );
     }
 

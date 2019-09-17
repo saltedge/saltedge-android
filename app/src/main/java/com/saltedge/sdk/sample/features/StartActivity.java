@@ -23,6 +23,7 @@ package com.saltedge.sdk.sample.features;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -33,7 +34,7 @@ import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.PreferencesTools;
+import com.saltedge.sdk.sample.utils.PreferenceRepository;
 import com.saltedge.sdk.sample.utils.UITools;
 
 import java.util.Date;
@@ -53,7 +54,6 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-
         if (SaltEdgeSDK.isNotPartner()) {
             tryToCreateCustomer();
         } else {
@@ -62,12 +62,12 @@ public class StartActivity extends AppCompatActivity {
     }
 
     private void tryToCreateCustomer() {
-        String customerIdentifier = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_IDENTIFIER);
-        String customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        String customerIdentifier = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_IDENTIFIER);
+        String customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
 
         if (customerIdentifier.isEmpty()) {
             customerIdentifier = customerIdentifierPrefix + new Date().getTime();
-            PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_IDENTIFIER, customerIdentifier);
+            PreferenceRepository.putStringToPreferences(Constants.KEY_CUSTOMER_IDENTIFIER, customerIdentifier);
         }
 
         if (TextUtils.isEmpty(customerSecret)) {
@@ -94,12 +94,20 @@ public class StartActivity extends AppCompatActivity {
 
     private void onCreateCustomerSuccess(String customerSecret) {
         UITools.destroyAlertDialog(progressDialog);
-        PreferencesTools.putStringToPreferences(this, Constants.KEY_CUSTOMER_SECRET, customerSecret);
+        PreferenceRepository.putStringToPreferences(Constants.KEY_CUSTOMER_SECRET, customerSecret);
         showConnectionsActivity();
     }
 
     private void showConnectionsActivity() {
         try {
+            String dataString = getIntent().getDataString();
+            if (dataString != null) {
+                Uri uri = Uri.parse(dataString);
+                String connectionSecret = uri.getQueryParameter(Constants.KEY_CONNECTION_SECRET);
+                if (connectionSecret != null && !connectionSecret.isEmpty()) {
+                    PreferenceRepository.putConnectionSecret(connectionSecret);
+                }
+            }
             startActivity(new Intent(this, ConnectionsActivity.class));
         } catch (Exception e) {
             e.printStackTrace();

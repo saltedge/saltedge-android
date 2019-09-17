@@ -55,6 +55,11 @@ public class SEApiConstants {
     static final String API_CONNECT_SESSION_RECONNECT_PATH = API_CONNECT_SESSIONS_PATH + "/reconnect";
     static final String API_CONNECT_SESSION_REFRESH_PATH = API_CONNECT_SESSIONS_PATH + "/refresh";
 
+    private static final String API_OAUTH_CONNECT_SESSIONS_PATH = "oauth_providers";
+    static final String API_OAUTH_CONNECT_SESSION_CREATE_PATH = API_OAUTH_CONNECT_SESSIONS_PATH + "/create";
+    static final String API_OAUTH_RECONNECT_SESSION_CREATE_PATH = API_OAUTH_CONNECT_SESSIONS_PATH + "/reconnect";
+    static final String API_OAUTH_CONNECT_SESSION_AUTHORIZE_PATH = API_OAUTH_CONNECT_SESSIONS_PATH + "/authorize";
+
     static final String API_CONNECTION_PATH = "connection";
     static final String API_CONNECTION_REFRESH_PATH = API_CONNECTION_PATH + "/refresh";
     static final String API_CONNECTION_INTERACTIVE_PATH = API_CONNECTION_PATH + "/interactive";

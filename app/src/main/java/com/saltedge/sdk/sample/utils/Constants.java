@@ -26,12 +26,12 @@ import com.saltedge.sdk.model.SEConsent;
 public class Constants {
 
     static String CONNECTIONS_SECRETS_ARRAY = "CONNECTIONS_SECRETS_ARRAY";
-    public static String CALLBACK_URL = "http://img2.timeinc.net/health/img/web/2012/10/blogs/fat-cat-overweight-400x400.jpg";
     public static final String KEY_CUSTOMER_SECRET = "secret";
     public static final String KEY_CUSTOMER_IDENTIFIER = "identifier";
     public static final String KEY_CONNECTION = "connection";
     public static final String KEY_CONNECTION_SECRET = "connection_secret";
     public static final String KEY_REFRESH = "refresh";
     public static final String KEY_OVERRIDE_CREDENTIALS = "override_credentials";
+    public static final String KEY_OAUTH = "oauth";
     public static final String[] CONSENT_SCOPES = { SEConsent.SCOPE_ACCOUNT_DETAILS, SEConsent.SCOPE_TRANSACTIONS_DETAILS };
 }
