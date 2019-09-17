@@ -60,6 +60,10 @@ public class SaltEdgeSDK {
         return getInstance().returnToUrl;
     }
 
+    public static void setReturnToUrl(String returnToUrl) {
+        getInstance().returnToUrl = returnToUrl;
+    }
+
     public static boolean isPartner() {
         return getInstance().usePartnersApi;
     }
