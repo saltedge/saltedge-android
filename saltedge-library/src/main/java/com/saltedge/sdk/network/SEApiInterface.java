@@ -22,6 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.network;
 
 import com.saltedge.sdk.model.request.ConnectSessionRequest;
+import com.saltedge.sdk.model.request.ConnectionAuthorizeRequest;
 import com.saltedge.sdk.model.request.CreateCustomerRequest;
 import com.saltedge.sdk.model.request.DeleteTransactionsRequest;
 import com.saltedge.sdk.model.request.MappedRequest;
@@ -29,6 +30,7 @@ import com.saltedge.sdk.model.request.PutConnectionCredentialsRequest;
 import com.saltedge.sdk.model.request.PutTransactionsIdsRequest;
 import com.saltedge.sdk.model.request.RefreshConnectionRequest;
 import com.saltedge.sdk.model.response.AccountsResponse;
+import com.saltedge.sdk.model.response.ConnectOAuthSessionResponse;
 import com.saltedge.sdk.model.response.ConnectSessionResponse;
 import com.saltedge.sdk.model.response.ConnectionResponse;
 import com.saltedge.sdk.model.response.ConsentResponse;
@@ -98,6 +100,26 @@ public interface SEApiInterface {
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
             @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
             @Body ConnectSessionRequest body
+    );
+
+    @POST(SEApiConstants.API_OAUTH_CONNECT_SESSION_CREATE_PATH)
+    Call<ConnectOAuthSessionResponse> createOAuthConnectSession(
+            @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+            @Body ConnectSessionRequest body
+    );
+
+    @POST(SEApiConstants.API_OAUTH_RECONNECT_SESSION_CREATE_PATH)
+    Call<ConnectOAuthSessionResponse> createOAuthReconnectSession(
+            @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
+            @Body ConnectSessionRequest body
+    );
+
+    @PUT(SEApiConstants.API_OAUTH_CONNECT_SESSION_AUTHORIZE_PATH)
+    Call<ConnectionResponse> authorizeOAuthConnection(
+            @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
+            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
+            @Body ConnectionAuthorizeRequest body
     );
 
     @POST(SEApiConstants.API_LEAD_SESSION_CREATE_PATH)

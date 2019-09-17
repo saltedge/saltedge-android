@@ -10,11 +10,12 @@
 
     <application
         android:name=".SampleApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:allowBackup">
 
         <activity
             android:name=".features.StartActivity"
@@ -26,6 +27,16 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:label="@string/app_name">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "saltedge://saltedge.com/connect” -->
+                <data
+                    android:scheme="saltedge"
+                    android:host="saltedge.com"
+                    android:pathPattern="/connect"/>
             </intent-filter>
         </activity>
 

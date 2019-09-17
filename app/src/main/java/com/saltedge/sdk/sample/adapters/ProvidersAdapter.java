@@ -49,8 +49,9 @@ public class ProvidersAdapter extends ArrayAdapter<SEProvider> implements Filter
         allAproviders = new ArrayList<>(providers);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         SEProvider item = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {

@@ -14,7 +14,6 @@
     <string name="fetching_currencies">Fetching Currencies Rates</string>
 
     <string name="creating_lead_token">Creating lead session</string>
-    <string name="creating_token">Creating session</string>
 
     <string name="fetching_providers">Fetching Providers</string>
     <string name="add_provider">Add Provider</string>
@@ -39,6 +38,7 @@
     <string name="refreshing">Refreshing</string>
     <string name="reconnecting">Reconnecting</string>
     <string name="connecting">Connecting</string>
+    <string name="connecting_oauth">Connecting OAuth</string>
     <string name="connect_title">Connect</string>
     <string name="connections_title">Connections</string>
     <string name="no_connections">No connections, connect provider.</string>

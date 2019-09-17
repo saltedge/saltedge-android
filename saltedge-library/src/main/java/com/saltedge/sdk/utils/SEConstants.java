@@ -59,6 +59,7 @@ public class SEConstants {
     public static final String KEY_COLLECTED_BY = "collected_by";
     public static final String KEY_FETCH_SCOPES = "fetch_scopes";
     public static final String KEY_SCOPES = "scopes";
+    public static final String KEY_TOKEN = "token";
 
     //String resources
     public static final String LOADING = "Loading";
@@ -113,6 +114,7 @@ public class SEConstants {
     public static final String KEY_LAST_STAGE = "last_stage";
     public static final String KEY_CONSENT = "consent";
     public static final String KEY_ATTEMPT = "attempt";
+    public static final String KEY_ATTEMPT_ID = "attempt_id";
 
     //Account keys
     public static final String KEY_NATURE = "nature";
@@ -158,6 +160,7 @@ public class SEConstants {
     public static final String KEY_SELECTED = "selected";
     public static final String KEY_CREDENTIALS = "credentials";
     public static final String KEY_OVERRIDE_CREDENTIALS_STRATEGY = "override_credentials_strategy";
+    public static final String KEY_DISABLE_PROVIDER_SEARCH = "disable_provider_search";
     public static final String KEY_RETURN_TO = "return_to";
     public static final String KEY_LOCALE = "locale";
     public static final String KEY_PROVIDER_MODES = "provider_modes";
@@ -167,6 +170,7 @@ public class SEConstants {
     public static final String KEY_PERIOD_DAYS = "period_days";
     public static final String KEY_CONSENT_ID = "consent_id";
     public static final String KEY_DATE = "date";
+    public static final String KEY_QUERY_STRING = "query_string";
 
     public static final String KEY_JAVASCRIPT_CALLBACK_TYPE = "javascript_callback_type";
     public static final String IFRAME = "iframe";

@@ -37,6 +37,7 @@ public class SaltEdgeSDK {
     private Context applicationContext;
     private String appId;
     private String appSecret;
+    private String returnToUrl;
     private boolean usePartnersApi;
     private boolean loggingEnabled;
 
@@ -53,6 +54,10 @@ public class SaltEdgeSDK {
 
     public String getAppSecret() {
         return appSecret;
+    }
+
+    public static String getReturnToUrl() {
+        return getInstance().returnToUrl;
     }
 
     public static boolean isPartner() {
@@ -77,12 +82,14 @@ public class SaltEdgeSDK {
      * @param applicationContext Application context
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      */
     public void init(Context applicationContext,
                      @NotNull String clientAppId,
-                     @NotNull String clientAppSecret
+                     @NotNull String clientAppSecret,
+                     @NotNull String returnToUrl
     ) {
-        init(applicationContext, clientAppId, clientAppSecret, false);
+        init(applicationContext, clientAppId, clientAppSecret, returnToUrl, false);
     }
 
     /**
@@ -92,13 +99,15 @@ public class SaltEdgeSDK {
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
      * @param enableLogging flag, which enable or disable network logging
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      */
     public void init(Context applicationContext,
                      @NotNull String clientAppId,
                      @NotNull String clientAppSecret,
+                     @NotNull String returnToUrl,
                      boolean enableLogging
     ) {
-        init(applicationContext, clientAppId, clientAppSecret, false, enableLogging);
+        init(applicationContext, clientAppId, clientAppSecret, returnToUrl, false, enableLogging);
     }
 
     /**
@@ -128,14 +137,15 @@ public class SaltEdgeSDK {
                             @NotNull String clientAppSecret,
                             boolean enableLogging
     ) {
-        init(applicationContext, clientAppId, clientAppSecret, true, enableLogging);
+        init(applicationContext, clientAppId, clientAppSecret, null, true, enableLogging);
     }
 
     private void init(Context applicationContext,
-                     @NotNull String clientAppId,
-                     @NotNull String clientAppSecret,
-                     boolean actAsPartner,
-                     boolean enableLogging
+                      @NotNull String clientAppId,
+                      @NotNull String clientAppSecret,
+                      String returnToUrl,
+                      boolean actAsPartner,
+                      boolean enableLogging
     ) {
         if (clientAppId.isEmpty()) {
             throw new RuntimeException(SEConstants.ERROR_CLIENT_APP_ID_IS_NULL);
@@ -148,6 +158,7 @@ public class SaltEdgeSDK {
         this.appSecret = clientAppSecret;
         this.usePartnersApi = actAsPartner;
         this.loggingEnabled = enableLogging;
+        this.returnToUrl = returnToUrl;
     }
 
     public static void printToLogcat(@NotNull String tag, @NotNull String message) {

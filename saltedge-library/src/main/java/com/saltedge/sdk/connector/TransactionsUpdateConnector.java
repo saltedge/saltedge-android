@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
+import com.saltedge.sdk.connector.BasePinnedConnector;
 import com.saltedge.sdk.interfaces.UpdateTransactionsResult;
 import com.saltedge.sdk.model.request.DeleteTransactionsRequest;
 import com.saltedge.sdk.model.request.PutTransactionsIdsRequest;

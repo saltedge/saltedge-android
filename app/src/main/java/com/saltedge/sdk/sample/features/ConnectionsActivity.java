@@ -48,7 +48,7 @@ import com.saltedge.sdk.sample.BuildConfig;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.ConnectionsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.PreferencesTools;
+import com.saltedge.sdk.sample.utils.PreferenceRepository;
 import com.saltedge.sdk.sample.utils.UITools;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
         applicationCountryCode = BuildConfig.DEBUG ? "XF" : getResources().getConfiguration().locale.getCountry();
-        customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
         setupActionBar();
         setupContent();
     }
@@ -119,20 +119,29 @@ public class ConnectionsActivity extends AppCompatActivity implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.addEntityButton:
-                String[] connectionsSecretArray = PreferencesTools.getAllConnectionsSecrets(this);
+                String[] connectionsSecretArray = PreferenceRepository.getAllConnectionsSecrets();
                 if (connectionsSecretArray.length == 0) {
                     fetchAndShowProviders();
                 }
                 break;
             case R.id.accountsOption:
+                if (mBottomSheetDialog != null) {
+                    mBottomSheetDialog.dismiss();
+                }
                 showAccountsOfConnection(connectionsList.get((int) view.getTag()));
                 break;
             case R.id.consentsOption:
+                if (mBottomSheetDialog != null) {
+                    mBottomSheetDialog.dismiss();
+                }
                 showConsentsOfConnection(connectionsList.get((int) view.getTag()));
                 break;
             case R.id.deleteOption:
+                if (mBottomSheetDialog != null) {
+                    mBottomSheetDialog.dismiss();
+                }
                 if (SaltEdgeSDK.isPartner()) {
-                    onDeleteConnectionSuccess(connectionsList.get((int) view.getTag()).getId());
+                    onDeleteConnectionSuccess(connectionsList.get((int) view.getTag()).getSecret());
                 } else {
                     sendDeleteConnectionRequest(connectionsList.get((int) view.getTag()));
                 }
@@ -147,8 +156,8 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     @Override
     public void onProviderSelected(SEProvider provider) {
-        UITools.showShortToast(this, "Selected " + provider.getName());
-        showConnectActivity(provider.getCode());
+        UITools.showShortToast(this, "Connecting " + provider.getName());
+        showConnectActivity(provider);
     }
 
     private void setupActionBar() {
@@ -171,7 +180,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     private void updateViewsData() {
-        String[] connectionsSecrets = PreferencesTools.getAllConnectionsSecrets(this);
+        String[] connectionsSecrets = PreferenceRepository.getAllConnectionsSecrets();
 
         connectionsList = new ArrayList<>();
         emptyView.setVisibility(View.VISIBLE);
@@ -216,9 +225,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
         if (providers != null && !providers.isEmpty()) {
             UITools.showShortToast(this, "Fetched " + providers.size());
             FragmentManager fragmentManager = getSupportFragmentManager();
-            if (fragmentManager != null) {
-                ProvidersDialog.newInstance(providers, this).show(fragmentManager, ProvidersDialog.TAG);
-            }
+            ProvidersDialog.newInstance(providers, this).show(fragmentManager, ProvidersDialog.TAG);
         } else {
             UITools.showAlertDialog(this, getString(R.string.providers_empty));
         }
@@ -262,8 +269,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 new DeleteEntryResult() {
                     @Override
                     public void onSuccess(Boolean entryIsRemoved, String connectionId) {
-                        if (entryIsRemoved) {
-                            onDeleteConnectionSuccess(connectionId);
+                        SEConnection connection = findConnectionById(connectionId);
+                        if (entryIsRemoved && connection != null) {
+                            onDeleteConnectionSuccess(connection.getSecret());
                         }
                     }
 
@@ -274,9 +282,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 });
     }
 
-    private void onDeleteConnectionSuccess(String connectionId) {
+    private void onDeleteConnectionSuccess(String connectionSecret) {
         try {
-            PreferencesTools.removeConnectionSecret(this, connectionId);
+            PreferenceRepository.removeConnectionSecret(connectionSecret);
             UITools.destroyAlertDialog(progressDialog);
             updateViewsData();
         } catch (Exception e) {
@@ -312,11 +320,18 @@ public class ConnectionsActivity extends AppCompatActivity implements
         startActivity(new Intent(this, CurrenciesRatesActivity.class));
     }
 
-    private void showConnectActivity(String providerCode) {
+    private void showConnectActivity(SEProvider provider) {
         try {
-            this.startActivityForResult(ConnectActivity.newIntent(this, providerCode), ConnectActivity.CONNECT_REQUEST_CODE);
+            this.startActivityForResult(ConnectActivity.newIntent(this, provider), ConnectActivity.CONNECT_REQUEST_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private SEConnection findConnectionById(String connectionId) {
+        for (SEConnection connection : connectionsList) {
+            if (connection.getId().equals(connectionId)) return connection;
+        }
+        return null;
     }
 }

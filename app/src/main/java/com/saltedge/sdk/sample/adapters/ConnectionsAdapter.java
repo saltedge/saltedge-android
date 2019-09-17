@@ -22,6 +22,7 @@ THE SOFTWARE.
 package com.saltedge.sdk.sample.adapters;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +40,9 @@ public class ConnectionsAdapter extends ArrayAdapter<SEConnection> {
         super(context, 0, connections);
     }
 
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         SEConnection connection = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
         if (convertView == null) {

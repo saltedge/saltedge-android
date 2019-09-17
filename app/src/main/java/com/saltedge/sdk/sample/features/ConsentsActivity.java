@@ -45,7 +45,7 @@ import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
 import com.saltedge.sdk.sample.adapters.ConsentAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
-import com.saltedge.sdk.sample.utils.PreferencesTools;
+import com.saltedge.sdk.sample.utils.PreferenceRepository;
 import com.saltedge.sdk.sample.utils.UITools;
 
 import java.util.ArrayList;
@@ -182,7 +182,7 @@ public class ConsentsActivity extends AppCompatActivity implements View.OnClickL
 
     private void setInitialData() {
         currentConnection = (SEConnection) this.getIntent().getSerializableExtra(Constants.KEY_CONNECTION);
-        customerSecret = PreferencesTools.getStringFromPreferences(this, Constants.KEY_CUSTOMER_SECRET);
+        customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
     }
 
     private void tryToUpdateViewMode(ViewMode newViewMode) {

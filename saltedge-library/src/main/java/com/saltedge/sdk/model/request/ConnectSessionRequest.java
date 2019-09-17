@@ -31,12 +31,14 @@ public class ConnectSessionRequest {
     @SerializedName(SEConstants.KEY_DATA)
     private ConnectSessionData data;
 
-    public ConnectSessionRequest(SEConsent consent,
-                                 SEAttempt attempt,
-                                 String[] allowedCountries,
-                                 String providerCode,
-                                 String javascriptCallbackType,
-                                 String overrideCredentialsStrategy) {
+    public ConnectSessionRequest(
+            SEConsent consent,
+            SEAttempt attempt,
+            String[] allowedCountries,
+            String providerCode,
+            String javascriptCallbackType,
+            String overrideCredentialsStrategy
+    ) {
         data = new ConnectSessionData();
         data.consent = consent;
         data.attempt = attempt;
@@ -44,6 +46,7 @@ public class ConnectSessionRequest {
         data.providerCode = providerCode;
         data.javascriptCallbackType = javascriptCallbackType;
         data.overrideCredentialsStrategy = overrideCredentialsStrategy;
+        data.disableProviderSearch = providerCode != null && !providerCode.isEmpty();
     }
 
     private class ConnectSessionData {
@@ -65,5 +68,8 @@ public class ConnectSessionRequest {
 
         @SerializedName(SEConstants.KEY_OVERRIDE_CREDENTIALS_STRATEGY)
         String overrideCredentialsStrategy;
+
+        @SerializedName(SEConstants.KEY_DISABLE_PROVIDER_SEARCH)
+        Boolean disableProviderSearch;
     }
 }

@@ -54,12 +54,13 @@ public class SEWebViewTools {
     private ProgressDialog progressDialog;
     private Activity activity;
     private WebViewRedirectListener webViewListener;
-    private String returnUrl;
+    private String returnUrl = SaltEdgeSDK.getReturnToUrl();
 
     public interface WebViewRedirectListener {
 
         /**
-         * Received SUCCESS stage callback of provider connect flow
+         * Connect session redirected to Connect Stage URL.
+         * Invoked if received SUCCESS stage callback of provider connect flow
          *
          * @param connectionId connection id
          * @param connectionSecret connection secret code
@@ -68,14 +69,16 @@ public class SEWebViewTools {
         void onConnectSessionSuccessStage(String connectionId, String connectionSecret, String rawJsonData);
 
         /**
-         * Received ERROR stage callback of provider connect flow
+         * Connect session redirected to Connect Stage URL.
+         * Invoked if received ERROR stage callback of provider connect flow
          *
          * @param rawJsonData raw JSON result data
          */
         void onConnectSessionErrorStage(String rawJsonData);
 
         /**
-         * Received FETCHING stage callback of provider connect flow
+         * Connect session redirected to Connect Stage URL.
+         * Invoked if received FETCHING stage callback of provider connect flow
          *
          * @param connectionId connection id
          * @param connectionSecret connection secret code
@@ -85,8 +88,8 @@ public class SEWebViewTools {
         void onConnectSessionFetchingStage(String connectionId, String connectionSecret, String apiStage, String rawJsonData);
 
         /**
-         * Received new Stage callback of provider connect flow
-         * (Not SUCCESS, not ERROR, not FETCHING)
+         * Connect session redirected to Connect Stage URL.
+         * Invoked if received Not SUCCESS, not ERROR, not FETCHING stage
          *
          * @param result parsed Saltbridge result object
          * @param rawJsonData raw JSON result data
@@ -94,11 +97,13 @@ public class SEWebViewTools {
         void onConnectSessionStageChange(Saltbridge result, String rawJsonData);
 
         /**
-         * Connect session redirected to Return URL. Means that Connection was updated.
+         * Connect session redirected to Return URL.
+         * Session is redirected if connection is created or updated.
+         * Return URL can contains OAuth authorization query string or connection secret.
          *
          * @return true if WebView should be redirected to Return URL, otherwise return false.
          */
-        boolean onConnectSessionRedirectToReturnUrl();
+        boolean onRedirectToReturnUrl(String url);
     }
 
     public static SEWebViewTools getInstance() {
@@ -109,14 +114,14 @@ public class SEWebViewTools {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    public void initializeWithUrl(Activity activity,
-                                  WebView webView,
-                                  String url,
-                                  String returnUrl,
-                                  WebViewRedirectListener listener) {
+    public void initializeWithUrl(
+            Activity activity,
+            WebView webView,
+            String url,
+            WebViewRedirectListener listener
+    ) {
         this.activity = activity;
         this.webViewListener = listener;
-        this.returnUrl = returnUrl;
         progressDialog = UITools.createProgressDialog(activity);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -151,7 +156,14 @@ public class SEWebViewTools {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             SaltEdgeSDK.printToLogcat("SEWebViewTools", "load url: " + url);
-            if (view != null && urlIsSaltedgeRedirection(url)) {
+            if (isSaltbridgeUrl(url)) {
+                String rawJsonData = extractParamsFromRedirectUrl(url, SEApiConstants.PREFIX_SALTBRIDGE);
+                onStageChanged(parseSaltbridgeObject(rawJsonData), rawJsonData);
+            } else if (isReturnUrl(url)) {
+                if (webViewListener != null && webViewListener.onRedirectToReturnUrl(url)) {
+                    if (view != null) view.loadUrl(url);
+                }
+            } else if (view != null) {
                 view.loadUrl(url);
             }
             return true;
@@ -175,27 +187,16 @@ public class SEWebViewTools {
         }
     }
 
-    private boolean urlIsSaltedgeRedirection(String url) {
-        if (returnUrl != null && !returnUrl.isEmpty() && url.equals(returnUrl)) {
-            if (webViewListener != null) {
-                return webViewListener.onConnectSessionRedirectToReturnUrl();
-            }
-        } else if (isSaltbridgeUrl(url)) {
-            String rawJsonData = extractRawSaltbridgeData(url);
-            onStageChanged(parseSaltbridgeObject(rawJsonData), rawJsonData);
-            return false;
-        }
-        return true;
+    private boolean isReturnUrl(String url) {
+        return returnUrl != null && !returnUrl.isEmpty() && url.startsWith(returnUrl);
     }
 
     private boolean isSaltbridgeUrl(String url) {
         return url != null && url.contains(SEApiConstants.PREFIX_SALTBRIDGE);
     }
 
-    public String extractRawSaltbridgeData(@NotNull String url) {
-        return url.contains(SEApiConstants.PREFIX_SALTBRIDGE)
-                ? url.substring(SEApiConstants.PREFIX_SALTBRIDGE.length())
-                : "";
+    public String extractParamsFromRedirectUrl(@NotNull String redirectUrl, @NotNull String prefixUrl) {
+        return redirectUrl.contains(prefixUrl) ? redirectUrl.substring(prefixUrl.length()) : "";
     }
 
     private Saltbridge parseSaltbridgeObject(@NotNull String rawJsonData) {

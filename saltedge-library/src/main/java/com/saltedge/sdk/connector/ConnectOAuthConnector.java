@@ -26,31 +26,29 @@ import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.model.SEAttempt;
 import com.saltedge.sdk.model.SEConsent;
 import com.saltedge.sdk.model.request.ConnectSessionRequest;
-import com.saltedge.sdk.model.request.MappedRequest;
-import com.saltedge.sdk.model.response.LeadSessionResponse;
+import com.saltedge.sdk.model.response.ConnectOAuthSessionResponse;
 import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LeadSessionConnector extends BasePinnedConnector implements Callback<LeadSessionResponse> {
+public class ConnectOAuthConnector extends BasePinnedConnector implements Callback<ConnectOAuthSessionResponse> {
 
     private final ConnectSessionResult callback;
-    private Call<LeadSessionResponse> call;
+    private Call<ConnectOAuthSessionResponse> call;
 
-    public LeadSessionConnector(ConnectSessionResult callback) {
+    public ConnectOAuthConnector(ConnectSessionResult callback) {
         this.callback = callback;
     }
 
-    public void createLeadSession(String providerCode,
-                                  String[] consentScopes,
-                                  String localeCode
+    public void createConnectSession(String customerSecret,
+                                     String providerCode,
+                                     String[] consentScopes,
+                                     String localeCode
     ) {
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
@@ -60,13 +58,26 @@ public class LeadSessionConnector extends BasePinnedConnector implements Callbac
                 SEConstants.IFRAME,
                 null
         );
-        call = SERestClient.getInstance().service.createLeadSession(requestData);
+        call = SERestClient.getInstance().service.createOAuthConnectSession(customerSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
-    public void createLeadSession(Map<String, Object> dataMap) {
-        MappedRequest requestData = new MappedRequest(dataMap);
-        call = SERestClient.getInstance().service.createLeadSession(requestData);
+    public void createReconnectSession(String customerSecret,
+                                       String connectionSecret,
+                                       String providerCode,
+                                       String[] consentScopes,
+                                       String localeCode,
+                                       String returnToUrl
+    ) {
+        ConnectSessionRequest requestData = new ConnectSessionRequest(
+                new SEConsent(consentScopes),
+                new SEAttempt(localeCode, returnToUrl),
+                new String[0],
+                providerCode,
+                SEConstants.IFRAME,
+                null
+        );
+        call = SERestClient.getInstance().service.createOAuthReconnectSession(customerSecret, connectionSecret, requestData);
         checkAndLoadPinsOrDoRequest();
     }
 
@@ -81,14 +92,14 @@ public class LeadSessionConnector extends BasePinnedConnector implements Callbac
     }
 
     @Override
-    public void onResponse(Call<LeadSessionResponse> call, Response<LeadSessionResponse> response) {
-        LeadSessionResponse responseBody = response.body();
+    public void onResponse(Call<ConnectOAuthSessionResponse> call, Response<ConnectOAuthSessionResponse> response) {
+        ConnectOAuthSessionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getRedirectUrl());
         else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
     }
 
     @Override
-    public void onFailure(Call<LeadSessionResponse> call, Throwable t) {
+    public void onFailure(Call<ConnectOAuthSessionResponse> call, Throwable t) {
         onFailure(SEErrorTools.processConnectionError(t));
     }
 }
