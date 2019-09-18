@@ -51,13 +51,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(AndroidJUnit4.class)
-public class TransactionConnectorTest implements FetchTransactionsResult {
+public class PendingTransactionConnectorTest implements FetchTransactionsResult {
 
     @Test
-    public void fetchTransactionsTest() throws Exception {
+    public void fetchPendingTransactionsTest() throws Exception {
         mockWebServer.enqueue(new MockResponse().setResponseCode(200).setBody(successResponse));
 
-        new TransactionsConnector(this).fetchTransactions("customer_secret", "logon_secret","2", "", false);
+        new PendingTransactionsFetchConnector(this).fetchTransactions("customer_secret", "logon_secret", "2", "3", true);
         doneSignal.await(5, TimeUnit.SECONDS);
         SETransaction transaction = transactionsList.get(0);
 
@@ -78,7 +78,7 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        assertThat(request.getPath(), equalTo("/transactions?account_id=2&from_id="));
+        assertThat(request.getPath(), equalTo("/transactions/pending?account_id=2&from_id=3"));
     }
 
     private CountDownLatch doneSignal;

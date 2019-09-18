@@ -39,6 +39,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SERestClient {
 
+    private SERestClient() {}
+
     private static final String TAG = "SERestClient";
 
     public SEApiInterface service = createRetrofit().create(SEApiInterface.class);

@@ -21,8 +21,6 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.utils;
 
-import com.saltedge.sdk.webview.SEWebViewTools;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -33,14 +31,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SEJsonToolsTest {
-
-    @Test
-    public void testExtractRawSaltbridgeData() throws Exception {
-        assertThat(SEWebViewTools.getInstance().extractRawSaltbridgeData(""),
-                equalTo(""));
-        assertThat(SEWebViewTools.getInstance().extractRawSaltbridgeData("saltbridge://connect/{\"data\":{\"connection_id\":\"5887383\",\"stage\":\"fetching\",\"secret\":\"xBxZpLnwEoYW6Th_inbgWZeKhash9LZJpZUQ-MgbPy8\",\"custom_fields\":{},\"api_stage\":\"start\"}}"),
-                equalTo("{\"data\":{\"connection_id\":\"5887383\",\"stage\":\"fetching\",\"secret\":\"xBxZpLnwEoYW6Th_inbgWZeKhash9LZJpZUQ-MgbPy8\",\"custom_fields\":{},\"api_stage\":\"start\"}}"));
-    }
 
     @Test
     public void testGetString() throws Exception {

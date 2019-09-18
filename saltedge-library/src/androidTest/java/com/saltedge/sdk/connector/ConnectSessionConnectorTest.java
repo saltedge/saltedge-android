@@ -40,8 +40,7 @@ public class ConnectSessionConnectorTest implements ConnectSessionResult {
                 "test_customer_secret",
                 "test_provider_code",
                 scopes,
-                "en",
-                "test_url");
+                "en");
         doneSignal.await(10, TimeUnit.SECONDS);
 
         Assert.assertNull(errorMessage);
@@ -49,8 +48,7 @@ public class ConnectSessionConnectorTest implements ConnectSessionResult {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
-        assertThat(request.getPath(), equalTo("/api/v4/tokens/create"));
+        assertThat(request.getPath(), equalTo("/connect_sessions/create"));
     }
 
     @Test
@@ -70,13 +68,21 @@ public class ConnectSessionConnectorTest implements ConnectSessionResult {
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
-        assertThat(request.getPath(), equalTo("/api/v4/tokens/create"));
+        assertThat(request.getPath(), equalTo("/connect_sessions/create"));
     }
 
     @Test
     public void createConnectSessionTestCase3() throws Exception {
-        String errorResponse = "{\"error_class\": \"ResourceNotFound\", \"error_message\": \"Resource Not Found\"}";
+        String errorResponse = "{\n" +
+                "  \"error\": {\n" +
+                "    \"class\": \"ConnectionNotFound\",\n" +
+                "    \"message\": \"Connection with id: '987' was not found.\",\n" +
+                "    \"documentation_url\": \"https://docs.saltedge.com/account_information/v5/#errors-connection_not_found\"\n" +
+                "  },\n" +
+                "  \"request\": {\n" +
+                "    \"connection_id\": \"987\"\n" +
+                "  }\n" +
+                "}";
         mockWebServer.enqueue(new MockResponse().setResponseCode(404).setBody(errorResponse));
 
         String[] scopes = {"value2", "value3"};
@@ -84,17 +90,15 @@ public class ConnectSessionConnectorTest implements ConnectSessionResult {
                 "test_customer_secret",
                 "test_provider_code",
                 scopes,
-                "en",
-                "test_url");
+                "en");
         doneSignal.await(5, TimeUnit.SECONDS);
 
-        assertThat(errorMessage, equalTo("Resource Not Found"));
+        assertThat(errorMessage, equalTo("Connection with id: '987' was not found."));
         Assert.assertNull(connectUrl);
 
         RecordedRequest request = mockWebServer.takeRequest();
 
-        Assert.assertFalse(mockRetrofit.baseUrl().toString().isEmpty());
-        assertThat(request.getPath(), equalTo("/api/v4/tokens/create"));
+        assertThat(request.getPath(), equalTo("/connect_sessions/create"));
     }
 
     private CountDownLatch doneSignal;
@@ -106,7 +110,7 @@ public class ConnectSessionConnectorTest implements ConnectSessionResult {
 
     @Before
     public void setUp() throws Exception {
-        SaltEdgeSDK.getInstance().init(InstrumentationRegistry.getTargetContext(), "testClientId", "testAppSecret");
+        SaltEdgeSDK.getInstance().init(InstrumentationRegistry.getTargetContext(), "testClientId", "testAppSecret", "redirect://url");
         TestTools.saveValidPinsInPreferences();
         connectUrl = null;
         errorMessage = null;
