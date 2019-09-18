@@ -32,7 +32,7 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <!-- Accepts URIs that begin with "saltedge://saltedge.com/connect” -->
+                <!-- Accepts URIs that begin with "saltedge://saltedge.com/connect" -->
                 <data
                     android:scheme="saltedge"
                     android:host="saltedge.com"

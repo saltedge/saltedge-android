@@ -48,6 +48,7 @@ public class SampleApplication extends Application {
 //                this,
 //                CLIENT_APP_ID,
 //                CLIENT_APP_SECRET,
+//                RETURN_TO_URL,
 //                ENABLE_LOGGING
 //        );//Init Salt Edge Partner API
 

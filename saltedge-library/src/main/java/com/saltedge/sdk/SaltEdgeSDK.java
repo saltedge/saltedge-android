@@ -105,11 +105,12 @@ public class SaltEdgeSDK {
      * @param enableLogging flag, which enable or disable network logging
      * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      */
-    public void init(Context applicationContext,
-                     @NotNull String clientAppId,
-                     @NotNull String clientAppSecret,
-                     @NotNull String returnToUrl,
-                     boolean enableLogging
+    public void init(
+            Context applicationContext,
+            @NotNull String clientAppId,
+            @NotNull String clientAppSecret,
+            @NotNull String returnToUrl,
+            boolean enableLogging
     ) {
         init(applicationContext, clientAppId, clientAppSecret, returnToUrl, false, enableLogging);
     }
@@ -120,12 +121,15 @@ public class SaltEdgeSDK {
      * @param applicationContext Application context
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      */
-    public void initPartner(Context applicationContext,
-                            @NotNull String clientAppId,
-                            @NotNull String clientAppSecret
+    public void initPartner(
+            Context applicationContext,
+            @NotNull String clientAppId,
+            @NotNull String clientAppSecret,
+            @NotNull String returnToUrl
     ) {
-        initPartner(applicationContext, clientAppId, clientAppSecret, false);
+        initPartner(applicationContext, clientAppId, clientAppSecret, returnToUrl, false);
     }
 
     /**
@@ -134,14 +138,16 @@ public class SaltEdgeSDK {
      * @param applicationContext Application context
      * @param clientAppId unique app id
      * @param clientAppSecret unique ap secret
+     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      * @param enableLogging flag, which enable or disable network logging
      */
     public void initPartner(Context applicationContext,
                             @NotNull String clientAppId,
                             @NotNull String clientAppSecret,
+                            @NotNull String returnToUrl,
                             boolean enableLogging
     ) {
-        init(applicationContext, clientAppId, clientAppSecret, null, true, enableLogging);
+        init(applicationContext, clientAppId, clientAppSecret, returnToUrl, true, enableLogging);
     }
 
     private void init(Context applicationContext,
