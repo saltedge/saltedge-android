@@ -32,7 +32,7 @@ Read about it in [Salt Edge Documentation](https://docs.saltedge.com/general/#cl
       </activity>
     ```
 
-2. Init SDK with returnToUrl as application deep-link
+2. [Init SDK](https://github.com/saltedge/saltedge-android/blob/master/SDK_GUIDE.MD#init-sdk) with returnToUrl as application deep-link
     ```java
       String returnToUrl = "custom_scheme://custom_host/custom_path";
 
@@ -44,9 +44,9 @@ Read about it in [Salt Edge Documentation](https://docs.saltedge.com/general/#cl
       );
     ```
 
-3. Fetch providers and select one
+3. [Fetch providers](https://github.com/saltedge/saltedge-android/blob/master/SDK_GUIDE.MD#fetch-list-of-available-providers) and select one
 
-4. Create Connect Session
+4. [Create Connect Session](https://github.com/saltedge/saltedge-android/blob/master/SDK_GUIDE.MD#create-connect-session)
 
 5. Open received `connectUrl` in external app 
     ```java
