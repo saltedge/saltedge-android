@@ -1,3 +1,5 @@
+![SDK Verson](https://img.shields.io/badge/SDK%20version-3.1.0-orange)
+
 <p align="center">
   <a href="https://www.saltedge.com/products/spectre">
     <img src="https://raw.githubusercontent.com/saltedge/sca-identity-service-example/master/docs/images/saltedge_logo.png" alt="Salt Egde Logo" width="96" height="96">
