@@ -7,6 +7,7 @@
 
 ### Changed
 - Moved returnToUrl initialization to SDK init
+- Changed in WebViewRedirectListener onConnectSessionRedirectToReturnUrl() to onRedirectToReturnUrl(String url)
 
 ## [3.0.3] - 2019-08-06
 ### Added
