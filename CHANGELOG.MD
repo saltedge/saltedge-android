@@ -1,5 +1,13 @@
 # Salt Edge SDK library changelog
 
+## [3.1.0] - 2019-09-18
+### Added
+- Added Create OAuth provider connection
+- Added Authorize OAuth provider connection
+
+### Changed
+- Moved returnToUrl initialization to SDK init
+
 ## [3.0.3] - 2019-08-06
 ### Added
 - Added Revoke Partner Consent feature

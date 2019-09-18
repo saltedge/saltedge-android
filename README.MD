@@ -64,7 +64,7 @@ repositories {
 ### Add SDK dependency to application `build.gradle`
   
 ```groovy
-implementation ('com.saltedge.sdk:saltedge-library:3.0.3@aar') {
+implementation ('com.saltedge.sdk:saltedge-library:3.1.0@aar') {
     transitive = true
 }
 ```
@@ -80,6 +80,7 @@ See the [LICENSE](LICENSE) file.
 ## References
 
 1. [Salt Edge Android SDK Guide](SDK_GUIDE.MD)
+1. [Salt Edge Android SDK How To](HOW_TO.MD)
 1. [Salt Edge API](https://docs.saltedge.com/account_information/v5/)
 1. [Salt Edge Partners API](https://docs.saltedge.com/partners/v1/)
 1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)

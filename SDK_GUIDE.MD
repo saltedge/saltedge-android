@@ -37,14 +37,22 @@ Before any usage of SDK you should provide set clientAppId and clientAppSecret.
 #### For initializing access to **Salt Edge API** use:
 
 ```java
-SaltEdgeSDK.getInstance().init(application, clientAppId, clientAppSecret, loggingIsEnabled);
+SaltEdgeSDK.getInstance().init(applicationContext, clientAppId, clientAppSecret, returnToUrl, loggingIsEnabled);
 ```
 
 #### For initializing access to **Salt Edge Partners API** use:
 
 ```java
-SaltEdgeSDK.getInstance().initPartner(application, clientAppId, clientAppSecret, loggingIsEnabled);
+SaltEdgeSDK.getInstance().initPartner(applicationContext, clientAppId, clientAppSecret, returnToUrl, loggingIsEnabled);
 ```
+  
+#### Params:
+
+* `customerSecret` - unique customer secret;
+* `selectedProvider` - provider code from `SEProvider`;
+* `consentScopes` - application target scopes (e.g. `holder_information`, `account_details`, `transactions_details`);
+* `localeCode` - application locale code (by default `en`);
+* `returnToUrl` - the custom URL the user will be redirected to on connection finish.
   
 ---
 ## [Create new customer](https://docs.saltedge.com/account_information/v5/#customers-create).
@@ -126,12 +134,11 @@ Allows you to create a connect session, which will be used to access Salt Edge C
 * `selectedProvider` - provider code from `SEProvider`;
 * `consentScopes` - application target scopes (e.g. `holder_information`, `account_details`, `transactions_details`);
 * `localeCode` - application locale code (by default `en`);
-* `returnToUrl` - the custom URL the user will be redirected to on connection finish.
 
 #### Example:
   
 ```java
- private void createConnectSession(String customerSecret, SEProvider selectedProvider, String localeCode, String returnToUrl) {
+ private void createConnectSession(String customerSecret, SEProvider selectedProvider, String localeCode) {
      String providerCode = selectedProvider.getCode();
      String[] CONSENT_SCOPES = { SEConsent.SCOPE_ACCOUNT_DETAILS, SEConsent.SCOPE_TRANSACTIONS_DETAILS };
      SERequestManager.getInstance().createConnectSession(
@@ -139,7 +146,6 @@ Allows you to create a connect session, which will be used to access Salt Edge C
              providerCode,
              CONSENT_SCOPES,
              localeCode,
-             returnToUrl,
              new ConnectSessionResult() {
                  @Override
                  public void onSuccess(String connectUrl) {
@@ -179,6 +185,43 @@ or call `createConnectSession(...)` with custom map of params
 }
 ```
 
+### [Create OAuth Provider Connect Session](https://docs.saltedge.com/account_information/v5/#oauth_providers-create)
+**Note: `Create OAuth Connect Session` feature is not available for Partners API.** 
+
+Used to create a connection for an OAuth provider. After receiving the response, the customer will be redirected to return_to URL.
+
+#### Params:
+
+* `customerSecret` - unique customer secret;
+* `selectedProvider` - provider code from `SEProvider`;
+* `consentScopes` - application target scopes (e.g. `holder_information`, `account_details`, `transactions_details`);
+* `localeCode` - application locale code (by default `en`);
+
+#### Example:
+  
+```java
+ private void createOAuthConnectSession(String customerSecret, SEProvider selectedProvider, String localeCode) {
+     String providerCode = selectedProvider.getCode();
+     String[] CONSENT_SCOPES = { SEConsent.SCOPE_ACCOUNT_DETAILS, SEConsent.SCOPE_TRANSACTIONS_DETAILS };
+     SERequestManager.getInstance().createOAuthConnectSession(
+             customerSecret,
+             providerCode,
+             CONSENT_SCOPES,
+             localeCode,
+             new ConnectSessionResult() {
+                 @Override
+                 public void onSuccess(String connectUrl) {
+                     // connectUrl - This is the url you should visit to create the connection.
+                 }
+        
+                 @Override
+                 public void onFailure(String errorMessage) {
+                     //handle error
+                 }
+             });
+}
+```
+
 ### [Create Lead Session](https://docs.saltedge.com/partners/v1/#lead_sessions-create) 
 **Note: `Create Lead Session` feature is available only for Partners API.**
 
@@ -189,19 +232,17 @@ Allows you to create a lead session for Partner application, which will be used 
 * `selectedProvider` - provider code from `SEProvider`;
 * `consentScopes` - application target scopes (e.g. `holder_information`, `account_details`, `transactions_details`);
 * `localeCode` - application locale code (by default `en`);
-* `returnToUrl` - the custom URL the user will be redirected to on connection finish.
 
 #### Example:
   
 ```java
- private void createLeadSession(SEProvider selectedProvider, String localeCode, String returnToUrl) {
+ private void createLeadSession(SEProvider selectedProvider, String localeCode) {
      String providerCode = selectedProvider.getCode();
      String[] CONSENT_SCOPES = { SEConsent.SCOPE_ACCOUNT_DETAILS, SEConsent.SCOPE_TRANSACTIONS_DETAILS };
      SERequestManager.getInstance().createLeadSession(
              providerCode,
              CONSENT_SCOPES,
              localeCode,
-             returnToUrl,
              new ConnectSessionResult() {
                  @Override
                  public void onSuccess(String connectUrl) {
@@ -252,7 +293,6 @@ After doing this, you will obtain a `connectionSecret`.
 * `selectedProvider` - provider code from `SEProvider`;
 * `consentScopes` - application target scopes (e.g. `holder_information`, `account_details`, `transactions_details`);
 * `localeCode` - application locale code (by default `en`);
-* `returnToUrl` - the custom URL the user will be redirected to on connection finish.
 
 ### Callback methods:
 
@@ -260,14 +300,14 @@ After doing this, you will obtain a `connectionSecret`.
 * `onConnectSessionErrorStage()` - called when received ERROR stage callback of provider connect flow;
 * `onConnectSessionFetchingStage()` - called when received FETCHING stage callback of provider connect flow;
 * `onConnectSessionStageChange()` - called when received new Stage callback of provider connect flow (not `SUCCESS`, not `ERROR`, not `FETCHING`);
-* `onConnectSessionRedirectToReturnUrl()` - connect session redirected to `returnToUrl`. Connection was updated.
+* `onRedirectToReturnUrl()` - Connect session redirected to returnUrl. Session is redirected if connection is created or updated. Return URL can contains OAuth authorization query string or connection secret.
 
 #### Example:
 
 ```java   
-private void goToURL(String connectUrl, String returnUrl, View view) {
+private void goToURL(String connectUrl, View view) {
     WebView webView = (WebView) view.findViewById(R.id.webView);
-    SEWebViewTools.getInstance().initializeWithUrl(activityContext, webView, connectUrl, returnToUrl, 
+    SEWebViewTools.getInstance().initializeWithUrl(activityContext, webView, connectUrl, 
         new SEWebViewTools.WebViewRedirectListener() {
         
             @Override
@@ -291,7 +331,7 @@ private void goToURL(String connectUrl, String returnUrl, View view) {
             }
             
             @Override
-            public void onConnectSessionRedirectToReturnUrl() {
+            public void onRedirectToReturnUrl(String url) {
                 //Connection model updated due to some actions 
             }
         }
