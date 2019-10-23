@@ -27,10 +27,9 @@ import com.saltedge.sdk.utils.SEConstants;
 import java.io.Serializable;
 
 /**
- * Model for Consent or Partners Consent
+ * Model for Consent
  *
  * @see <a href="https://docs.saltedge.com/account_information/v5/#consents-attributes">Consent Attributes</a>
- * @see <a href="https://docs.saltedge.com/partners/v1/#partner_consents-attributes">Partners Consent Attributes</a>
  */
 public class SEConsent extends BaseModel implements Serializable {
 
@@ -46,13 +45,6 @@ public class SEConsent extends BaseModel implements Serializable {
      */
     public enum STATUS {
         ACTIVE, REVOKED
-    }
-
-    /**
-     * Partner Consent revokedBy possible values
-     */
-    public enum REVOKED_BY {
-        PARTNER, LEAD, SALTEDGE
     }
 
     @SerializedName(SEConstants.KEY_CONNECTION_ID)

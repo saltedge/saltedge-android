@@ -59,6 +59,4 @@
     <string name="consents">Consents</string>
     <string name="no_consents">No consents.</string>
     <string name="fetching_consents">Fetching Consents</string>
-    <string name="partner_consents">Partner consents</string>
-    <string name="no_partner_consents">No partner consents.</string>
 </resources>

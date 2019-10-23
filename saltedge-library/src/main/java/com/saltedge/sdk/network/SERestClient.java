@@ -60,10 +60,7 @@ public class SERestClient {
 
     @NotNull
     private Retrofit createRetrofit() {
-        String baseUrl = SEApiConstants.API_BASE_URL + (SaltEdgeSDK.isPartner()
-                ? SEApiConstants.PARTNERS_API_PATH
-                : SEApiConstants.BASE_API_PATH
-        );
+        String baseUrl = SEApiConstants.API_BASE_URL + (SEApiConstants.BASE_API_PATH);
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(createOkHttpClient())

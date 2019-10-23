@@ -113,10 +113,8 @@ public class AccountsActivity extends AppCompatActivity implements AdapterView.O
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (SaltEdgeSDK.isNotPartner()) {
-            getMenuInflater().inflate(R.menu.menu_accounts, menu);
-            refreshMenuItem = menu.findItem(R.id.action_refresh);
-        }
+        getMenuInflater().inflate(R.menu.menu_accounts, menu);
+        refreshMenuItem = menu.findItem(R.id.action_refresh);
         return true;
     }
 

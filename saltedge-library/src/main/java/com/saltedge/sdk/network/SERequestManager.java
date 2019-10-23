@@ -20,7 +20,6 @@ package com.saltedge.sdk.network;
 
 import android.text.TextUtils;
 
-import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.connector.AccountsConnector;
 import com.saltedge.sdk.connector.AuthorizeOAuthConnector;
 import com.saltedge.sdk.connector.ConnectOAuthConnector;
@@ -33,14 +32,10 @@ import com.saltedge.sdk.connector.CurrenciesConnector;
 import com.saltedge.sdk.connector.CustomerConnector;
 import com.saltedge.sdk.connector.DuplicatedTransactionsFetchConnector;
 import com.saltedge.sdk.connector.LeadSessionConnector;
-import com.saltedge.sdk.connector.PartnerConsentRevokeConnector;
-import com.saltedge.sdk.connector.PartnerConsentsConnector;
 import com.saltedge.sdk.connector.PendingTransactionsFetchConnector;
 import com.saltedge.sdk.connector.ProvidersConnector;
 import com.saltedge.sdk.connector.TransactionsConnector;
 import com.saltedge.sdk.connector.TransactionsUpdateConnector;
-import com.saltedge.sdk.errors.PartnerSDKFeatureException;
-import com.saltedge.sdk.errors.SDKFeatureException;
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.interfaces.DeleteEntryResult;
@@ -80,8 +75,6 @@ public class SERequestManager {
      *
      * Result is returned through callback (`onFetchCurrenciesSuccess(List<SECurrency> list)`).
      *
-     * Feature is available for Partners and non-Partner Applications.
-     *
      * @param customerSecret [optional] current Customer secret code
      * @param ratesDate date for which collection of currencies rates should be returned
      * @param callback callback for request result
@@ -99,8 +92,6 @@ public class SERequestManager {
      *
      * Result is returned through callback (`onCreateCustomerSuccess(String customerSecret)`).
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerIdentifier a unique identifier of the new Customer
      * @param callback callback for request result
      */
@@ -108,7 +99,6 @@ public class SERequestManager {
             @NotNull String customerIdentifier,
             CreateCustomerResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         if (TextUtils.isEmpty(customerIdentifier)) {
             throw new RuntimeException(SEConstants.ERROR_CUSTOMER_IDENTIFIER_IS_NULL);
         }
@@ -131,8 +121,6 @@ public class SERequestManager {
      * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerSecret current Customer secret code
      * @param providerCode the code of the desired Provider
      * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
@@ -146,7 +134,6 @@ public class SERequestManager {
             String localeCode,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConnectSessionConnector(callback).createConnectSession(
                 customerSecret,
                 providerCode,
@@ -160,8 +147,6 @@ public class SERequestManager {
      * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerSecret current Customer secret code
      * @param dataMap custom params map
      * @param callback callback for request result
@@ -171,7 +156,6 @@ public class SERequestManager {
             Map<String, Object> dataMap,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConnectSessionConnector(callback).createConnectSession(customerSecret, dataMap);
     }
 
@@ -179,8 +163,6 @@ public class SERequestManager {
      * Allows you to create a connect session, which will be used to access Salt Edge Connect to reconnect a connection.
      * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
-     *
-     * Feature is not available for Partner Application.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection which you want to reconnect
@@ -195,7 +177,6 @@ public class SERequestManager {
             String localeCode,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConnectSessionConnector(callback).createReconnectSession(
                 customerSecret,
                 connectionSecret,
@@ -209,8 +190,6 @@ public class SERequestManager {
      * Allows you to create a connect session, which will be used to access Salt Edge Connect to reconnect a connection.
      * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
-     *
-     * Feature is not available for Partner Application.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection which you want to reconnect
@@ -227,7 +206,6 @@ public class SERequestManager {
             boolean overrideCredentials,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConnectSessionConnector(callback).createReconnectSession(
                 customerSecret,
                 connectionSecret,
@@ -242,8 +220,6 @@ public class SERequestManager {
      * You will receive a connect_url, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
      * Result is returned through callback.
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection which you want to reconnect
      * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
@@ -255,7 +231,6 @@ public class SERequestManager {
             String localeCode,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConnectSessionConnector(callback).createRefreshSession(
                 customerSecret,
                 connectionSecret,
@@ -266,8 +241,6 @@ public class SERequestManager {
     /**
      * Created SERefreshService and starts refresh through Salt Edge API
      * Result is returned through callback.
-     *
-     * Feature is not available for Partner Application.
      *
      * @param customerSecret current Customer secret code
      * @param connectionData Connection data for refresh
@@ -281,7 +254,6 @@ public class SERequestManager {
             String[] refreshScopes,
             RefreshConnectionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         return new SERefreshService(callback).startRefresh(customerSecret, connectionData, refreshScopes);
     }
 
@@ -293,8 +265,6 @@ public class SERequestManager {
      * Note that clients receive a connection_secret parameter in the return_to URL if the connection was successfully connected and an error_message parameter.
      *
      * Result is returned through callback.
-     *
-     * Feature is not available for Partner Application.
      *
      * @param customerSecret current Customer secret code
      * @param providerCode the code of the desired Provider
@@ -309,7 +279,6 @@ public class SERequestManager {
             @NotNull String localeCode,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConnectOAuthConnector(callback).createConnectSession(
                 customerSecret,
                 providerCode,
@@ -327,8 +296,6 @@ public class SERequestManager {
      *
      * Result is returned through callback.
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerSecret current Customer secret code
      * @param providerCode the code of the desired Provider
      * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
@@ -342,7 +309,6 @@ public class SERequestManager {
             @NotNull String localeCode,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConnectOAuthConnector(callback).createConnectSession(
                 customerSecret,
                 providerCode,
@@ -360,8 +326,6 @@ public class SERequestManager {
      *
      * Result is returned through callback.
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection which you want to reconnect
      * @param authorizeQuery authorization query string
@@ -373,7 +337,6 @@ public class SERequestManager {
             @NotNull String authorizeQuery,
             FetchConnectionResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new AuthorizeOAuthConnector(callback).authorizeConnection(
                 customerSecret,
                 connectionSecret,
@@ -386,8 +349,6 @@ public class SERequestManager {
      * You will receive a redirect_url, which allows you to enter directly to Salt Edge Connect with your newly generated lead session.
      * Result is returned through callback.
      *
-     * Feature is available only for Partner Application.
-     *
      * @param providerCode the code of the desired Provider
      * @param consentScopes fetching mode, possible values: ['holder_information], ['account_details'], ['transactions_details'] or combinations
      * @param localeCode the language of the Salt Edge Connect page in the ISO 639-1 format.
@@ -399,7 +360,6 @@ public class SERequestManager {
             String localeCode,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForPartnerOnly();
         new LeadSessionConnector(callback).createLeadSession(
                 providerCode,
                 consentScopes,
@@ -412,8 +372,6 @@ public class SERequestManager {
      * You will receive a redirect_url, which allows you to enter directly to Salt Edge Connect with your newly generated lead session.
      * Result is returned through callback.
      *
-     * Feature is available only for Partner Application.
-     *
      * @param dataMap custom params map
      * @param callback callback for request result
      */
@@ -421,15 +379,12 @@ public class SERequestManager {
             Map<String, Object> dataMap,
             ConnectSessionResult callback
     ) {
-        featureIsAvailableForPartnerOnly();
         new LeadSessionConnector(callback).createLeadSession(dataMap);
     }
 
     /**
      * Returns a single Connection object.
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Application.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection which should be returned if exist
@@ -447,8 +402,6 @@ public class SERequestManager {
     /**
      * Returns Connections objects collection.
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionsSecretsArray array of secrets of the Connections which should be returned if exist
@@ -468,15 +421,12 @@ public class SERequestManager {
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection which should be deleted if exist
      * @param callback callback for request result
-     *
-     * Feature is not available for Partners Applications.
      */
     public void deleteConnection(
             @NotNull String customerSecret,
             @NotNull String connectionSecret,
             DeleteEntryResult callback
-    ) throws PartnerSDKFeatureException {
-        featureIsAvailableForNonPartnerOnly();
+    ) {
         new ConnectionDeleteConnector(callback).deleteConnection(customerSecret, connectionSecret);
     }
 
@@ -484,8 +434,6 @@ public class SERequestManager {
      * You can see the list of accounts of a Connection.
      * The accounts are sorted in ascending order of their ID, so the newest accounts will come last.
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection
@@ -503,8 +451,6 @@ public class SERequestManager {
      * Return the list of all non duplicated  transactions for an Account of a Connection.
      * The list not includes pending transactions
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection
@@ -532,8 +478,6 @@ public class SERequestManager {
      * Return the list of all transactions from transactionId for an Account of a Connection.
      * The list not includes pending transactions
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection
@@ -565,8 +509,6 @@ public class SERequestManager {
      * The list not includes pending transactions
      * Result is returned through callback.
      *
-     * Feature is available for Partners and non-Partner Applications.
-     *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection
      * @param accountId Account ID
@@ -594,8 +536,6 @@ public class SERequestManager {
      * Initiate transactions fetch by params.
      * The list includes posted or pending transactions.
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection
@@ -637,8 +577,6 @@ public class SERequestManager {
      * Return the list of all pending transactions for an Account of a Connection.
      * Result is returned through callback.
      *
-     * Feature is available for Partners and non-Partner Applications.
-     *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection
      * @param accountId Account ID
@@ -661,8 +599,6 @@ public class SERequestManager {
     /**
      * Return the list of all pending transactions from transactionId for an Account of a Connection.
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection
@@ -690,8 +626,6 @@ public class SERequestManager {
      * Return the list of all duplicated transactions for an Account of a Connection.
      * Result is returned through callback.
      *
-     * Feature is available for Partners and non-Partner Applications.
-     *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection
      * @param accountId Account ID
@@ -714,8 +648,6 @@ public class SERequestManager {
     /**
      * Return the list of all duplicated transactions from transactionId for an Account of a Connection.
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection
@@ -743,8 +675,6 @@ public class SERequestManager {
      * Mark a list of transactions as duplicated.
      * Result is returned through callback (`onUpdateTransactionsSuccess(Boolean success, "DUPLICATE")`)
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection
      * @param transactionsIds the ids of transactions, that should be marked as duplicated
@@ -756,7 +686,6 @@ public class SERequestManager {
             @NotNull List<String> transactionsIds,
             UpdateTransactionsResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new TransactionsUpdateConnector(callback).markTransactionsAsDuplicated(
                 customerSecret,
                 connectionSecret,
@@ -767,8 +696,6 @@ public class SERequestManager {
     /**
      * Remove duplicated flag from a list of transactions.
      * Result is returned through callback (`onUpdateTransactionsSuccess(Boolean success, "UNDUPLICATE")`)
-     *
-     * Feature is not available for Partner Application.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection
@@ -781,7 +708,6 @@ public class SERequestManager {
             @NotNull List<String> transactionsIds,
             UpdateTransactionsResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new TransactionsUpdateConnector(callback).markTransactionsAsNotDuplicated(
                 customerSecret,
                 connectionSecret,
@@ -792,8 +718,6 @@ public class SERequestManager {
     /**
      * Remove transactions older than a specified period.
      * Result is returned through callback (`onTransactionsCleanupStartedSuccess(Boolean success)`)
-     *
-     * Feature is not available for Partner Application.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret of the Connection
@@ -808,7 +732,6 @@ public class SERequestManager {
             @NotNull int keepDays,
             UpdateTransactionsResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new TransactionsUpdateConnector(callback).removeTransactions(
                 customerSecret,
                 connectionSecret,
@@ -822,8 +745,6 @@ public class SERequestManager {
      * The consents are sorted in ascending order of their ID, so the newest consents will come last.
      *
      * Result is returned through callback.
-     *
-     * Feature is available for Partners and non-Partner Applications.
      *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection
@@ -841,8 +762,6 @@ public class SERequestManager {
      * Consent revoke is an option that allows you to revoke a consent.
      * Result is returned through callback.
      *
-     * Feature is not available for Partner Application.
-     *
      * @param customerSecret current Customer secret code
      * @param connectionSecret secret code of the Connection containing the consents
      * @param consentId unique ID of Consent which should be revoked
@@ -854,52 +773,6 @@ public class SERequestManager {
             @NotNull String consentId,
             DeleteEntryResult callback
     ) {
-        featureIsAvailableForNonPartnerOnly();
         new ConsentRevokeConnector(callback).revokeConsent(customerSecret, connectionSecret, consentId);
-    }
-
-    /**
-     * You can see the list of partners consents of Connection.
-     * The consents are sorted in ascending order of their ID, so the newest consent will come last.
-     * Result is returned through callback.
-     *
-     * Feature is available only for Partner Application.
-     *
-     * @param connectionSecret secret code of the Connection
-     * @param callback callback for request result
-     */
-    public void fetchPartnerConsents(
-            @NotNull String connectionSecret,
-            FetchConsentsResult callback
-    ) {
-        featureIsAvailableForPartnerOnly();
-        new PartnerConsentsConnector(callback).fetchPartnerConsents(connectionSecret);
-    }
-
-    /**
-     * Partner consent revoke is an action that allows you to revoke a partner consent given by a specific customer.
-     * Result is returned through callback.
-     *
-     * Feature is available only for Partner Application.
-     *
-     * @param connectionId unique ID of the Connection containing the consents
-     * @param consentId unique ID of Consent which should be revoked
-     * @param callback callback for request result
-     */
-    public void revokePartnerConsent(
-            @NotNull String connectionId,
-            @NotNull String consentId,
-            DeleteEntryResult callback
-    ) {
-        featureIsAvailableForPartnerOnly();
-        new PartnerConsentRevokeConnector(callback).revokePartnerConsent(connectionId, consentId);
-    }
-
-    private void featureIsAvailableForPartnerOnly() {
-        if (SaltEdgeSDK.isNotPartner()) throw new SDKFeatureException();
-    }
-
-    private void featureIsAvailableForNonPartnerOnly() {
-        if (SaltEdgeSDK.isPartner()) throw new PartnerSDKFeatureException();
     }
 }

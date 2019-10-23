@@ -140,11 +140,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
                 if (mBottomSheetDialog != null) {
                     mBottomSheetDialog.dismiss();
                 }
-                if (SaltEdgeSDK.isPartner()) {
-                    onDeleteConnectionSuccess(connectionsList.get((int) view.getTag()).getSecret());
-                } else {
-                    sendDeleteConnectionRequest(connectionsList.get((int) view.getTag()));
-                }
+                sendDeleteConnectionRequest(connectionsList.get((int) view.getTag()));
                 break;
         }
     }

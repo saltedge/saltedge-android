@@ -159,6 +159,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
 
     /**
      * Error dialog click listener
+     *
      * @param dialogInterface - dialog interface
      * @param id - dialog action id
      */
@@ -202,18 +203,14 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     }
 
     private void requestConnectUrl() {
-        if (SaltEdgeSDK.isPartner()) {
-            createLeadSessionUrl();
+        if (isRefreshMode()) {
+            createRefreshSessionUrl();
+        } else if (isReconnectViewMode()) {
+            boolean overrideCredentials = this.getIntent()
+                    .getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
+            createReconnectSessionUrl(overrideCredentials);
         } else {
-            if (isRefreshMode()) {
-                createRefreshSessionUrl();
-            } else if (isReconnectViewMode()) {
-                boolean overrideCredentials = this.getIntent()
-                        .getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
-                createReconnectSessionUrl(overrideCredentials);
-            } else {
-                createConnectSessionUrl();
-            }
+            createConnectSessionUrl();
         }
     }
 
@@ -223,17 +220,6 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
 
     private boolean isReconnectViewMode() {
         return connectionSecret != null && (tryToRefresh != null && !tryToRefresh);
-    }
-
-    private void createLeadSessionUrl() {
-        progressDialog = refreshProgressDialog(this, progressDialog, R.string.creating_lead_token);
-
-        SERequestManager.getInstance().createLeadSession(
-                providerCode,
-                Constants.CONSENT_SCOPES,
-                localeCode,
-                connectSessionResult
-        );
     }
 
     private void createConnectSessionUrl() {
