@@ -1,4 +1,4 @@
-![SDK Verson](https://img.shields.io/badge/SDK%20version-3.1.0-orange)
+![SDK Verson](https://img.shields.io/badge/SDK%20version-3.2.0-orange)
 
 <p align="center">
   <a href="https://www.saltedge.com/products/spectre">
@@ -66,7 +66,7 @@ repositories {
 ### Add SDK dependency to application `build.gradle`
   
 ```groovy
-implementation ('com.saltedge.sdk:saltedge-library:3.1.0@aar') {
+implementation ('com.saltedge.sdk:saltedge-library:3.2.0@aar') {
     transitive = true
 }
 ```
