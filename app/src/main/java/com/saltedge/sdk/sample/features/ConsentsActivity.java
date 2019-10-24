@@ -86,9 +86,14 @@ public class ConsentsActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {// Respond to the action bar's Up/Home button
-            finish();
-            return true;
+        switch (item.getItemId()) {
+            case android.R.id.home:// Respond to the action bar's Up/Home button
+                finish();
+                return true;
+            case R.id.show_consents:
+                updateActivityTitle();
+                fetchConsents();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -128,6 +133,12 @@ public class ConsentsActivity extends AppCompatActivity implements View.OnClickL
         UITools.destroyAlertDialog(progressDialog);
         updateViewsContent();
         UITools.showAlertDialog(this, errorResponse);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_consents, menu);
+        return true;
     }
 
     private void fetchConsents() {
