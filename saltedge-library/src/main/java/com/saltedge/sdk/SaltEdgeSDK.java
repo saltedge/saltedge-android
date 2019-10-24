@@ -29,7 +29,7 @@ import com.saltedge.sdk.utils.SEConstants;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Helper class for initializing SDK for access to Salt Edge API or Salt Edge Partner API
+ * Helper class for initializing SDK for access to Salt Edge API
  */
 public class SaltEdgeSDK {
 
@@ -38,7 +38,6 @@ public class SaltEdgeSDK {
     private String appId;
     private String appSecret;
     private String returnToUrl;
-    private boolean usePartnersApi;
     private boolean loggingEnabled;
 
     public static SaltEdgeSDK getInstance() {
@@ -62,14 +61,6 @@ public class SaltEdgeSDK {
 
     public static void setReturnToUrl(String returnToUrl) {
         getInstance().returnToUrl = returnToUrl;
-    }
-
-    public static boolean isPartner() {
-        return getInstance().usePartnersApi;
-    }
-
-    public static boolean isNotPartner() {
-        return !isPartner();
     }
 
     public static boolean isLoggingEnabled() {
@@ -115,41 +106,6 @@ public class SaltEdgeSDK {
         init(applicationContext, clientAppId, clientAppSecret, returnToUrl, false, enableLogging);
     }
 
-    /**
-     * Initialize Salt Edge SDK for access to Salt Edge Partner API
-     *
-     * @param applicationContext Application context
-     * @param clientAppId unique app id
-     * @param clientAppSecret unique ap secret
-     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
-     */
-    public void initPartner(
-            Context applicationContext,
-            @NotNull String clientAppId,
-            @NotNull String clientAppSecret,
-            @NotNull String returnToUrl
-    ) {
-        initPartner(applicationContext, clientAppId, clientAppSecret, returnToUrl, false);
-    }
-
-    /**
-     * Initialize Salt Edge SDK for access to Salt Edge Partner API
-     *
-     * @param applicationContext Application context
-     * @param clientAppId unique app id
-     * @param clientAppSecret unique ap secret
-     * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
-     * @param enableLogging flag, which enable or disable network logging
-     */
-    public void initPartner(Context applicationContext,
-                            @NotNull String clientAppId,
-                            @NotNull String clientAppSecret,
-                            @NotNull String returnToUrl,
-                            boolean enableLogging
-    ) {
-        init(applicationContext, clientAppId, clientAppSecret, returnToUrl, true, enableLogging);
-    }
-
     private void init(Context applicationContext,
                       @NotNull String clientAppId,
                       @NotNull String clientAppSecret,
@@ -166,7 +122,6 @@ public class SaltEdgeSDK {
         this.applicationContext = applicationContext;
         this.appId = clientAppId;
         this.appSecret = clientAppSecret;
-        this.usePartnersApi = actAsPartner;
         this.loggingEnabled = enableLogging;
         this.returnToUrl = returnToUrl;
     }

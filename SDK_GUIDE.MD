@@ -5,7 +5,6 @@
 * [Providers](#fetch-list-of-available-providers)
 * [Connections](#connections)
   * [Create Connect Session](#create-connect-session)
-  * [Create Lead session](#create-lead-session) ***(Only for Partners)***
   * [Salt Edge Connect](#salt-edge-connect)
   * [Show connections](#show-connections)
   * [Show connection](#show-connection)
@@ -24,8 +23,6 @@
 * [Consent](#consent)
   * [Show Consents](#show-consents)
   * [Revoke Consent](#revoke-consent)
-  * [Show Partners Consents](#show-partners-consents)
-  * [Revoke Partner Consent](#revoke-partner-consent)
 * [Models](#models)
 * [Utilities](#utilities)
 ---
@@ -39,12 +36,6 @@ Before any usage of SDK you should provide set clientAppId and clientAppSecret.
 ```java
 SaltEdgeSDK.getInstance().init(applicationContext, clientAppId, clientAppSecret, returnToUrl, loggingIsEnabled);
 ```
-
-#### For initializing access to **Salt Edge Partners API** use:
-
-```java
-SaltEdgeSDK.getInstance().initPartner(applicationContext, clientAppId, clientAppSecret, returnToUrl, loggingIsEnabled);
-```
   
 #### Params:
 
@@ -56,7 +47,6 @@ SaltEdgeSDK.getInstance().initPartner(applicationContext, clientAppId, clientApp
   
 ---
 ## [Create new customer](https://docs.saltedge.com/account_information/v5/#customers-create).
-**Note: Customer creation is not available for Partners API.**
 
 A customer represents a single end-user of the Salt Edge API. The customer uses the API to create Connections, i.e. bank connections, that are further used to aggregate the customer’s financial data.  
 You should create customer and receive customer's secret token.
@@ -119,12 +109,9 @@ public static void fetchProviders() {
 A Connection represents a permanent connection of a specific customer to a bank. A single end-user represents a single customer in Salt Edge API. When creating a connection you should make sure the customer already exists to avoid creating a new customers with the same connection. Also, we don’t recommend creating multiple connections for the same customer with the same online banking access credentials.
 
 For creating new Connection use
-[Create Connect Session for non-Partners applications](#create-connect-session)
-or
-[Create Lead session for Partners applications](#create-lead-session) 
+[Create Connect Session for applications](#create-connect-session)
   
 ### [Create Connect Session](https://docs.saltedge.com/account_information/v5/#connect_sessions-create)
-**Note: `Create Connect Session` feature is not available for Partners API.** 
 
 Allows you to create a connect session, which will be used to access Salt Edge Connect for connection creation. You will receive a connect_url field, which allows you to enter directly to Salt Edge Connect with your newly generated connect session.
 
@@ -186,7 +173,6 @@ or call `createConnectSession(...)` with custom map of params
 ```
 
 ### [Create OAuth Provider Connect Session](https://docs.saltedge.com/account_information/v5/#oauth_providers-create)
-**Note: `Create OAuth Connect Session` feature is not available for Partners API.** 
 
 Used to create a connection for an OAuth provider. After receiving the response, the customer will be redirected to return_to URL.
 
@@ -221,11 +207,6 @@ Used to create a connection for an OAuth provider. After receiving the response,
              });
 }
 ```
-
-### [Create Lead Session](https://docs.saltedge.com/partners/v1/#lead_sessions-create) 
-**Note: `Create Lead Session` feature is available only for Partners API.**
-
-Allows you to create a lead session for Partner application, which will be used to access Salt Edge Connect for connection creation. You will receive a connect_url field, which allows you to enter directly to Salt Edge Connect with your newly generated lead session.
 
 #### Params:
 
@@ -349,7 +330,7 @@ Returns a collection of connections objects.
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionsSecrets` - array of connections secrets which data should be fetched.
 
 #### Example:
@@ -378,7 +359,7 @@ Returns an array with single connection object.
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched.
 
 #### Example:
@@ -402,7 +383,6 @@ SERequestManager.getInstance().fetchConnection(
 ```
 
 ### [Remove Connection](https://docs.saltedge.com/account_information/v5/#connections-remove)
-**Note: Connect Session is not available for Partners API.**
 
 Removes a connection from our system and revokes the consent. All the associated accounts and transactions to that connection will be destroyed as well.
 
@@ -432,7 +412,6 @@ SERequestManager.getInstance().deleteConnection(
 ```
 
 ### [Reconnect Connection](https://docs.saltedge.com/account_information/v5/#connections-reconnect)
-**Note: Reconnect Session is not available for Partners API.**
 
 You can reconnect the connection. You should obtain a connectUrl of Salt Edge Connect.
 
@@ -468,7 +447,6 @@ SERequestManager.getInstance().createReconnectSession(
 ```
 
 ### [Refresh Connection](https://docs.saltedge.com/account_information/v5/#connections-refresh)
-**Note: Connect Session is not available for Partners API.**
 
 You can refresh the data for a connection. To refresh, you should obtain a connectUrl of Salt Edge Connect.
 
@@ -503,7 +481,6 @@ SERequestManager.getInstance().createRefreshSession(
 ```              
 
 ### [Refresh Connection through Connect API](https://docs.saltedge.com/account_information/v5/#connections-refresh)
-**Note: Refresh thorough Connect API is not available for Partners API.**
 
 If you wish to refresh Connection without Salt Edge Connect WebView, you can use dedicated service `SERefreshService`.
 
@@ -575,7 +552,7 @@ You can now get all the accounts of the login using the `connectionSecret`.
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API. 
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched.
 
 #### Example:
@@ -609,7 +586,7 @@ For each account of login, you can obtain the list of all posted transactions or
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched;
 * `accountId` - ID of account of connection which data should be fetched;
 * `fromTransactionId` - ID of transaction from which should be collected result. Can be omitted.
@@ -642,7 +619,7 @@ For each accounts, you can obtain the list of all pending transactions.
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched;
 * `accountId` - ID of account of connection which data should be fetched;
 * `fromTransactionId` - ID of transaction from which should be collected result. Can be omitted.
@@ -675,7 +652,7 @@ For each accounts, you can obtain the list of all duplicated transactions
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched;
 * `accountId` - ID of account of connection which data should be fetched;
 * `fromTransactionId` - ID of transaction from which should be collected result. Can be omitted.
@@ -703,13 +680,12 @@ SERequestManager.getInstance().fetchDuplicatedTransactionsOfAccount(
 ```
 
 ### [Mark transactions as duplicated](https://docs.saltedge.com/account_information/v5/#transactions-duplicate).
-**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Mark a list of transactions as `duplicated`.
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched;
 * `transactionsIds` - collection of transactions IDs which should be marked as `duplicated`. 
 
@@ -735,13 +711,12 @@ SERequestManager.getInstance().markTransactionsAsDuplicated(
 ```
 
 ### [Remove duplicated flag from transactions](https://docs.saltedge.com/account_information/v5/#transactions-unduplicate).
-**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Remove `duplicated` flag from a list of transactions.
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched;
 * `transactionsIds` - collection of transactions IDs which should be cleared as `duplicated`. 
 
@@ -767,13 +742,12 @@ SERequestManager.getInstance().markTransactionsAsNotDuplicated(
 ```
 
 ### [Remove transactions](https://docs.saltedge.com/account_information/v5/#transactions-remove).
-**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Remove transactions older than a specified period.
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched;
 * `accountId` - the id of the account;
 * `keepDays` - the amount of days for which the transactions will be kept. Transactions older than that will be irreversibly removed. Value should be greater than or equal to 60. 
@@ -816,7 +790,7 @@ Returns all the consents accessible to your application for certain customer or 
 
 #### Params:
 
-* `customerSecret` - **optional** unique customer secret. Not required for Partners API;
+* `customerSecret` - **optional** unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched.  
 
 #### Example:
@@ -840,13 +814,12 @@ SERequestManager.getInstance().fetchConsents(
 ```
 
 ### [Revoke Consent](https://docs.saltedge.com/account_information/v5/#consents-revoke)
-**Note: `Revoke Consent` feature is not available for Partners API.**
 
 Consent revoke is an option that allows you to revoke a consent for a connection of customer.
 
 #### Params:
 
-* `customerSecret` - unique customer secret. Not required for Partners API; 
+* `customerSecret` - unique customer secret.
 * `connectionSecret` - secret of connection which data should be fetched.
 * `consentId` - unique ID of Consent which should be revoked
 
@@ -856,64 +829,6 @@ Consent revoke is an option that allows you to revoke a consent for a connection
 SERequestManager.getInstance().revokeConsent(
         customerSecret, 
         connectionSecret,
-        consentId,
-        new DeleteEntryResult() {
-            @Override
-            public void onSuccess(Boolean entryIsRemoved, String entryId) {
-                //show changes
-            }
-
-            @Override
-            public void onFailure(String errorResponse) {
-                //handle error
-            }
-        }
-);
-```
-
-### [Show Partners Consents](https://docs.saltedge.com/partners/v1/#partner_consents)
-**Note: `Get Partners Consent` feature is available only for Partners API.**
-
-Partner consent is a part of combined consent, shown to the customer that allows Salt Edge to share account, transaction and holder info data with the registered partner, based on the right to data portability enforced by the EU General Data Protection Regulation (GDPR)
-
-#### Params:
- 
-* `connectionSecret` - secret of connection which data should be fetched.
-
-#### Example:
-  
-```java    
-SERequestManager.getInstance().fetchPartnerConsents(
-        connectionSecret,
-        new FetchConsentsResult() {
-            @Override
-            public void onSuccess(List<SEConsent> consents) {
-                //show consents
-            }
-
-            @Override
-            public void onFailure(String errorResponse) {
-                //handle error
-            }
-        }
-);
-```
-
-### [Revoke Partner Consent](https://docs.saltedge.com/partners/v1/#partner_consents-revoke)
-**Note: `Revoke Partner Consent` feature is available only for Partners API.**
-
-Partner Consent revoke is an option that allows you to revoke a consent for a connection of customer (connection).
-
-#### Params:
-
-* `connectionId` - unique ID of connection
-* `consentId` - unique ID of Consent which should be revoked
-
-#### Example:
-   
-```java    
-SERequestManager.getInstance().revokePartnerConsent(
-        connectionId,
         consentId,
         new DeleteEntryResult() {
             @Override

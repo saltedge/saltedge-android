@@ -9,7 +9,7 @@
 # Salt Edge Android SDK & Sample application
 
 Salt Edge Android SDK provides [a handful of classes](SDK_GUIDE.MD) to help you interact with the Salt Edge API from your Android app.  
-Current SDK supports access to [Salt Edge API v5](https://docs.saltedge.com/account_information/v5/) or [Salt Edge Partners API v1](https://docs.saltedge.com/partners/v1/).  
+Current SDK supports access to [Salt Edge API v5](https://docs.saltedge.com/account_information/v5/).
 
 **When you migrating to the new version of Salt Edge Android SDK, please read carefully [CHANGELOG](CHANGELOG.MD) since many changes have been made.**
 
@@ -20,7 +20,7 @@ Current SDK supports access to [Salt Edge API v5](https://docs.saltedge.com/acco
 * Play Services installed
 * `App ID` and `App Secret`
 
-**Warning!** The Sal Edge SDK doesn't work without `App ID` and `App Secret`!
+**Warning!** The Salt Edge SDK doesn't work without `App ID` and `App Secret`!
 *Note*: You can find your `App ID` and `App Secret` on your [profile](https://www.saltedge.com/keys_and_secrets) page.
 
 ## Source
@@ -84,7 +84,6 @@ See the [LICENSE](LICENSE) file.
 1. [Salt Edge Android SDK Guide](SDK_GUIDE.MD)
 1. [Salt Edge Android SDK How To](HOW_TO.MD)
 1. [Salt Edge API](https://docs.saltedge.com/account_information/v5/)
-1. [Salt Edge Partners API](https://docs.saltedge.com/partners/v1/)
 1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)
 
 For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  

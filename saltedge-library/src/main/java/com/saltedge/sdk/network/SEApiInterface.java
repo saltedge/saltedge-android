@@ -213,22 +213,10 @@ public interface SEApiInterface {
             @Query(SEConstants.KEY_FROM_ID) String fromId
     );
 
-    @GET(SEApiConstants.API_PARTNER_CONSENTS_PATH)
-    Call<ConsentsResponse> getPartnerConsents(
-            @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
-            @Query(SEConstants.KEY_FROM_ID) String fromId
-    );
-
     @PUT(SEApiConstants.API_CONSENT_REVOKE_PATH)
     Call<ConsentResponse> revokeConsent(
             @Header(SEApiConstants.KEY_HEADER_CUSTOMER_SECRET) String customerSecret,
             @Header(SEApiConstants.KEY_HEADER_CONNECTION_SECRET) String connectionSecret,
-            @Path(value = SEConstants.KEY_CONSENT_ID, encoded = true) String consentId
-    );
-
-    @PUT(SEApiConstants.API_PARTNER_CONSENT_REVOKE_PATH)
-    Call<ConsentResponse> revokePartnerConsent(
-            @Query(value = SEConstants.KEY_CONNECTION_ID) String connectionId,
             @Path(value = SEConstants.KEY_CONSENT_ID, encoded = true) String consentId
     );
 }

@@ -29,7 +29,6 @@ import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.interfaces.CreateCustomerResult;
 import com.saltedge.sdk.network.SERequestManager;
 import com.saltedge.sdk.sample.R;
@@ -54,11 +53,7 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        if (SaltEdgeSDK.isNotPartner()) {
-            tryToCreateCustomer();
-        } else {
-            showConnectionsActivity();
-        }
+        tryToCreateCustomer();
     }
 
     private void tryToCreateCustomer() {

@@ -44,14 +44,6 @@ public class SampleApplication extends Application {
                 ENABLE_LOGGING
         );//Init Base Salt Edge API
 
-//        SaltEdgeSDK.getInstance().initPartner(
-//                this,
-//                CLIENT_APP_ID,
-//                CLIENT_APP_SECRET,
-//                RETURN_TO_URL,
-//                ENABLE_LOGGING
-//        );//Init Salt Edge Partner API
-
         PreferenceRepository.init(this);
     }
 }

@@ -56,10 +56,6 @@ import static com.saltedge.sdk.sample.utils.UITools.refreshProgressDialog;
 public class ConsentsActivity extends AppCompatActivity implements View.OnClickListener,
         AdapterView.OnItemClickListener, FetchConsentsResult {
 
-    private enum ViewMode {
-        CONSENTS, PARTNER_CONSENTS
-    }
-
     private ProgressDialog progressDialog;
     private List<SEConsent> consents;
     private SEConnection currentConnection;
@@ -68,7 +64,6 @@ public class ConsentsActivity extends AppCompatActivity implements View.OnClickL
     private View emptyView;
     private TextView emptyLabelView;
     private String customerSecret = "";
-    private ViewMode viewMode = ViewMode.CONSENTS;
 
     public static Intent newIntent(Activity activity, SEConnection connection) {
         Intent intent = new Intent(activity, ConsentsActivity.class);
@@ -90,24 +85,9 @@ public class ConsentsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (SaltEdgeSDK.isPartner()) {
-            getMenuInflater().inflate(R.menu.menu_consents, menu);
-        }
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:// Respond to the action bar's Up/Home button
+            if (item.getItemId() == android.R.id.home) {// Respond to the action bar's Up/Home button                finish();
                 finish();
-                return true;
-            case R.id.show_consents:
-                tryToUpdateViewMode(ViewMode.CONSENTS);
-                return true;
-            case R.id.show_partner_consents:
-                tryToUpdateViewMode(ViewMode.PARTNER_CONSENTS);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -156,11 +136,7 @@ public class ConsentsActivity extends AppCompatActivity implements View.OnClickL
         }
         consents = new ArrayList<>();
         progressDialog = refreshProgressDialog(this, progressDialog, R.string.fetching_consents);
-        if (viewMode == ViewMode.CONSENTS) {
-            SERequestManager.getInstance().fetchConsents(customerSecret, currentConnection.getSecret(), this);
-        } else {
-            SERequestManager.getInstance().fetchPartnerConsents(currentConnection.getSecret(), this);
-        }
+        SERequestManager.getInstance().fetchConsents(customerSecret, currentConnection.getSecret(), this);
     }
 
     private void updateViewsContent() {
@@ -185,35 +161,14 @@ public class ConsentsActivity extends AppCompatActivity implements View.OnClickL
         customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
     }
 
-    private void tryToUpdateViewMode(ViewMode newViewMode) {
-        if (viewMode != newViewMode) {
-            viewMode = newViewMode;
-            updateActivityTitle();
-            fetchConsents();
-        }
-    }
-
     private void updateActivityTitle() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            switch (viewMode) {
-                case CONSENTS:
-                    actionBar.setTitle(R.string.consents);
-                    break;
-                case PARTNER_CONSENTS:
-                    actionBar.setTitle(R.string.partner_consents);
-                    break;
-            }
+            actionBar.setTitle(R.string.consents);
         }
     }
 
     private int getEmptyViewTitleResId() {
-        switch (viewMode) {
-            case CONSENTS:
-                return R.string.no_consents;
-            case PARTNER_CONSENTS:
-                return R.string.no_partner_consents;
-        }
         return R.string.no_consents;
     }
 }
