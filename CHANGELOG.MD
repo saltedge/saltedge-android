@@ -1,5 +1,9 @@
 # Salt Edge SDK library changelog
 
+## [3.2.0] - 2019-10-24
+### Removed
+- Removed Partners API v1 support;
+
 ## [3.1.0] - 2019-09-18
 ### Added
 - Added Create OAuth provider connection
