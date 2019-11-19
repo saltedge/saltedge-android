@@ -208,60 +208,6 @@ Used to create a connection for an OAuth provider. After receiving the response,
 }
 ```
 
-#### Params:
-
-* `selectedProvider` - provider code from `SEProvider`;
-* `consentScopes` - application target scopes (e.g. `holder_information`, `account_details`, `transactions_details`);
-* `localeCode` - application locale code (by default `en`);
-
-#### Example:
-  
-```java
- private void createLeadSession(SEProvider selectedProvider, String localeCode) {
-     String providerCode = selectedProvider.getCode();
-     String[] CONSENT_SCOPES = { SEConsent.SCOPE_ACCOUNT_DETAILS, SEConsent.SCOPE_TRANSACTIONS_DETAILS };
-     SERequestManager.getInstance().createLeadSession(
-             providerCode,
-             CONSENT_SCOPES,
-             localeCode,
-             new ConnectSessionResult() {
-                 @Override
-                 public void onSuccess(String connectUrl) {
-                     // connectUrl - This is the url you should visit to create the connection.
-                 }
-        
-                 @Override
-                 public void onFailure(String errorMessage) {
-                     //handle error
-                 }
-             });
-}
-```
-or call `createLeadSession(...)` with custom map of params
-
-```java
- private void createLeadSession(SEProvider selectedProvider, String localeCode, String returnToUrl) {
-     HashMap<String, Object> dataMap = new HashMap<>();
-     String providerCode = selectedProvider.getCode();
-     dataMap.put("provider_code", providerCode);
-     ...
-     dataMap.put("return_to", returnToUrl);
-     SERequestManager.getInstance().createConnectSession(
-             dataMap,
-             new ConnectSessionResult() {
-                 @Override
-                 public void onSuccess(String connectUrl) {
-                     // connectUrl - This is the url you should show in WebView to create the connection.
-                 }
-
-                 @Override
-                 public void onFailure(String errorMessage) {
-                     //handle error
-                 }
-             });
-}
-```
-
 ## [Salt Edge Connect](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)
  
 After your application has received a connectUrl for connecting or reconnecting a connection, you can redirect your user to the Salt Edge Connect WebView. 
