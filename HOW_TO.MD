@@ -61,7 +61,7 @@ Read about it in [Salt Edge Documentation](https://docs.saltedge.com/general/#cl
 
 6. All connect operations (Authorizations, Fetching, etc.) will be performed in external app.
 
-7. If deep-link is received, then extract customer_secret from params.
+7. If deep-link is received (bu Activity declared in Manifest), then extract customer_secret from params.
     ```java
         String dataString = getIntent().getDataString();
         if (dataString != null) {
