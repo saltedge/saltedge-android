@@ -66,7 +66,7 @@ repositories {
 ### Add SDK dependency to application `build.gradle`
   
 ```groovy
-implementation ('com.saltedge.sdk:saltedge-library:3.2.0@aar') {
+implementation ('com.saltedge.sdk:saltedge-library:3.2.1@aar') {
     transitive = true
 }
 ```

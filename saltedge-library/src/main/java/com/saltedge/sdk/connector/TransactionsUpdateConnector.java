@@ -30,8 +30,6 @@ import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEErrorTools;
 import com.saltedge.sdk.utils.SEJsonTools;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import retrofit2.Call;
@@ -56,8 +54,8 @@ public class TransactionsUpdateConnector extends BasePinnedConnector implements 
     }
 
     public void markTransactionsAsDuplicated(String customerSecret,
-                                             @NotNull String connectionSecret,
-                                             @NotNull List<String> transactionsIds
+                                             String connectionSecret,
+                                             List<String> transactionsIds
     ) {
         requestType = RequestType.DUPLICATE;
         this.customerSecret = customerSecret;
@@ -68,8 +66,8 @@ public class TransactionsUpdateConnector extends BasePinnedConnector implements 
     }
 
     public void markTransactionsAsNotDuplicated(String customerSecret,
-                                                @NotNull String connectionSecret,
-                                                @NotNull List<String> transactionsIds
+                                                String connectionSecret,
+                                                List<String> transactionsIds
     ) {
         requestType = RequestType.UNDUPLICATE;
         this.customerSecret = customerSecret;
@@ -80,8 +78,8 @@ public class TransactionsUpdateConnector extends BasePinnedConnector implements 
     }
 
     public void removeTransactions(String customerSecret,
-                                   @NotNull String connectionSecret,
-                                   @NotNull String accountId,
+                                   String connectionSecret,
+                                   String accountId,
                                    int keepDays
     ) {
         requestType = RequestType.CLEANUP;

@@ -51,8 +51,6 @@ import com.saltedge.sdk.interfaces.UpdateTransactionsResult;
 import com.saltedge.sdk.model.SEConnection;
 import com.saltedge.sdk.utils.SEConstants;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.Map;
 
@@ -96,7 +94,7 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createCustomer(
-            @NotNull String customerIdentifier,
+            String customerIdentifier,
             CreateCustomerResult callback
     ) {
         if (TextUtils.isEmpty(customerIdentifier)) {
@@ -112,7 +110,7 @@ public class SERequestManager {
      * @param countryCode code of the provider’s country
      * @param callback callback for request result
      */
-    public void fetchProviders(@NotNull String countryCode, ProvidersResult callback) {
+    public void fetchProviders(String countryCode, ProvidersResult callback) {
         new ProvidersConnector(callback).fetchProviders(countryCode);
     }
 
@@ -128,7 +126,7 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createConnectSession(
-            @NotNull String customerSecret,
+            String customerSecret,
             String providerCode,
             String[] consentScopes,
             String localeCode,
@@ -152,7 +150,7 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createConnectSession(
-            @NotNull String customerSecret,
+            String customerSecret,
             Map<String, Object> dataMap,
             ConnectSessionResult callback
     ) {
@@ -171,7 +169,7 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createReconnectSession(
-            @NotNull String customerSecret,
+            String customerSecret,
             String connectionSecret,
             String[] consentScopes,
             String localeCode,
@@ -199,7 +197,7 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createReconnectSession(
-            @NotNull String customerSecret,
+            String customerSecret,
             String connectionSecret,
             String[] consentScopes,
             String localeCode,
@@ -226,7 +224,7 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createRefreshSession(
-            @NotNull String customerSecret,
+            String customerSecret,
             String connectionSecret,
             String localeCode,
             ConnectSessionResult callback
@@ -249,7 +247,7 @@ public class SERequestManager {
      * @return SERefreshService refresh service object
      */
     public SERefreshService refreshConnectionWithSecret(
-            @NotNull String customerSecret,
+            String customerSecret,
             SEConnection connectionData,
             String[] refreshScopes,
             RefreshConnectionResult callback
@@ -273,10 +271,10 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createOAuthConnectSession(
-            @NotNull String customerSecret,
-            @NotNull String providerCode,
+            String customerSecret,
+            String providerCode,
             String[] consentScopes,
-            @NotNull String localeCode,
+            String localeCode,
             ConnectSessionResult callback
     ) {
         new ConnectOAuthConnector(callback).createConnectSession(
@@ -303,10 +301,10 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void createOAuthReconnectSession(
-            @NotNull String customerSecret,
-            @NotNull String providerCode,
+            String customerSecret,
+            String providerCode,
             String[] consentScopes,
-            @NotNull String localeCode,
+            String localeCode,
             ConnectSessionResult callback
     ) {
         new ConnectOAuthConnector(callback).createConnectSession(
@@ -332,9 +330,9 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void authorizeOAuthConnection(
-            @NotNull String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String authorizeQuery,
+            String customerSecret,
+            String connectionSecret,
+            String authorizeQuery,
             FetchConnectionResult callback
     ) {
         new AuthorizeOAuthConnector(callback).authorizeConnection(
@@ -356,7 +354,7 @@ public class SERequestManager {
      */
     public void createLeadSession(
             String providerCode,
-            @NotNull String[] consentScopes,
+            String[] consentScopes,
             String localeCode,
             ConnectSessionResult callback
     ) {
@@ -392,7 +390,7 @@ public class SERequestManager {
      */
     public void fetchConnection(
             String customerSecret,
-            @NotNull String connectionSecret,
+            String connectionSecret,
             FetchConnectionsResult callback
     ) {
         String[] secrets = { connectionSecret };
@@ -409,7 +407,7 @@ public class SERequestManager {
      */
     public void fetchConnections(
             String customerSecret,
-            @NotNull String[] connectionsSecretsArray,
+            String[] connectionsSecretsArray,
             FetchConnectionsResult callback) {
         new ConnectionsConnector(callback).fetchConnections(customerSecret, connectionsSecretsArray);
     }
@@ -423,8 +421,8 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void deleteConnection(
-            @NotNull String customerSecret,
-            @NotNull String connectionSecret,
+            String customerSecret,
+            String connectionSecret,
             DeleteEntryResult callback
     ) {
         new ConnectionDeleteConnector(callback).deleteConnection(customerSecret, connectionSecret);
@@ -441,7 +439,7 @@ public class SERequestManager {
      */
     public void fetchAccounts(
             String customerSecret,
-            @NotNull String connectionSecret,
+            String connectionSecret,
             FetchAccountsResult callback
     ) {
         new AccountsConnector(callback).fetchAccounts(customerSecret, connectionSecret);
@@ -459,8 +457,8 @@ public class SERequestManager {
      */
     public void fetchAllTransactions(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
+            String connectionSecret,
+            String accountId,
             FetchTransactionsResult callback
     ) {
         fetchTransactions(
@@ -487,9 +485,9 @@ public class SERequestManager {
      */
     public void fetchAllTransactions(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
-            @NotNull String fromTransactionId,
+            String connectionSecret,
+            String accountId,
+            String fromTransactionId,
             FetchTransactionsResult callback
     ) {
         fetchTransactions(
@@ -517,9 +515,9 @@ public class SERequestManager {
      */
     public void fetchTransactions(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
-            @NotNull String fromTransactionId,
+            String connectionSecret,
+            String accountId,
+            String fromTransactionId,
             FetchTransactionsResult callback
     ) {
         fetchTransactions(customerSecret,
@@ -547,9 +545,9 @@ public class SERequestManager {
      */
     public void fetchTransactions(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
-            @NotNull String fromTransactionId,
+            String connectionSecret,
+            String accountId,
+            String fromTransactionId,
             boolean fetchPendingTransactions,
             boolean fetchAllTransactionsFromId,
             FetchTransactionsResult callback
@@ -584,8 +582,8 @@ public class SERequestManager {
      */
     public void fetchPendingTransactionsOfAccount(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
+            String connectionSecret,
+            String accountId,
             FetchTransactionsResult callback
     ) {
         fetchPendingTransactionsOfAccount(
@@ -608,9 +606,9 @@ public class SERequestManager {
      */
     public void fetchPendingTransactionsOfAccount(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
-            @NotNull String fromTransactionId,
+            String connectionSecret,
+            String accountId,
+            String fromTransactionId,
             FetchTransactionsResult callback
     ) {
         new PendingTransactionsFetchConnector(callback).fetchTransactions(
@@ -633,8 +631,8 @@ public class SERequestManager {
      */
     public void fetchDuplicatedTransactionsOfAccount(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
+            String connectionSecret,
+            String accountId,
             FetchTransactionsResult callback
     ) {
         fetchDuplicatedTransactionsOfAccount(
@@ -657,9 +655,9 @@ public class SERequestManager {
      */
     public void fetchDuplicatedTransactionsOfAccount(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
-            @NotNull String fromTransactionId,
+            String connectionSecret,
+            String accountId,
+            String fromTransactionId,
             FetchTransactionsResult callback
     ) {
         new DuplicatedTransactionsFetchConnector(callback).fetchTransactions(
@@ -682,8 +680,8 @@ public class SERequestManager {
      */
     public void markTransactionsAsDuplicated(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull List<String> transactionsIds,
+            String connectionSecret,
+            List<String> transactionsIds,
             UpdateTransactionsResult callback
     ) {
         new TransactionsUpdateConnector(callback).markTransactionsAsDuplicated(
@@ -704,8 +702,8 @@ public class SERequestManager {
      */
     public void markTransactionsAsNotDuplicated(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull List<String> transactionsIds,
+            String connectionSecret,
+            List<String> transactionsIds,
             UpdateTransactionsResult callback
     ) {
         new TransactionsUpdateConnector(callback).markTransactionsAsNotDuplicated(
@@ -727,9 +725,9 @@ public class SERequestManager {
      */
     public void removeTransactions(
             String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String accountId,
-            @NotNull int keepDays,
+            String connectionSecret,
+            String accountId,
+            int keepDays,
             UpdateTransactionsResult callback
     ) {
         new TransactionsUpdateConnector(callback).removeTransactions(
@@ -752,7 +750,7 @@ public class SERequestManager {
      */
     public void fetchConsents(
             String customerSecret,
-            @NotNull String connectionSecret,
+            String connectionSecret,
             FetchConsentsResult callback
     ) {
         new ConsentsConnector(callback).fetchConsents(customerSecret, connectionSecret);
@@ -768,9 +766,9 @@ public class SERequestManager {
      * @param callback callback for request result
      */
     public void revokeConsent(
-            @NotNull String customerSecret,
-            @NotNull String connectionSecret,
-            @NotNull String consentId,
+            String customerSecret,
+            String connectionSecret,
+            String consentId,
             DeleteEntryResult callback
     ) {
         new ConsentRevokeConnector(callback).revokeConsent(customerSecret, connectionSecret, consentId);
