@@ -26,8 +26,6 @@ import android.util.Log;
 
 import com.saltedge.sdk.utils.SEConstants;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Helper class for initializing SDK for access to Salt Edge API
  */
@@ -80,9 +78,9 @@ public class SaltEdgeSDK {
      * @param returnToUrl the URL the user will be redirected to. The return_to URL should not exceed 2040 characters.
      */
     public void init(Context applicationContext,
-                     @NotNull String clientAppId,
-                     @NotNull String clientAppSecret,
-                     @NotNull String returnToUrl
+                     String clientAppId,
+                     String clientAppSecret,
+                     String returnToUrl
     ) {
         init(applicationContext, clientAppId, clientAppSecret, returnToUrl, false);
     }
@@ -98,17 +96,17 @@ public class SaltEdgeSDK {
      */
     public void init(
             Context applicationContext,
-            @NotNull String clientAppId,
-            @NotNull String clientAppSecret,
-            @NotNull String returnToUrl,
+            String clientAppId,
+            String clientAppSecret,
+            String returnToUrl,
             boolean enableLogging
     ) {
         init(applicationContext, clientAppId, clientAppSecret, returnToUrl, false, enableLogging);
     }
 
     private void init(Context applicationContext,
-                      @NotNull String clientAppId,
-                      @NotNull String clientAppSecret,
+                      String clientAppId,
+                      String clientAppSecret,
                       String returnToUrl,
                       boolean actAsPartner,
                       boolean enableLogging
@@ -126,7 +124,7 @@ public class SaltEdgeSDK {
         this.returnToUrl = returnToUrl;
     }
 
-    public static void printToLogcat(@NotNull String tag, @NotNull String message) {
+    public static void printToLogcat(String tag, String message) {
         if (isLoggingEnabled()) {
             Log.d(tag, message);
         }

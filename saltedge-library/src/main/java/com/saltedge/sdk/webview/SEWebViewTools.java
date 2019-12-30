@@ -40,8 +40,6 @@ import com.saltedge.sdk.network.SERestClient;
 import com.saltedge.sdk.utils.SEConstants;
 import com.saltedge.sdk.utils.UITools;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * Helper class designated to show Salt Edge Connect Web View and handle it callbacks
  */
@@ -195,11 +193,11 @@ public class SEWebViewTools {
         return url != null && url.contains(SEApiConstants.PREFIX_SALTBRIDGE);
     }
 
-    public String extractParamsFromRedirectUrl(@NotNull String redirectUrl, @NotNull String prefixUrl) {
+    public String extractParamsFromRedirectUrl(String redirectUrl, String prefixUrl) {
         return redirectUrl.contains(prefixUrl) ? redirectUrl.substring(prefixUrl.length()) : "";
     }
 
-    private Saltbridge parseSaltbridgeObject(@NotNull String rawJsonData) {
+    private Saltbridge parseSaltbridgeObject(String rawJsonData) {
         SaltbridgeResponse response = null;
         try {
             response = SERestClient.gson.fromJson(rawJsonData, SaltbridgeResponse.class);

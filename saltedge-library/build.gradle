@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
 def appVersionCode = 19
-def appVersionName = "3.2.0"
+def appVersionName = "3.2.1"
 
 android {
     compileSdkVersion 28
@@ -51,8 +51,7 @@ dependencies {
     api 'com.squareup.retrofit2:retrofit:2.5.0'
     api 'com.squareup.retrofit2:converter-gson:2.5.0'
     api 'com.squareup.okhttp3:logging-interceptor:3.12.2'//Don't update while support Android SDK < 20
-    implementation 'org.jetbrains:annotations-java5:16.0.3'
-    
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test:rules:1.0.2'

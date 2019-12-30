@@ -25,8 +25,6 @@ import android.content.Context;
 
 import com.saltedge.sdk.R;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyManagementException;
@@ -47,7 +45,7 @@ class SSLConfig {
     private static X509TrustManager TRUST_MANAGER;
     private static SSLSocketFactory SSL_SOCKET_FACTORY;
 
-    static void init(@NotNull Context context) throws CertificateException, IOException,
+    static void init(Context context) throws CertificateException, IOException,
             KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         KeyStore mTrustStore = KeyStore.getInstance("BKS");
         InputStream in = context.getResources().openRawResource(R.raw.debiancacerts);

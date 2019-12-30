@@ -28,7 +28,6 @@ import com.google.gson.GsonBuilder;
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.preferences.SEPreferencesRepository;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import okhttp3.CertificatePinner;
@@ -58,7 +57,6 @@ public class SERestClient {
         service = createRetrofit().create(SEApiInterface.class);
     }
 
-    @NotNull
     private Retrofit createRetrofit() {
         String baseUrl = SEApiConstants.API_BASE_URL + SEApiConstants.BASE_API_PATH;
         return new Retrofit.Builder()
@@ -68,14 +66,12 @@ public class SERestClient {
                 .build();
     }
 
-    @NotNull
     private static Gson createDefaultGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(JSONObject.class, new ExtraJsonDataAdapter())
                 .create();
     }
 
-    @NotNull
     private OkHttpClient createOkHttpClient() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .addInterceptor(prepareLoggingInterceptor());
