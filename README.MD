@@ -10,7 +10,8 @@
 
 Salt Edge Android SDK provides [a handful of classes](SDK_GUIDE.MD) to help you interact with the Salt Edge API from your Android app.  
   
-### Current SDK supports access only to [Salt Edge API v5](https://docs.saltedge.com/account_information/v5/). [Salt Edge Partner API](https://docs.saltedge.com/partners/v1/) is not supported.  
+### Current SDK supports access only to [Salt Edge API v5](https://docs.saltedge.com/account_information/v5/).  
+### [Salt Edge Partner API](https://docs.saltedge.com/partners/v1/) is not supported.  
   
 ### When you migrating to the new version of Salt Edge Android SDK, please read carefully [CHANGELOG](CHANGELOG.MD) since many changes have been made.
 
