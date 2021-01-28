@@ -1,5 +1,9 @@
 # Salt Edge SDK library changelog
 
+## [3.3.0] - 2020-06-11
+### Changed
+- update debiancerts, update target sdk up to 29
+
 ## [3.2.0] - 2019-10-24
 ### Removed
 - Removed Partners API v1 support;
