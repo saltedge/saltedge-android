@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 apply plugin: 'maven'
 
-def appVersionCode = 20
+def appVersionCode = 21
 def appVersionName = "3.4.0"
 
 android {

@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-//    implementation ('com.saltedge.sdk:saltedge-library:3.3.0@aar') {
+//    implementation ('com.saltedge.sdk:saltedge-library:3.3.0@aar') {// Example, how to declare dependency of SDK
 //        transitive = true
 //    }
     implementation project(':saltedge-library')

@@ -2,7 +2,9 @@
 
 ## [3.4.0] - 2021-02-01
 ### Add
-- Add CustomTabsHelper
+- Add SEConnectHelper, CustomTabsHelper
+### Changed
+- update target sdk up to 30
 
 ## [3.3.0] - 2020-06-11
 ### Changed
