@@ -1,5 +1,9 @@
 # Salt Edge SDK library changelog
 
+## [3.4.0] - 2021-02-01
+### Add
+- Add CustomTabsHelper
+
 ## [3.3.0] - 2020-06-11
 ### Changed
 - update debiancerts, update target sdk up to 29

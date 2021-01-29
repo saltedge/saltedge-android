@@ -1,6 +1,6 @@
 package com.saltedge.sdk.network;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.saltedge.sdk.model.response.ProvidersResponse;
 

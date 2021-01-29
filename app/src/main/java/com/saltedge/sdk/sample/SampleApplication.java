@@ -28,9 +28,9 @@ import com.saltedge.sdk.sample.utils.PreferenceRepository;
 
 public class SampleApplication extends Application {
 
-    private final static boolean ENABLE_LOGGING = false;
-    private final static String CLIENT_APP_ID = "";//TODO SET APP ID
-    private final static String CLIENT_APP_SECRET = "";//TODO SET APP SECRET
+    private final static boolean ENABLE_LOGGING = true;
+    private final static String CLIENT_APP_ID = "R4Qw517-RL9FI5f2_xZeechnO1wduKAbUfkts7bV4vY";//TODO SET APP ID
+    private final static String CLIENT_APP_SECRET = "Ylhr7TdW8uf-rpPbaUyJOSMqmiR_2qDMCz__tblPOZ8";//TODO SET APP SECRET
     private final static String RETURN_TO_URL = "saltedge://saltedge.com/connect";
 
     @Override

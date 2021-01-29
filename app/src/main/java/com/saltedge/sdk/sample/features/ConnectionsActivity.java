@@ -21,6 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.sample.features;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,12 +33,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.interfaces.DeleteEntryResult;
 import com.saltedge.sdk.interfaces.FetchConnectionsResult;
 import com.saltedge.sdk.interfaces.ProvidersResult;
@@ -50,6 +52,8 @@ import com.saltedge.sdk.sample.adapters.ConnectionsAdapter;
 import com.saltedge.sdk.sample.utils.Constants;
 import com.saltedge.sdk.sample.utils.PreferenceRepository;
 import com.saltedge.sdk.sample.utils.UITools;
+import com.saltedge.sdk.utils.SEConnectHelper;
+import com.saltedge.sdk.utils.SEConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +86,18 @@ public class ConnectionsActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK && data != null && data.hasExtra(SEConstants.KEY_CONNECT_URL)) {
+            String connectUrl = data.getStringExtra(SEConstants.KEY_CONNECT_URL);
+            if (connectUrl != null && !connectUrl.isEmpty()) {
+                SEConnectHelper.setupUrlHandler(ContextCompat.getColor(this, R.color.colorPrimary));
+                SEConnectHelper.openExternalApp(connectUrl, this);
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_connections, menu);
         return true;
@@ -96,8 +112,9 @@ public class ConnectionsActivity extends AppCompatActivity implements
             case R.id.show_rates:
                 showRates();
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -159,8 +176,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
     private void setupActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setLogo(R.drawable.ic_launcher);
-            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayUseLogoEnabled(false);
             actionBar.setDisplayShowHomeEnabled(true);
         }
     }
@@ -219,7 +235,7 @@ public class ConnectionsActivity extends AppCompatActivity implements
 
     private void showProvidersListDialog() {
         if (providers != null && !providers.isEmpty()) {
-            UITools.showShortToast(this, "Fetched " + providers.size());
+            UITools.showShortToast(this, "Total " + providers.size() + " provider");
             FragmentManager fragmentManager = getSupportFragmentManager();
             ProvidersDialog.newInstance(providers, this).show(fragmentManager, ProvidersDialog.TAG);
         } else {

@@ -1,4 +1,4 @@
-![SDK Verson](https://img.shields.io/badge/SDK%20version-3.3.0-orange)
+![SDK Verson](https://img.shields.io/badge/SDK%20version-3.4.0-orange)
 
 <p align="center">
   <a href="https://www.saltedge.com/products/spectre">

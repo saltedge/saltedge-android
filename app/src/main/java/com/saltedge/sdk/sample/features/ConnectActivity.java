@@ -32,7 +32,6 @@ import android.webkit.WebView;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.interfaces.ConnectSessionResult;
 import com.saltedge.sdk.model.SEProvider;
 import com.saltedge.sdk.model.Saltbridge;
@@ -109,6 +108,11 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         String url = webView.getOriginalUrl();
@@ -121,7 +125,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     public void onConnectSessionSuccessStage(String connectionId, String connectionSecret, String rawJsonData) {
         PreferenceRepository.putConnectionSecret(connectionSecret);
         UITools.showShortToast(this, R.string.connection_connected);
-        closeActivity(true);
+        closeActivity(true, null);
     }
 
     @Override
@@ -153,7 +157,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
             }
             updateConnectionSecret(connectionSecret);
         }
-        closeActivity(true);
+        closeActivity(true, null);
         return false;
     }
 
@@ -165,7 +169,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
      */
     @Override
     public void onClick(DialogInterface dialogInterface, int id) {
-        closeActivity(false);
+        closeActivity(false, null);
     }
 
     private ConnectSessionResult connectSessionResult = new ConnectSessionResult() {
@@ -203,14 +207,13 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     }
 
     private void requestConnectUrl() {
-        if (isRefreshMode()) {
-            createRefreshSessionUrl();
-        } else if (isReconnectViewMode()) {
-            boolean overrideCredentials = this.getIntent()
-                    .getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
-            createReconnectSessionUrl(overrideCredentials);
-        } else {
-            createConnectSessionUrl();
+        if (isRefreshMode()) {//Refresh connection
+            createRefreshSession();
+        } else if (isReconnectViewMode()) {//Reconnect connection
+            boolean overrideCredentials = this.getIntent().getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
+            createReconnectSession(overrideCredentials);
+        } else {//Create connection
+            createConnectSession();
         }
     }
 
@@ -222,7 +225,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
         return connectionSecret != null && (tryToRefresh != null && !tryToRefresh);
     }
 
-    private void createConnectSessionUrl() {
+    private void createConnectSession() {
         int progressTitle = isOAuthProvider ? R.string.connecting_oauth : R.string.connecting;
         progressDialog = refreshProgressDialog(this, progressDialog, progressTitle);
 
@@ -236,7 +239,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
         );
     }
 
-    private void createRefreshSessionUrl() {
+    private void createRefreshSession() {
         progressDialog = refreshProgressDialog(this, progressDialog, R.string.refresh_provider);
 
         String customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
@@ -247,7 +250,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
                 connectSessionResult);
     }
 
-    private void createReconnectSessionUrl(boolean overrideCredentials) {
+    private void createReconnectSession(boolean overrideCredentials) {
         progressDialog = refreshProgressDialog(this, progressDialog, R.string.reconnect_provider);
 
         String customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
@@ -267,8 +270,7 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
 
     private void loadConnectUrl(String connectUrl) {
         if (isOAuthProvider) {
-            this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(connectUrl)));
-            closeActivity(true);
+            closeActivity(true, connectUrl);
         } else if (webView != null) {
             SEWebViewTools.getInstance().initializeWithUrl(
                     this,
@@ -288,10 +290,18 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
         }
     }
 
-    private void closeActivity(boolean result) {
+    private void closeActivity(boolean finishWithSuccess, String connectUrl) {
         try {
             SEWebViewTools.getInstance().clear();
-            setResult(result ? Activity.RESULT_OK : Activity.RESULT_CANCELED);
+            int resultCode = finishWithSuccess ? Activity.RESULT_OK : Activity.RESULT_CANCELED;
+
+            if (connectUrl != null) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(SEConstants.KEY_CONNECT_URL, connectUrl);
+                setResult(resultCode, resultIntent);
+            } else {
+                setResult(resultCode);
+            }
             finish();
         } catch (Exception e) {
             e.printStackTrace();

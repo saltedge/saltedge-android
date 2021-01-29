@@ -54,7 +54,7 @@ public class CurrenciesRatesActivity extends AppCompatActivity implements FetchC
     private TextView emptyLabelView;
 
     @Override
-    protected void onCreate(@Nullable @android.support.annotation.Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
         ActionBar actionBar = getActionBar();

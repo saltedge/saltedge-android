@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.utils;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import junit.framework.TestCase;
 
@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 
 public class SEDateToolsTest extends TestCase {
@@ -58,6 +59,7 @@ public class SEDateToolsTest extends TestCase {
 
     @SmallTest
     public void testConvertMaxAgeToExpireAt() throws Exception {
-        assertEquals(System.currentTimeMillis() + 1000, SEDateTools.convertMaxAgeToExpireAt(1));
+        long now = System.currentTimeMillis();
+        assertThat(SEDateTools.convertMaxAgeToExpireAt(1), anyOf(equalTo(now + 999), equalTo(now + 1000), equalTo(now + 1001)));
     }
 }
