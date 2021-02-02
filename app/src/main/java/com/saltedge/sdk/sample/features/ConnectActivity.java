@@ -190,9 +190,9 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
             if (isOAuthProvider) {
                 actionBar.setTitle(R.string.connecting_oauth);
             } else {
-                if (isRefreshMode()) {
+                if (isRefreshConnectionMode()) {
                     actionBar.setTitle(R.string.refreshing);
-                } else if (isReconnectViewMode()) {
+                } else if (isReconnectConnectionMode()) {
                     actionBar.setTitle(R.string.reconnecting);
                 } else {
                     actionBar.setTitle(R.string.connecting);
@@ -202,9 +202,9 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
     }
 
     private void requestConnectUrl() {
-        if (isRefreshMode()) {//Refresh connection
+        if (isRefreshConnectionMode()) {
             createRefreshSession();
-        } else if (isReconnectViewMode()) {//Reconnect connection
+        } else if (isReconnectConnectionMode()) {
             boolean overrideCredentials = this.getIntent().getBooleanExtra(Constants.KEY_OVERRIDE_CREDENTIALS, false);
             createReconnectSession(overrideCredentials);
         } else {//Create connection
@@ -212,11 +212,11 @@ public class ConnectActivity extends AppCompatActivity implements DialogInterfac
         }
     }
 
-    private boolean isRefreshMode() {
+    private boolean isRefreshConnectionMode() {
         return connectionSecret != null && (tryToRefresh != null && tryToRefresh);
     }
 
-    private boolean isReconnectViewMode() {
+    private boolean isReconnectConnectionMode() {
         return connectionSecret != null && (tryToRefresh != null && !tryToRefresh);
     }
 
