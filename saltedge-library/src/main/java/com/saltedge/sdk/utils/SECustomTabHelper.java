@@ -28,6 +28,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.browser.customtabs.CustomTabsService;
@@ -56,7 +57,7 @@ public class SECustomTabHelper {
     public static String getNonBrowserActivity(Context context, String url) {
         PackageManager pm = context.getPackageManager();
         int queryFlag = 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             queryFlag = PackageManager.MATCH_ALL;
         }
         Intent activityIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
