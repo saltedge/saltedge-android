@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.pin;
 
-import android.support.test.filters.SmallTest;
+import androidx.test.filters.SmallTest;
 
 import com.saltedge.sdk.network.pin.SEPinsManager;
 

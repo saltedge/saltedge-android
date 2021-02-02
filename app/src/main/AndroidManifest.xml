@@ -11,7 +11,7 @@
     <application
         android:name=".SampleApplication"
         android:allowBackup="false"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
@@ -23,7 +23,7 @@
             android:screenOrientation="portrait"
             android:noHistory="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme">
+            android:theme="@style/StartTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

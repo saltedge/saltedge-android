@@ -25,6 +25,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,10 +54,10 @@ public class StartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
-        tryToCreateCustomer();
+        checkCustomer();
     }
 
-    private void tryToCreateCustomer() {
+    private void checkCustomer() {
         String customerIdentifier = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_IDENTIFIER);
         String customerSecret = PreferenceRepository.getStringFromPreferences(Constants.KEY_CUSTOMER_SECRET);
 
@@ -79,7 +80,7 @@ public class StartActivity extends AppCompatActivity {
                 }
             });
         } else {
-            showConnectionsActivity();
+            showConnectionsActivityWithDelay();
         }
     }
 
@@ -93,17 +94,33 @@ public class StartActivity extends AppCompatActivity {
         showConnectionsActivity();
     }
 
+    private void showConnectionsActivityWithDelay() {
+        String dataString = getIntent().getDataString();
+        if (dataString != null) {
+            Uri uri = Uri.parse(dataString);
+            String connectionSecret = uri.getQueryParameter(Constants.KEY_CONNECTION_SECRET);
+            if (connectionSecret != null && !connectionSecret.isEmpty()) {
+                PreferenceRepository.putConnectionSecret(connectionSecret);
+            }
+            showConnectionsActivity();
+        } else {
+            new CountDownTimer(1000, 1000) {
+
+                public void onTick(long millisUntilFinished) { }
+
+                public void onFinish() {
+                    showConnectionsActivity();
+                }
+            }.start();
+        }
+    }
+
     private void showConnectionsActivity() {
         try {
-            String dataString = getIntent().getDataString();
-            if (dataString != null) {
-                Uri uri = Uri.parse(dataString);
-                String connectionSecret = uri.getQueryParameter(Constants.KEY_CONNECTION_SECRET);
-                if (connectionSecret != null && !connectionSecret.isEmpty()) {
-                    PreferenceRepository.putConnectionSecret(connectionSecret);
-                }
-            }
-            startActivity(new Intent(this, ConnectionsActivity.class));
+            Intent intent = new Intent(this, ConnectionsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            this.finish();
+            startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }

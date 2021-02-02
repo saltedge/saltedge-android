@@ -21,8 +21,8 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.saltedge.sdk.SaltEdgeSDK;
 import com.saltedge.sdk.TestTools;
