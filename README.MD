@@ -1,4 +1,4 @@
-![SDK Verson](https://img.shields.io/badge/SDK%20version-3.4.0-orange)
+![SDK Version](https://img.shields.io/badge/SDK%20version-3.4.0-orange)
 
 <p align="center">
   <a href="https://www.saltedge.com/products/spectre">
@@ -12,7 +12,6 @@ Salt Edge Android SDK provides [a handful of classes](SDK_GUIDE.MD) to help you 
   
 ### Current SDK supports access only to [Salt Edge API v5](https://docs.saltedge.com/account_information/v5/).  
 ### [Salt Edge Partner API](https://docs.saltedge.com/partners/v1/) is not supported.  
-  
 ### When you migrating to the new version of Salt Edge Android SDK, please read carefully [CHANGELOG](CHANGELOG.MD) since many changes have been made.
 
 ## Requirements
@@ -68,27 +67,25 @@ repositories {
 ### Add SDK dependency to application `build.gradle`
   
 ```groovy
-implementation ('com.saltedge.sdk:saltedge-library:3.4.0@aar') {
+implementation ('com.saltedge.sdk:saltedge-library:X.X.X@aar') {
     transitive = true
 }
 ```
 
-### [Invoke SDK methods](SDK_GUIDE.MD) 
-  
-## [Changelog](CHANGELOG.MD)
+## [SDK Guide](SDK_GUIDE.MD)
 
-## License
+## [How To](HOW_TO.MD) 
 
-See the [LICENSE](LICENSE) file.
+## [SDK Changelog](CHANGELOG.MD)
 
-## References
-
-1. [Salt Edge Android SDK Guide](SDK_GUIDE.MD)
-1. [Salt Edge Android SDK How To](HOW_TO.MD)
+## Useful references
 1. [Salt Edge API](https://docs.saltedge.com/account_information/v5/)
 1. [Salt Edge Connect Guide](https://docs.saltedge.com/account_information/v5/#salt_edge_connect)
 
-For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)  
+## Contacts 
+For more information, feel free to [contact us](https://www.saltedge.com/pages/contact)
+  
+## [LICENSE](LICENSE)
 
 ---
-Copyright © 2014 - 2021 Salt Edge Inc. https://www.saltedge.com
+Copyright © 2014 Salt Edge Inc. https://www.saltedge.com
