@@ -91,7 +91,6 @@ public class TransactionConnectorTest implements FetchTransactionsResult {
     @Before
     public void setUp() throws Exception {
         SaltEdgeSDK.getInstance().init(InstrumentationRegistry.getTargetContext(), "testClientId", "testAppSecret", "redirect://url");
-        TestTools.saveValidPinsInPreferences();
         transactionsList = null;
         errorMessage = null;
         mockWebServer = new MockWebServer();

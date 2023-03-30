@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CurrenciesConnector extends BasePinnedConnector implements Callback<CurrenciesResponse> {
+public class CurrenciesConnector implements Callback<CurrenciesResponse> {
 
     private final FetchCurrencyRatesResult callback;
     private String customerSecret = "";
@@ -48,17 +48,7 @@ public class CurrenciesConnector extends BasePinnedConnector implements Callback
     public void fetchCurrenciesRates(String customerSecret, String ratesDate) {
         this.customerSecret = customerSecret;
         this.ratesDate = ratesDate;
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         SERestClient.getInstance().service.getCurrencies(customerSecret, ratesDate).enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFetchCurrenciesFailure(errorMessage);
     }
 
     @Override
@@ -69,11 +59,13 @@ public class CurrenciesConnector extends BasePinnedConnector implements Callback
             Collections.sort(currencies, (a1, a2) -> a1.getCurrencyCode().compareTo(a2.getCurrencyCode()));
             callback.onFetchCurrenciesSuccess(currencies);
         }
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFetchCurrenciesFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<CurrenciesResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFetchCurrenciesFailure(SEErrorTools.processConnectionError(t));
     }
 }

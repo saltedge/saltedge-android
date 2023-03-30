@@ -31,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectionDeleteConnector extends BasePinnedConnector implements Callback<DeleteConnectionResponse> {
+public class ConnectionDeleteConnector implements Callback<DeleteConnectionResponse> {
 
     private final DeleteEntryResult callback;
     private String customerSecret;
@@ -44,17 +44,7 @@ public class ConnectionDeleteConnector extends BasePinnedConnector implements Ca
     public void deleteConnection(String customerSecret, String connectionSecret) {
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         SERestClient.getInstance().service.deleteConnection(customerSecret, connectionSecret).enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -63,11 +53,13 @@ public class ConnectionDeleteConnector extends BasePinnedConnector implements Ca
         if (response.isSuccessful() && responseBody != null) {
             callback.onSuccess(responseBody.isRemoved(), responseBody.getRemovedId());
         }
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<DeleteConnectionResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }

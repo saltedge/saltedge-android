@@ -29,11 +29,4 @@ public class DuplicatedTransactionsFetchConnector extends TransactionsConnector 
     public DuplicatedTransactionsFetchConnector(FetchTransactionsResult callback) {
         super(callback);
     }
-
-    @Override
-    public void enqueueCall() {
-        SERestClient.getInstance().service
-                .getDuplicatedTransactions(customerSecret, connectionSecret, accountId, fromId)
-                .enqueue(this);
-    }
 }

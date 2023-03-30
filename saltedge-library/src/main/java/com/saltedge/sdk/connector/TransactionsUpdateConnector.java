@@ -21,7 +21,6 @@ THE SOFTWARE.
 */
 package com.saltedge.sdk.connector;
 
-import com.saltedge.sdk.connector.BasePinnedConnector;
 import com.saltedge.sdk.interfaces.UpdateTransactionsResult;
 import com.saltedge.sdk.model.request.DeleteTransactionsRequest;
 import com.saltedge.sdk.model.request.PutTransactionsIdsRequest;
@@ -36,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TransactionsUpdateConnector extends BasePinnedConnector implements Callback<UpdateTransactionsResponse> {
+public class TransactionsUpdateConnector implements Callback<UpdateTransactionsResponse> {
 
     public enum RequestType {
         DUPLICATE, UNDUPLICATE, CLEANUP
@@ -61,8 +60,7 @@ public class TransactionsUpdateConnector extends BasePinnedConnector implements 
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
         this.transactionsIdsRequestBody = new PutTransactionsIdsRequest(transactionsIds);
-
-        checkAndLoadPinsOrDoRequest();
+        makeRequest();
     }
 
     public void markTransactionsAsNotDuplicated(String customerSecret,
@@ -73,8 +71,7 @@ public class TransactionsUpdateConnector extends BasePinnedConnector implements 
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
         this.transactionsIdsRequestBody = new PutTransactionsIdsRequest(transactionsIds);
-
-        checkAndLoadPinsOrDoRequest();
+        makeRequest();
     }
 
     public void removeTransactions(String customerSecret,
@@ -86,12 +83,34 @@ public class TransactionsUpdateConnector extends BasePinnedConnector implements 
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
         this.deleteTransactionsRequestBody = new DeleteTransactionsRequest(accountId, keepDays);
+        makeRequest();
+     }
 
-        checkAndLoadPinsOrDoRequest();
+    @Override
+    public void onResponse(Call<UpdateTransactionsResponse> call, Response<UpdateTransactionsResponse> response) {
+        UpdateTransactionsResponse responseBody = response.body();
+        if (response.isSuccessful() && responseBody != null && callback != null) {
+            if (responseBody.isDuplicated() != null) {
+                callback.onUpdateTransactionsSuccess(responseBody.isDuplicated(), requestType.toString());
+            } else if (responseBody.isUnduplicated() != null) {
+                callback.onUpdateTransactionsSuccess(responseBody.isUnduplicated(), requestType.toString());
+            } else if (responseBody.isCleanupStarted() != null) {
+                callback.onTransactionsCleanupStartedSuccess(responseBody.isCleanupStarted());
+            } else {
+                callback.onUpdateTransactionsSuccess(null, requestType.toString());
+            }
+        }
+        else {
+            if (callback != null) callback.onUpdateTransactionsFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
-    void enqueueCall() {
+    public void onFailure(Call<UpdateTransactionsResponse> call, Throwable t) {
+        if (callback != null) callback.onUpdateTransactionsFailure(SEErrorTools.processConnectionError(t));
+    }
+
+    private void makeRequest() {
         switch (requestType) {
             case DUPLICATE:
                 SERestClient.getInstance().service
@@ -109,32 +128,5 @@ public class TransactionsUpdateConnector extends BasePinnedConnector implements 
                         .enqueue(this);
                 break;
         }
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onUpdateTransactionsFailure(errorMessage);
-    }
-
-    @Override
-    public void onResponse(Call<UpdateTransactionsResponse> call, Response<UpdateTransactionsResponse> response) {
-        UpdateTransactionsResponse responseBody = response.body();
-        if (response.isSuccessful() && responseBody != null && callback != null) {
-            if (responseBody.isDuplicated() != null) {
-                callback.onUpdateTransactionsSuccess(responseBody.isDuplicated(), requestType.toString());
-            } else if (responseBody.isUnduplicated() != null) {
-                callback.onUpdateTransactionsSuccess(responseBody.isUnduplicated(), requestType.toString());
-            } else if (responseBody.isCleanupStarted() != null) {
-                callback.onTransactionsCleanupStartedSuccess(responseBody.isCleanupStarted());
-            } else {
-                callback.onUpdateTransactionsSuccess(null, requestType.toString());
-            }
-        }
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
-    }
-
-    @Override
-    public void onFailure(Call<UpdateTransactionsResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
     }
 }

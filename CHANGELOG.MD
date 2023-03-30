@@ -1,5 +1,11 @@
 # Salt Edge SDK library changelog
 
+## [3.5.0] - 2023-03-30
+
+### Removed
+
+- Removed SSL Pinning;
+
 ## [3.4.0] - 2021-02-01
 ### Add
 - Add SEConnectHelper, CustomTabsHelper

@@ -35,10 +35,6 @@ import javax.net.ssl.SSLPeerUnverifiedException;
 
 public class SEErrorTools {
 
-    public final static String ERROR_MSG_INVALID_HPKP_DATA = "Invalid HPKP data";
-    public final static String ERROR_MSG_CANT_GET_HPKP_DATA = "Can not get HPKP data";
-    public final static String ERROR_MSG_SECURITY_REQUEST_ERROR = "Security request error";
-    public final static String ERROR_MSG_SSL_CERT_FAIL = "SSL Handshake Error!";
     public final static String ERROR_MSG_HOST_UNREACHABLE = "No Internet connection.Please try again later.";
 
     /**
@@ -49,7 +45,6 @@ public class SEErrorTools {
      */
     public static String processConnectionError(Throwable t) {
         if (isNoConnectionException(t)) return ERROR_MSG_HOST_UNREACHABLE;
-        else if (isSSLException(t)) return ERROR_MSG_SSL_CERT_FAIL;
         else return t.getLocalizedMessage();
     }
 
@@ -61,11 +56,5 @@ public class SEErrorTools {
                 || (t instanceof InterruptedIOException)
                 || (t instanceof UnknownHostException)
                 || (t instanceof IOException);
-    }
-
-    private static Boolean isSSLException(Throwable t) {
-        return (t instanceof SSLPeerUnverifiedException)
-                || (t instanceof SSLHandshakeException)
-                || (t instanceof SSLException);
     }
 }

@@ -36,7 +36,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectOAuthConnector extends BasePinnedConnector implements Callback<ConnectOAuthSessionResponse> {
+public class ConnectOAuthConnector implements Callback<ConnectOAuthSessionResponse> {
 
     private final ConnectSessionResult callback;
     private Call<ConnectOAuthSessionResponse> call;
@@ -53,13 +53,13 @@ public class ConnectOAuthConnector extends BasePinnedConnector implements Callba
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
                 new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
-                new String[0],
                 providerCode,
                 SEConstants.IFRAME,
                 null
         );
         call = SERestClient.getInstance().service.createOAuthConnectSession(customerSecret, requestData);
-        checkAndLoadPinsOrDoRequest();
+        if (call != null) call.enqueue(this);
+
     }
 
     public void createReconnectSession(String customerSecret,
@@ -72,34 +72,25 @@ public class ConnectOAuthConnector extends BasePinnedConnector implements Callba
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
                 new SEAttempt(localeCode, returnToUrl),
-                new String[0],
                 providerCode,
                 SEConstants.IFRAME,
                 null
         );
         call = SERestClient.getInstance().service.createOAuthReconnectSession(customerSecret, connectionSecret, requestData);
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         if (call != null) call.enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
     public void onResponse(Call<ConnectOAuthSessionResponse> call, Response<ConnectOAuthSessionResponse> response) {
         ConnectOAuthSessionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getRedirectUrl());
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<ConnectOAuthSessionResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }

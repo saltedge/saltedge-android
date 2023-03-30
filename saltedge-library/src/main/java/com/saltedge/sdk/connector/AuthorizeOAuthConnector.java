@@ -32,7 +32,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AuthorizeOAuthConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
+public class AuthorizeOAuthConnector implements Callback<ConnectionResponse> {
 
     private FetchConnectionResult callback;
     private Call<ConnectionResponse> call;
@@ -49,17 +49,7 @@ public class AuthorizeOAuthConnector extends BasePinnedConnector implements Call
                 connectionSecret,
                 new ConnectionAuthorizeRequest(authorizationQuery)
         );
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         call.enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -68,12 +58,12 @@ public class AuthorizeOAuthConnector extends BasePinnedConnector implements Call
         if (response.isSuccessful() && responseBody != null) {
             callback.onSuccess(responseBody.getData());
         } else {
-            onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
         }
     }
 
     @Override
     public void onFailure(Call<ConnectionResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }

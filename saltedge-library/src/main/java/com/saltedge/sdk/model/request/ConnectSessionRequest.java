@@ -34,7 +34,6 @@ public class ConnectSessionRequest {
     public ConnectSessionRequest(
             SEConsent consent,
             SEAttempt attempt,
-            String[] allowedCountries,
             String providerCode,
             String javascriptCallbackType,
             String overrideCredentialsStrategy
@@ -42,7 +41,6 @@ public class ConnectSessionRequest {
         data = new ConnectSessionData();
         data.consent = consent;
         data.attempt = attempt;
-        data.allowedCountries = allowedCountries;
         data.providerCode = providerCode;
         data.javascriptCallbackType = javascriptCallbackType;
         data.overrideCredentialsStrategy = overrideCredentialsStrategy;
@@ -56,9 +54,6 @@ public class ConnectSessionRequest {
 
         @SerializedName(SEConstants.KEY_ATTEMPT)
         SEAttempt attempt;
-
-        @SerializedName(SEConstants.KEY_ALLOWED_COUNTRIES)
-        String[] allowedCountries;
 
         @SerializedName(SEConstants.KEY_PROVIDER_CODE)
         String providerCode;

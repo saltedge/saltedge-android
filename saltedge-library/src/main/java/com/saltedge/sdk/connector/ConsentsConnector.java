@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConsentsConnector extends BasePinnedConnector implements Callback<ConsentsResponse> {
+public class ConsentsConnector implements Callback<ConsentsResponse> {
 
     private final FetchConsentsResult callback;
     private String nextPageId = "";
@@ -50,17 +50,7 @@ public class ConsentsConnector extends BasePinnedConnector implements Callback<C
     public void fetchConsents(String customerSecret, String connectionSecret) {
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         SERestClient.getInstance().service.getConsents(customerSecret, connectionSecret, nextPageId).enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -71,18 +61,20 @@ public class ConsentsConnector extends BasePinnedConnector implements Callback<C
             nextPageId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<ConsentsResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
             Collections.sort(consentsList, (a1, a2) -> a1.getId().compareTo(a2.getId()));
             callback.onSuccess(consentsList);
-        } else enqueueCall();
+        } else SERestClient.getInstance().service.getConsents(customerSecret, connectionSecret, nextPageId).enqueue(this);
     }
 }

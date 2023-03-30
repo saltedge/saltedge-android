@@ -39,7 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectSessionConnector extends BasePinnedConnector implements Callback<ConnectSessionResponse> {
+public class ConnectSessionConnector implements Callback<ConnectSessionResponse> {
 
     private final ConnectSessionResult callback;
     private Call<ConnectSessionResponse> call;
@@ -57,19 +57,18 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
                 new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
-                new String[0],
                 providerCode,
                 SEConstants.IFRAME,
                 null
         );
         call = SERestClient.getInstance().service.createConnectSession(customerSecret, requestData);
-        checkAndLoadPinsOrDoRequest();
+        if (call != null) call.enqueue(this);
     }
 
     public void createConnectSession(String customerSecret, Map<String, Object> dataMap) {
         MappedRequest requestData = new MappedRequest(dataMap);
         call = SERestClient.getInstance().service.createConnectSession(customerSecret, requestData);
-        checkAndLoadPinsOrDoRequest();
+        if (call != null) call.enqueue(this);
     }
 
     public void createReconnectSession(
@@ -83,12 +82,11 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
                 new SEConsent(consentScopes),
                 new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
                 null,
-                null,
                 SEConstants.IFRAME,
                 overrideCredentials ? "override" : null
         );
         call = SERestClient.getInstance().service.createReconnectSession(customerSecret, connectionSecret, requestData);
-        checkAndLoadPinsOrDoRequest();
+        if (call != null) call.enqueue(this);
     }
 
     public void createRefreshSession(
@@ -100,32 +98,25 @@ public class ConnectSessionConnector extends BasePinnedConnector implements Call
                 null,
                 new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
                 null,
-                null,
                 SEConstants.IFRAME,
                 null);
         call = SERestClient.getInstance().service.createRefreshSession(customerSecret, connectionSecret, requestData);
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         if (call != null) call.enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
     public void onResponse(Call<ConnectSessionResponse> call, Response<ConnectSessionResponse> response) {
         ConnectSessionResponse responseBody = response.body();
-        if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getConnectUrl());
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        if (response.isSuccessful() && responseBody != null) {
+            callback.onSuccess(responseBody.getConnectUrl());
+        }
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<ConnectSessionResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }

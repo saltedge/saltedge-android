@@ -39,7 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LeadSessionConnector extends BasePinnedConnector implements Callback<LeadSessionResponse> {
+public class LeadSessionConnector implements Callback<LeadSessionResponse> {
 
     private final ConnectSessionResult callback;
     private Call<LeadSessionResponse> call;
@@ -55,40 +55,31 @@ public class LeadSessionConnector extends BasePinnedConnector implements Callbac
         ConnectSessionRequest requestData = new ConnectSessionRequest(
                 new SEConsent(consentScopes),
                 new SEAttempt(localeCode, SaltEdgeSDK.getReturnToUrl()),
-                new String[0],
                 providerCode,
                 SEConstants.IFRAME,
                 null
         );
         call = SERestClient.getInstance().service.createLeadSession(requestData);
-        checkAndLoadPinsOrDoRequest();
+        if (call != null) call.enqueue(this);
     }
 
     public void createLeadSession(Map<String, Object> dataMap) {
         MappedRequest requestData = new MappedRequest(dataMap);
         call = SERestClient.getInstance().service.createLeadSession(requestData);
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         if (call != null) call.enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
     public void onResponse(Call<LeadSessionResponse> call, Response<LeadSessionResponse> response) {
         LeadSessionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getRedirectUrl());
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<LeadSessionResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }
