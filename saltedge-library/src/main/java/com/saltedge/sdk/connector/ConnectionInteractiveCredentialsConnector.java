@@ -34,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectionInteractiveCredentialsConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
+public class ConnectionInteractiveCredentialsConnector implements Callback<ConnectionResponse> {
 
     private FetchConnectionResult callback;
     private Call<ConnectionResponse> call;
@@ -49,7 +49,7 @@ public class ConnectionInteractiveCredentialsConnector extends BasePinnedConnect
             Map<String, Object> credentials) {
         PutConnectionCredentialsRequest requestData = new PutConnectionCredentialsRequest(credentials);
         call = SERestClient.getInstance().service.putInteractiveCredentials(customerSecret, connectionSecret, requestData);
-        checkAndLoadPinsOrDoRequest();
+        if (call != null) call.enqueue(this);
     }
 
     public void cancel() {
@@ -61,24 +61,16 @@ public class ConnectionInteractiveCredentialsConnector extends BasePinnedConnect
     }
 
     @Override
-    void enqueueCall() {
-        if (call != null) call.enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
-    }
-
-    @Override
     public void onResponse(Call<ConnectionResponse> call, Response<ConnectionResponse> response) {
         ConnectionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) callback.onSuccess(responseBody.getData());
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<ConnectionResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }

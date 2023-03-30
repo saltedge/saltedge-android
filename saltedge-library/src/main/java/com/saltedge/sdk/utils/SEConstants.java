@@ -78,7 +78,6 @@ public class SEConstants {
     public static final String KEY_HOME_URL = "home_url";
     public static final String KEY_LOGIN_URL = "login_url";
     public static final String KEY_LOGO_URL = "logo_url";
-    public static final String KEY_ALLOWED_COUNTRIES = "allowed_countries";
     public static final String KEY_REFRESH_TIMEOUT = "refresh_timeout";
     public static final String KEY_HOLDER_INFO = "holder_info";
     public static final String KEY_MAX_CONSENT_DAYS = "max_consent_days";

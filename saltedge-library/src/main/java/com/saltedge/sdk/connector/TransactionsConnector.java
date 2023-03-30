@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TransactionsConnector extends BasePinnedConnector implements Callback<TransactionsResponse> {
+public class TransactionsConnector implements Callback<TransactionsResponse> {
 
     private final FetchTransactionsResult callback;
     private ArrayList<SETransaction> transactionsList = new ArrayList<>();
@@ -60,19 +60,9 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
         this.accountId = accountId;
         this.fromId = fromId;
         this.fetchAllTransactionsFromId = fetchAllTransactionsFromId;
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         SERestClient.getInstance().service
                 .getTransactions(customerSecret, connectionSecret, accountId, fromId)
                 .enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -84,17 +74,23 @@ public class TransactionsConnector extends BasePinnedConnector implements Callba
             fromId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<TransactionsResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {
         if (fromId == null || fromId.isEmpty() || !fetchAllTransactionsFromId) {
             callback.onSuccess(transactionsList);
-        } else enqueueCall();
+        } else {
+            SERestClient.getInstance().service
+                    .getTransactions(customerSecret, connectionSecret, accountId, fromId)
+                    .enqueue(this);
+        }
     }
 }

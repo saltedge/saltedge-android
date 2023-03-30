@@ -35,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AccountsConnector extends BasePinnedConnector implements Callback<AccountsResponse> {
+public class AccountsConnector implements Callback<AccountsResponse> {
 
     private final FetchAccountsResult callback;
     private String nextPageId = "";
@@ -50,17 +50,8 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
     public void fetchAccounts(String customerSecret, String connectionSecret) {
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         SERestClient.getInstance().service.getAccounts(customerSecret, connectionSecret, nextPageId).enqueue(this);
-    }
 
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -71,18 +62,20 @@ public class AccountsConnector extends BasePinnedConnector implements Callback<A
             nextPageId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<AccountsResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
             Collections.sort(accountsList, (a1, a2) -> a1.getName().compareTo(a2.getName()));
             callback.onSuccess(accountsList);
-        } else enqueueCall();
+        } else SERestClient.getInstance().service.getAccounts(customerSecret, connectionSecret, nextPageId).enqueue(this);
     }
 }

@@ -31,7 +31,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConsentRevokeConnector extends BasePinnedConnector implements Callback<ConsentResponse> {
+public class ConsentRevokeConnector implements Callback<ConsentResponse> {
 
     private final DeleteEntryResult callback;
     private String customerSecret;
@@ -46,17 +46,7 @@ public class ConsentRevokeConnector extends BasePinnedConnector implements Callb
         this.customerSecret = customerSecret;
         this.connectionSecret = connectionSecret;
         this.consentId = consentId;
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         SERestClient.getInstance().service.revokeConsent(customerSecret, connectionSecret, consentId).enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -64,11 +54,13 @@ public class ConsentRevokeConnector extends BasePinnedConnector implements Callb
         ConsentResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null && responseBody.getData() != null) {
             callback.onSuccess(responseBody.getData().getRevokedAt() != null, consentId);
-        } else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        } else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<ConsentResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 }

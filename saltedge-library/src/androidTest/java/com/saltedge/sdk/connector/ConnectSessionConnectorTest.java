@@ -111,7 +111,6 @@ public class ConnectSessionConnectorTest implements ConnectSessionResult {
     @Before
     public void setUp() throws Exception {
         SaltEdgeSDK.getInstance().init(InstrumentationRegistry.getTargetContext(), "testClientId", "testAppSecret", "redirect://url");
-        TestTools.saveValidPinsInPreferences();
         connectUrl = null;
         errorMessage = null;
         mockWebServer = new MockWebServer();

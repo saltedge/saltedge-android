@@ -34,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConnectionsConnector extends BasePinnedConnector implements Callback<ConnectionResponse> {
+public class ConnectionsConnector implements Callback<ConnectionResponse> {
 
     private FetchConnectionsResult callback;
     private ArrayList<Call<ConnectionResponse>> callsList;
@@ -51,11 +51,6 @@ public class ConnectionsConnector extends BasePinnedConnector implements Callbac
         for (String connectionSecret : connectionsSecretsArray) {
             callsList.add(SERestClient.getInstance().service.showConnection(customerSecret, connectionSecret));
         }
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         resultCount = callsList.size();
         for (Call<ConnectionResponse> call : callsList) {
             call.enqueue(this);
@@ -63,20 +58,17 @@ public class ConnectionsConnector extends BasePinnedConnector implements Callbac
     }
 
     @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
-    }
-
-    @Override
     public void onResponse(Call<ConnectionResponse> call, Response<ConnectionResponse> response) {
         ConnectionResponse responseBody = response.body();
         if (response.isSuccessful() && responseBody != null) onSuccess(responseBody.getData());
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<ConnectionResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 
     public void cancel() {

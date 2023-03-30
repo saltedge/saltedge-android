@@ -29,11 +29,4 @@ public class PendingTransactionsFetchConnector extends TransactionsConnector {
     public PendingTransactionsFetchConnector(FetchTransactionsResult callback) {
         super(callback);
     }
-
-    @Override
-    public void enqueueCall() {
-        SERestClient.getInstance().service
-                .getPendingTransactions(customerSecret, connectionSecret, accountId, fromId)
-                .enqueue(this);
-    }
 }

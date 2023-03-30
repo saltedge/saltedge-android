@@ -26,11 +26,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.saltedge.sdk.SaltEdgeSDK;
-import com.saltedge.sdk.preferences.SEPreferencesRepository;
 
 import org.json.JSONObject;
 
-import okhttp3.CertificatePinner;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -75,39 +73,12 @@ public class SERestClient {
     private OkHttpClient createOkHttpClient() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .addInterceptor(prepareLoggingInterceptor());
-        boolean pinsAdded = addCertificatePinner(clientBuilder);
-        addSSLSocketFactory(clientBuilder);
-        addHeaderInterceptor(clientBuilder, pinsAdded);
+        addHeaderInterceptor(clientBuilder);
         return clientBuilder.build();
     }
 
-    private void addHeaderInterceptor(OkHttpClient.Builder clientBuilder, boolean acceptJson) {
-        clientBuilder.addInterceptor(new HeaderInterceptor(acceptJson ? SEApiConstants.MIME_TYPE_JSON : null));
-    }
-
-    private boolean addCertificatePinner(OkHttpClient.Builder clientBuilder) {
-        try {
-            String[] pins = SEPreferencesRepository.getInstance().getPins();
-            if (pins != null && pins.length > 0) {
-                CertificatePinner.Builder pinnerBuilder = new CertificatePinner.Builder();
-                pinnerBuilder.add(SEApiConstants.API_HOST_NAME, pins);
-                clientBuilder.certificatePinner(pinnerBuilder.build());
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    private void addSSLSocketFactory(OkHttpClient.Builder builder) {
-        try {
-            TLSSocketFactory factory = new TLSSocketFactory(SaltEdgeSDK.getInstance().getContext());
-            builder.sslSocketFactory(factory, factory.getTrustManager());
-        } catch (Exception e) {
-            Log.e(TAG, "Can't add SSL Socket factory");
-            e.printStackTrace();
-        }
+    private void addHeaderInterceptor(OkHttpClient.Builder clientBuilder) {
+        clientBuilder.addInterceptor(new HeaderInterceptor(SEApiConstants.MIME_TYPE_JSON));
     }
 
     private HttpLoggingInterceptor prepareLoggingInterceptor() {

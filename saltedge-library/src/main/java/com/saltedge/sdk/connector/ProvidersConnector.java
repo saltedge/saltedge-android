@@ -37,7 +37,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProvidersConnector extends BasePinnedConnector implements Callback<ProvidersResponse> {
+public class ProvidersConnector implements Callback<ProvidersResponse> {
 
     private final ProvidersResult callback;
     private ArrayList<SEProvider> providersList = new ArrayList<>();
@@ -50,21 +50,11 @@ public class ProvidersConnector extends BasePinnedConnector implements Callback<
 
     public void fetchProviders(String providersCountryCode) {
         this.countryCode = providersCountryCode.toUpperCase();
-        checkAndLoadPinsOrDoRequest();
-    }
-
-    @Override
-    void enqueueCall() {
         SERestClient.getInstance().service.getProviders(
                 countryCode,
                 shouldIncludeFakeProviders(),
                 nextPageId
         ).enqueue(this);
-    }
-
-    @Override
-    void onFailure(String errorMessage) {
-        if (callback != null) callback.onFailure(errorMessage);
     }
 
     @Override
@@ -75,19 +65,27 @@ public class ProvidersConnector extends BasePinnedConnector implements Callback<
             nextPageId = responseBody.getMeta().getNextId();
             fetchNextPageOrFinish();
         }
-        else onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        else {
+            if (callback != null) callback.onFailure(SEJsonTools.getErrorMessage(response.errorBody()));
+        }
     }
 
     @Override
     public void onFailure(Call<ProvidersResponse> call, Throwable t) {
-        onFailure(SEErrorTools.processConnectionError(t));
+        if (callback != null) callback.onFailure(SEErrorTools.processConnectionError(t));
     }
 
     private void fetchNextPageOrFinish() {
         if (nextPageId == null || nextPageId.isEmpty()) {
             Collections.sort(providersList, new ProviderDataComparator());
             if (callback != null) callback.onSuccess(providersList);
-        } else enqueueCall();
+        } else {
+            SERestClient.getInstance().service.getProviders(
+                    countryCode,
+                    shouldIncludeFakeProviders(),
+                    nextPageId
+            ).enqueue(this);
+        }
     }
 
     private boolean shouldIncludeFakeProviders() {

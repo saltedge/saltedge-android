@@ -57,8 +57,8 @@ import retrofit2.http.Query;
 
 public interface SEApiInterface {
 
-    @HEAD(SEApiConstants.API_COUNTRIES_PATH)
-    Call<Void> getPins();
+//    @HEAD(SEApiConstants.API_COUNTRIES_PATH)
+//    Call<Void> getPins();
 
     @GET(SEApiConstants.API_RATES_PATH)
     Call<CurrenciesResponse> getCurrencies(

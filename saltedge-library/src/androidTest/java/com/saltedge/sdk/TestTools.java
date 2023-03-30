@@ -25,11 +25,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.saltedge.sdk.network.ExtraJsonDataAdapter;
 import com.saltedge.sdk.network.HeaderInterceptor;
-import com.saltedge.sdk.preferences.SEPreferencesRepository;
 
 import org.json.JSONObject;
 
-import java.util.Calendar;
 
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -64,10 +62,5 @@ public class TestTools {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return interceptor;
-    }
-
-    public static void saveValidPinsInPreferences() {
-        long data = Calendar.getInstance().getTimeInMillis() + 3600L * 1000L;
-        SEPreferencesRepository.getInstance().updatePinsAndMaxAge(new String[]{"sha256/q6syzBRvzhCBHB8F9PJkQHH27U/vG8a7r848qBAv5Yo="}, data);
     }
 }
